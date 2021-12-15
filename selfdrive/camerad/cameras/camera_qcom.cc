@@ -854,7 +854,7 @@ static void parse_autofocus(CameraState *s, uint8_t *d) {
 
 
 // atom
-static int lens_truepos(SubMaster *sm) 
+static int lens_truepos() 
 {
   static  int autoFocus = 0;
   static int nStep = 0;
@@ -888,7 +888,7 @@ static void do_autofocus(CameraState *s) {
   lens_true_pos = std::clamp(lens_true_pos, float(LP3_AF_DAC_DOWN), float(LP3_AF_DAC_UP));
 
  // atom
-  int autoFocus = lens_truepos(sm);
+  int autoFocus = lens_truepos();
   if( autoFocus )
     lens_true_pos = autoFocus;
 
