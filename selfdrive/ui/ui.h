@@ -26,6 +26,17 @@ typedef cereal::CarControl::HUDControl::AudibleAlert AudibleAlert;
 const float y_offset = Hardware::EON() ? 0.0 : 150.0;
 const float ZOOM = Hardware::EON() ? 2138.5 : 2912.8;
 
+typedef struct Rect {
+  int x, y, w, h;
+  int centerX() const { return x + w / 2; }
+  int centerY() const { return y + h / 2; }
+  int right() const { return x + w; }
+  int bottom() const { return y + h; }
+  bool ptInRect(int px, int py) const {
+    return px >= x && px < (x + w) && py >= y && py < (y + h);
+  }
+} Rect;
+
 struct Alert {
   QString text1;
   QString text2;
@@ -61,6 +72,8 @@ struct Alert {
   }
 };
 
+const Rect btn_dashcam_rec = {1745, 860, 140, 140};
+
 typedef enum UIStatus {
   STATUS_DISENGAGED,
   STATUS_ENGAGED,
@@ -70,9 +83,9 @@ typedef enum UIStatus {
 
 const QColor bg_colors [] = {
   [STATUS_DISENGAGED] =  QColor(0x17, 0x33, 0x49, 0xc8),
-  [STATUS_ENGAGED] = QColor(0x17, 0x86, 0x44, 0xf1),
-  [STATUS_WARNING] = QColor(0xDA, 0x6F, 0x25, 0xf1),
-  [STATUS_ALERT] = QColor(0xC9, 0x22, 0x31, 0xf1),
+  [STATUS_ENGAGED] = QColor(0x17, 0x86, 0x44, 0x51),
+  [STATUS_WARNING] = QColor(0xDA, 0x6F, 0x25, 0x51),
+  [STATUS_ALERT] = QColor(0xC9, 0x22, 0x31, 0x31),
 };
 
 typedef struct {
@@ -99,6 +112,47 @@ typedef struct UIScene {
   float light_sensor, accel_sensor, gyro_sensor;
   bool started, ignition, is_metric, longitudinal_control, end_to_end;
   uint64_t started_frame;
+
+
+  // atom
+  cereal::LiveParametersData::Reader liveParameters;
+  cereal::GpsLocationData::Reader gpsLocationExternal;
+  cereal::DeviceState::Reader deviceState;
+  cereal::LiveNaviData::Reader liveNaviData;
+  cereal::ControlsState::Reader controls_state;
+  cereal::CarState::Reader car_state;
+  cereal::LateralPlan::Reader lateralPlan;
+ // cereal::RadarState::LeadData::Reader  lead_data[2];
+
+  int  IsOpenpilotViewEnabled;
+  struct _screen
+  {
+     int  nTime;
+     int  map_is_running, map_command_on, map_command_off;
+     int  map_on_overlay;
+     int  autoScreenOff;  // time
+     int  brightness_off;  // light value
+     int  autoFocus;
+     int  brightness;
+     int  nVolumeBoost;
+     int  awake;
+     int  sidebar;     
+  } scr;
+
+  struct _mouse
+  {
+    int touch_x;
+    int touch_y;
+    int touch_cnt;
+
+  } mouse;
+
+  struct _STATUS_
+  {
+      std::string alertTextMsg1;
+      std::string alertTextMsg2; 
+      std::string alertTextMsg3;
+  } alert;
 } UIScene;
 
 typedef struct UIState {
@@ -161,6 +215,7 @@ private:
   void updateWakefulness(const UIState &s);
   bool motionTriggered(const UIState &s);
   void setAwake(bool on);
+  void ScreenAwake();
 
 signals:
   void displayPowerChanged(bool on);

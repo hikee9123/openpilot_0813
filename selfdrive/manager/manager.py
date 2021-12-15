@@ -39,6 +39,21 @@ def manager_init():
     ("CompletedTrainingVersion", "0"),
     ("HasAcceptedTerms", "0"),
     ("OpenpilotEnabledToggle", "1"),
+
+    ("IsOpenpilotViewEnabled", "0"),
+    ("OpkrAutoResume", "0"),
+    ("OpkrLiveSteerRatio", "0"),
+    ("OpkrTurnSteeringDisable", "0"),
+    ("PutPrebuiltOn", "0"),
+    ("OpkrAutoScreenOff", "0"),
+    ("OpkrAutoFocus", "0"),
+    ("OpkrUIBrightness", "0"),
+    ("OpkrUIVolumeBoost", "0"),    
+    ("OpkrPandaFirmwareCk", "0"),
+    ("OpkrRunNaviOnBoot", "0"),
+    ("OpkrSSHLegacy", "0"),
+    ("OpkrCarModel", "HYUNDAI GRANDEUR HYBRID 2019"), 
+    
   ]
   if not PC:
     default_params.append(("LastUpdateTime", datetime.datetime.utcnow().isoformat().encode('utf8')))
@@ -120,9 +135,19 @@ def manager_thread():
   cloudlog.info("manager start")
   cloudlog.info({"environ": os.environ})
 
-  params = Params()
 
   ignore = []
+  params = Params()
+  enableLogger = params.get_bool("UploadRaw")
+  if enableLogger:
+    # save boot log
+    subprocess.call("./bootlog", cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
+  else:
+    ignore += ["loggerd","logmessaged","deleter","tombstoned","uploader","updated"] #,"androidd"]
+    # ignore += ["loggerd","logmessaged","deleter","tombstoned","uploader","updated","androidd"] #,"rtshield"]
+    # ignore += ["manage_athenad","proclogd","clocksd","timezoned"]
+
+
   if params.get("DongleId", encoding='utf8') == UNREGISTERED_DONGLE_ID:
     ignore += ["manage_athenad", "uploader"]
   if os.getenv("NOBOARD") is not None:
@@ -174,8 +199,26 @@ def manager_thread():
     if shutdown:
       break
 
+def map_exec():
+  os.system("am start com.mnsoft.mappyobn/com.mnsoft.mappy.MainActivity &")  # map 실행.
+
+def map_hide():
+  os.system("am start --activity-task-on-home com.opkr.maphack/com.opkr.maphack.MainActivity")  # map backgrand로 전환합니다.
+
+def map_return():
+  os.system("am start --activity-task-on-home com.mnsoft.mappyobn/com.mnsoft.mappy.MainActivity")
+
 
 def main():
+  param_navi = Params().get("OpkrRunNaviOnBoot")
+  if param_navi is not None:
+    navi_on_boot = int(param_navi)
+  else:
+    navi_on_boot = 0
+
+  if navi_on_boot:
+    map_exec()
+
   prepare_only = os.getenv("PREPAREONLY") is not None
 
   manager_init()
@@ -183,6 +226,9 @@ def main():
   # Start UI early so prepare can happen in the background
   if not prepare_only:
     managed_processes['ui'].start()
+
+  if navi_on_boot:
+    map_hide()
 
   manager_prepare()
 

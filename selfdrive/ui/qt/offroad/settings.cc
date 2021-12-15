@@ -26,6 +26,8 @@
 #include "selfdrive/ui/qt/util.h"
 #include "selfdrive/ui/qt/qt_window.h"
 
+#include "atom/userPanel.h"
+
 TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   // param, title, desc, icon
   std::vector<std::tuple<QString, QString, QString, QString>> toggles{
@@ -59,6 +61,12 @@ TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
       "Use features, such as community supported hardware, from the open source community that are not maintained or supported by comma.ai and have not been confirmed to meet the standard safety model. Be extra cautious when using these features",
       "../assets/offroad/icon_shell.png",
     },
+    {
+      "UploadRaw",
+      "Upload Raw Logs",
+      "Upload full logs and full resolution video by default while on Wi-Fi. If not enabled, individual logs can be marked for upload at useradmin.comma.ai.",
+      "../assets/offroad/icon_network.png",
+    },    
     {
       "RecordFront",
       "Record and Upload Driver Camera",
@@ -377,6 +385,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"Network", network_panel(this)},
     {"Toggles", new TogglesPanel(this)},
     {"Software", new SoftwarePanel(this)},
+    {"Community", new CUserPanel(this)},    
   };
 
 #ifdef ENABLE_MAPS
@@ -406,7 +415,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     });
   }
 
-  const int padding = panels.size() > 3 ? 25 : 35;
+  const int padding = panels.size() > 3 ? 15 : 35;
   setStyleSheet(QString(R"(
     * {
       color: white;
