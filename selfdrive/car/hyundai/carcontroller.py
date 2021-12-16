@@ -107,6 +107,12 @@ class CarController():
   def update_debug(self, CS, vFuture ):
     hdaVSetReq = CS.lfahda["HDA_VSetReq"]    
 
+
+    
+    str_log1 = ' EPS={:.3f}'.format(  CS.out.steeringTorqueEps )
+    trace1.printf2( '{}'.format( str_log1 ) )
+
+
     str_log1 = 'MODE={:.0f} GAP={:.0f} hda={:.1f} vF={:.1f} gas={:.2f}'.format(  CS.cruise_set_mode, CS.out.cruiseState.gapSet, hdaVSetReq, vFuture, CS.out.gas )
     trace1.printf3( '{}'.format( str_log1 ) )
   
