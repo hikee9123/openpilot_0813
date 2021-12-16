@@ -51,7 +51,7 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.845
       ret.steerRatio = 16.5  #13.96   #12.5
       ret.steerMaxBP = [0.]
-      ret.steerMaxV = [1.0]
+      ret.steerMaxV = [1.5]
       ret.steerRateCost = 1.2
       ret.minSteerSpeed = 1 * CV.KPH_TO_MS
 
@@ -61,9 +61,9 @@ class CarInterface(CarInterfaceBase):
 
       
       ret.lateralTuning.init('lqr')
-      ret.lateralTuning.lqr.scale = 1500     #1700.0
+      ret.lateralTuning.lqr.scale = 1000     #1700.0
       ret.lateralTuning.lqr.ki = 0.01      #0.01
-      ret.lateralTuning.lqr.dcGain = 0.0027  #0.00285   # 0.002237852961363602
+      ret.lateralTuning.lqr.dcGain =  0.0030710595  #0.0027  #0.00285   # 0.002237852961363602
       # 호야  1500, 0.015, 0.0027
       #  1700, 0.01, 0.0029
       #  2000, 0.01, 0.003
