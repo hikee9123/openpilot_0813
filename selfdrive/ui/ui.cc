@@ -232,6 +232,14 @@ static void update_state(UIState *s) {
    } 
 }
 
+static  int get_param( const std::string &key )
+{
+    auto str = QString::fromStdString(Params().get( key ));
+    int value = str.toInt();
+
+    return value;
+}
+
 void ui_update_params(UIState *s) {
   s->scene.is_metric = Params().getBool("IsMetric");
   s->scene.IsOpenpilotViewEnabled = Params().getBool("IsOpenpilotViewEnabled");
