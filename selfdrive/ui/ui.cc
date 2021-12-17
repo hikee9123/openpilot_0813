@@ -319,7 +319,7 @@ void Device::setAwake(bool on) {
     awake = on;
 
     // atom
-    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    UIScene  &scene =  uiState()->scene; 
     if( scene.ignition || !scene.scr.autoScreenOff )
     {     
       Hardware::set_display_power(awake);
@@ -384,6 +384,8 @@ void Device::updateWakefulness(const UIState &s) {
   bool ignition_just_turned_off = !s.scene.ignition && ignition_on;
   ignition_on = s.scene.ignition;
 
+  bool  should_wake = motionTriggered(s);
+
   if (ignition_just_turned_off || motionTriggered(s)) {
     resetInteractiveTimout();
   } else if (interactive_timeout > 0 && --interactive_timeout == 0) {
@@ -392,6 +394,11 @@ void Device::updateWakefulness(const UIState &s) {
 
   ScreenAwake();
   setAwake(s.scene.ignition || interactive_timeout > 0);
+
+  if( should_wake )
+  {
+    resetInteractiveTimout();
+  }
 }
 
 UIState *uiState() {
@@ -407,13 +414,9 @@ void Device::ScreenAwake()
   const bool draw_alerts = scene.started;
   const float speed = scene.car_state.getVEgo();
 
-  bool should_wake = scene.started || scene.ignition;
 
-  if( should_wake )
-  {
-    resetInteractiveTimout();
-  }
-  else if( scene.scr.nTime > 0 )
+
+  if( scene.scr.nTime > 0 )
   {
     resetInteractiveTimout();
     scene.scr.nTime--;
