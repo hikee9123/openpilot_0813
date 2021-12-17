@@ -407,8 +407,13 @@ void Device::ScreenAwake()
   const bool draw_alerts = scene.started;
   const float speed = scene.car_state.getVEgo();
 
+  bool should_wake = scene.started || scene.ignition;
 
-  if( scene.scr.nTime > 0 )
+  if( should_wake )
+  {
+    resetInteractiveTimout();
+  }
+  else if( scene.scr.nTime > 0 )
   {
     resetInteractiveTimout();
     scene.scr.nTime--;
