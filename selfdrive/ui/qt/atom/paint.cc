@@ -760,8 +760,8 @@ void OnPaint::ui_draw_navi( QPainter &p )
 void OnPaint::ui_draw_debug1( QPainter &p ) 
 {
   QString text1 = QString::fromStdString(scene->alert.alertTextMsg1);
-  QString text2 = "QString::fromStdString(scene->alert.alertTextMsg2)";
-  QString text3 = "QString::fromStdString(scene->alert.alertTextMsg3)";
+  QString text2 = QString::fromStdString(scene->alert.alertTextMsg2);
+  QString text3 = QString::fromStdString(scene->alert.alertTextMsg3);
 
   QTextOption  textOpt =  QTextOption( Qt::AlignLeft );
   configFont( p, "Open Sans",  40, "Regular");
@@ -773,8 +773,7 @@ void OnPaint::ui_draw_debug1( QPainter &p )
 
 
   text1.sprintf("time=%d", scene->scr.nTime );
-   
-  p.drawText( QRect(0, 900, width(), 40), text3, textOpt );
+  p.drawText( QRect(0, 900, width(), 40), text1, textOpt );
   
 }
 
