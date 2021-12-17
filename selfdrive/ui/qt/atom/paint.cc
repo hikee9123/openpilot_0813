@@ -554,7 +554,7 @@ void OnPaint::bb_draw_tpms(QPainter &p, int viz_tpms_x, int viz_tpms_y )
     const int margin = 30;
 
    // drawIcon(p, x, y, img_tire_pressure, QColor(0, 0, 0, 70), 1.0);
-    p.drawPixmap(x+5 , y , img_tire_pressure);
+    p.drawPixmap(x+6 , y , img_tire_pressure);
 
     configFont( p, "Open Sans",  55, "SemiBold");
     drawText( p, x-margin, y+45, get_tpms_text(fl)  );
@@ -767,8 +767,8 @@ void OnPaint::ui_draw_debug1( QPainter &p )
   configFont( p, "Open Sans",  40, "Regular");
 
   p.drawText( QRect(0, 0, width(), 30), text1, textOpt );
-  p.drawText( QRect(0, 945, width(), 30), text2, textOpt );
-  p.drawText( QRect(0, 985, width(), 30), text3, textOpt );
+  p.drawText( QRect(0, 930, width(), 30), text2, textOpt );
+  p.drawText( QRect(0, 980, width(), 30), text3, textOpt );
 }
 
 
