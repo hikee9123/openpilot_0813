@@ -318,11 +318,12 @@ void Device::setAwake(bool on) {
   if (on != awake) {
     awake = on;
 
+     printf("setAwake = %d \n", on );
     // atom
     UIScene  &scene =  uiState()->scene; 
     if( scene.ignition || !scene.scr.autoScreenOff )
     {     
-      Hardware::set_display_power(awake);
+      //Hardware::set_display_power(awake);
       LOGD("setting display power %d", awake);
       emit displayPowerChanged(awake);
     }
@@ -334,6 +335,8 @@ void Device::resetInteractiveTimout() {
 
   UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
   scene.scr.nTime = scene.scr.autoScreenOff * 60 * UI_FREQ;
+
+  printf("resetInteractiveTimout = %d \n", scene.scr.autoScreenOff );
 }
 
 void Device::updateBrightness(const UIState &s) {
@@ -386,7 +389,7 @@ void Device::updateWakefulness(const UIState &s) {
 
   bool  should_wake = motionTriggered(s);
 
-  if (ignition_just_turned_off || motionTriggered(s)) {
+  if (ignition_just_turned_off || should_wake) {
     resetInteractiveTimout();
   } else if (interactive_timeout > 0 && --interactive_timeout == 0) {
     emit interactiveTimout();
@@ -394,11 +397,6 @@ void Device::updateWakefulness(const UIState &s) {
 
   ScreenAwake();
   setAwake(s.scene.ignition || interactive_timeout > 0);
-
-  if( should_wake )
-  {
-    resetInteractiveTimout();
-  }
 }
 
 UIState *uiState() {
