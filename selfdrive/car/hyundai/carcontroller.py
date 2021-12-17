@@ -109,7 +109,7 @@ class CarController():
 
 
     
-    str_log1 = ' EPS={:.3f}'.format(  CS.out.steeringTorqueEps )
+    str_log1 = ' EPS={:.3f} ST={:.3f} '.format(  CS.out.steeringTorqueEps, CS.out.steeringTorque )
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
