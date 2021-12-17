@@ -402,10 +402,8 @@ void Device::updateWakefulness(const UIState &s) {
   bool ignition_just_turned_off = !s.scene.ignition && ignition_on;
   ignition_on = s.scene.ignition;
 
-  bool  should_wake = motionTriggered(s);
 
-  printf("motionTriggered = %d \n", should_wake );
-  if (ignition_just_turned_off || should_wake) {
+  if (ignition_just_turned_off || motionTriggered(s)) {
     resetInteractiveTimout();
   } else if (interactive_timeout > 0 && --interactive_timeout == 0) {
     emit interactiveTimout();
