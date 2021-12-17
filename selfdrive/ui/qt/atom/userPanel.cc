@@ -237,8 +237,8 @@ IsOpenpilotViewEnabledToggle::IsOpenpilotViewEnabledToggle()
   QObject::connect(this, &IsOpenpilotViewEnabledToggle::toggleFlipped, [=](int state) {
     char value = state ? '1' : '0';
 
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    scene->IsOpenpilotViewEnabled = state;
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    scene.IsOpenpilotViewEnabled = state;
     Params().put("IsOpenpilotViewEnabled", &value, 1);
   });
 }
@@ -368,8 +368,8 @@ BrightnessControl::BrightnessControl() : AbstractControl("EON 밝기 조절(%)",
     } else {
     }
 
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    scene->scr.brightness = value;
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    scene.scr.brightness = value;
     QString values = QString::number(value);
     Params().put("OpkrUIBrightness", values.toStdString());
     refresh();
@@ -384,8 +384,8 @@ BrightnessControl::BrightnessControl() : AbstractControl("EON 밝기 조절(%)",
     } else {
     }
 
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    scene->scr.brightness = value;
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    scene.scr.brightness = value;
     QString values = QString::number(value);
     Params().put("OpkrUIBrightness", values.toStdString());
     refresh();
@@ -442,8 +442,8 @@ CVolumeControl::CVolumeControl() : AbstractControl("EON 볼륨 조절(%)", "EON�
     } 
     QString values = QString::number(value);
 
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    scene->scr.nVolumeBoost = value;
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    scene.scr.nVolumeBoost = value;
     Params().put("OpkrUIVolumeBoost", values.toStdString());
     refresh();
    // QUIState::ui_state.sound->volume = value * 0.005;
@@ -459,8 +459,8 @@ CVolumeControl::CVolumeControl() : AbstractControl("EON 볼륨 조절(%)", "EON�
     } 
     QString values = QString::number(value);
 
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    scene->scr.nVolumeBoost = value;
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    scene.scr.nVolumeBoost = value;
     Params().put("OpkrUIVolumeBoost", values.toStdString());
     refresh();
   //  QUIState::ui_state.sound->volume = value * 0.005;
@@ -522,8 +522,8 @@ AutoScreenOff::AutoScreenOff() : AbstractControl("EON 화면 끄기(분)", "주�
     } else {
     }
 
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    scene->scr.autoScreenOff = value;
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    scene.scr.autoScreenOff = value;
     QString values = QString::number(value);
     Params().put("OpkrAutoScreenOff", values.toStdString());
     refresh();
@@ -538,8 +538,8 @@ AutoScreenOff::AutoScreenOff() : AbstractControl("EON 화면 끄기(분)", "주�
     } else {
     }
 
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    scene->scr.autoScreenOff = value;
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    scene.scr.autoScreenOff = value;
     QString values = QString::number(value);
     Params().put("OpkrAutoScreenOff", values.toStdString());
     refresh();
@@ -596,8 +596,8 @@ BrightnessOffControl::BrightnessOffControl() : AbstractControl("EON 화면끄기
       value = 0;
     }
 
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    scene->scr.brightness_off = value;
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    scene.scr.brightness_off = value;
     QString values = QString::number(value);
     params.put("OpkrUIBrightnessOff", values.toStdString());
     refresh();
@@ -611,8 +611,8 @@ BrightnessOffControl::BrightnessOffControl() : AbstractControl("EON 화면끄기
       value = 100;
     }
 
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    scene->scr.brightness_off = value;
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    scene.scr.brightness_off = value;
     QString values = QString::number(value);
     params.put("OpkrUIBrightnessOff", values.toStdString());
     refresh();
@@ -674,8 +674,8 @@ CAutoFocus::CAutoFocus() : AbstractControl("Auto Focus", "Focus을 변경합니�
     } else {
     }
 
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    scene->scr.autoFocus = value;
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    scene.scr.autoFocus = value;
     QString values = QString::number(value);
     Params().put("OpkrAutoFocus", values.toStdString());
     refresh();
@@ -690,8 +690,8 @@ CAutoFocus::CAutoFocus() : AbstractControl("Auto Focus", "Focus을 변경합니�
     } else {
     }
 
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    scene->scr.autoFocus = value;
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    scene.scr.autoFocus = value;
     QString values = QString::number(value);
     Params().put("OpkrAutoFocus", values.toStdString());
     refresh();

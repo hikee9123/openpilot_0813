@@ -319,8 +319,8 @@ void Device::setAwake(bool on) {
     awake = on;
 
     // atom
-    UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-    if( scene->ignition || !scene->scr.autoScreenOff )
+    UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+    if( scene.ignition || !scene.scr.autoScreenOff )
     {     
       Hardware::set_display_power(awake);
       LOGD("setting display power %d", awake);
@@ -332,8 +332,8 @@ void Device::setAwake(bool on) {
 void Device::resetInteractiveTimout() {
   interactive_timeout = (ignition_on ? 10 : 30) * UI_FREQ;
 
-  UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-  scene->scr.nTime = scene.scr.autoScreenOff * 60 * UI_FREQ;
+  UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+  scene.scr.nTime = scene.scr.autoScreenOff * 60 * UI_FREQ;
 }
 
 void Device::updateBrightness(const UIState &s) {
@@ -404,30 +404,30 @@ UIState *uiState() {
 void Device::ScreenAwake() 
 {
  // UIScene  &scene = QUIState::ui_state.scene;
-  UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
-  const bool draw_alerts = scene->started;
-  const float speed = scene->car_state.getVEgo();
+  UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+  const bool draw_alerts = scene.started;
+  const float speed = scene.car_state.getVEgo();
 
-  if( scene->scr.nTime > 0 )
+  if( scene.scr.nTime > 0 )
   {
     resetInteractiveTimout();
-    scene->scr.nTime--;
+    scene.scr.nTime--;
   }
-  else if( scene->scr.brightness_off )
-  {
-    resetInteractiveTimout();
-  }
-  else if( scene->ignition && (speed < 1))
+  else if( scene.scr.brightness_off )
   {
     resetInteractiveTimout();
   }
-  else if( scene->scr.autoScreenOff && scene->scr.nTime == 0)
+  else if( scene.ignition && (speed < 1))
+  {
+    resetInteractiveTimout();
+  }
+  else if( scene.scr.autoScreenOff && scene.scr.nTime == 0)
   {
    // awake = false;
   }
 
-  int  cur_key = scene->scr.awake;
-  if (draw_alerts && scene->controls_state.getAlertSize() != cereal::ControlsState::AlertSize::NONE) 
+  int  cur_key = scene.scr.awake;
+  if (draw_alerts && scene.controls_state.getAlertSize() != cereal::ControlsState::AlertSize::NONE) 
   {
       cur_key += 1;
   }
