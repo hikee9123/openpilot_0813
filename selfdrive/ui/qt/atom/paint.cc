@@ -42,6 +42,13 @@ OnPaint::OnPaint(QWidget *parent) : QWidget(parent)
   img_bus_only= QPixmap("../assets/addon/navigation/img_bus_only.png").scaled(img_size, img_size, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
   connect(this, &OnPaint::valueChanged, [=] { update(); });
+
+
+  scene->scr.autoFocus = get_param("OpkrAutoFocus");
+  scene->scr.brightness_off = get_param("OpkrUIBrightnessOff");
+  scene->scr.autoScreenOff = get_param("OpkrAutoScreenOff");
+  scene->scr.brightness = get_param("OpkrUIBrightness");
+  scene->scr.nTime = s->scene.scr.autoScreenOff * 60 * UI_FREQ;  
 }
 
 void OnPaint::updateState(const UIState &s)
