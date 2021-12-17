@@ -418,16 +418,16 @@ void Device::ScreenAwake()
 
   if( scene.scr.nTime > 0 )
   {
-    resetInteractiveTimout();
+    interactive_timeout = 30 * UI_FREQ;
     scene.scr.nTime--;
   }
   else if( scene.scr.brightness_off )
   {
-    resetInteractiveTimout();
+    interactive_timeout = 30 * UI_FREQ;
   }
   else if( scene.ignition && (speed < 1))
   {
-    resetInteractiveTimout();
+    interactive_timeout = 30 * UI_FREQ;
   }
   else if( scene.scr.autoScreenOff && scene.scr.nTime == 0)
   {
