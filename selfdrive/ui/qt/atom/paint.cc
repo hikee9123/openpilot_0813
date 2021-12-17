@@ -767,8 +767,15 @@ void OnPaint::ui_draw_debug1( QPainter &p )
   configFont( p, "Open Sans",  40, "Regular");
 
   p.drawText( QRect(0, 0, width(), 40), text1, textOpt );
-  p.drawText( QRect(0, 930, width(), 40), text2, textOpt );
-  p.drawText( QRect(0, 980, width(), 40), text3, textOpt );
+  p.drawText( QRect(0, 930, width(), 42), text2, textOpt );
+  p.drawText( QRect(0, 980, width(), 42), text3, textOpt );
+
+
+
+  text1.sprintf("time=%d", scene->scr.nTime );
+   
+  p.drawText( QRect(0, 900, width(), 40), text3, textOpt );
+  
 }
 
 
