@@ -235,6 +235,13 @@ static void update_state(UIState *s) {
 void ui_update_params(UIState *s) {
   s->scene.is_metric = Params().getBool("IsMetric");
   s->scene.IsOpenpilotViewEnabled = Params().getBool("IsOpenpilotViewEnabled");
+
+  s->scene.scr.autoFocus = get_param("OpkrAutoFocus");
+  s->scene.scr.brightness_off = get_param("OpkrUIBrightnessOff");
+  s->scene.scr.autoScreenOff = get_param("OpkrAutoScreenOff");
+  s->scene.scr.brightness = get_param("OpkrUIBrightness");
+  s->scene.scr.nTime = s->scene.scr.autoScreenOff * 60 * UI_FREQ;
+  printf("ui_update_params\n");
 }
 
 static void update_status(UIState *s) {
@@ -389,6 +396,7 @@ void Device::updateWakefulness(const UIState &s) {
 
   bool  should_wake = motionTriggered(s);
 
+  printf("motionTriggered = %d \n", should_wake );
   if (ignition_just_turned_off || should_wake) {
     resetInteractiveTimout();
   } else if (interactive_timeout > 0 && --interactive_timeout == 0) {
