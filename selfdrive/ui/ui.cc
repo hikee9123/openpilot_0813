@@ -338,7 +338,7 @@ void Device::setAwake(bool on) {
     UIScene  &scene =  uiState()->scene; 
     if( scene.ignition || !scene.scr.autoScreenOff )
     {     
-      //Hardware::set_display_power(awake);
+      Hardware::set_display_power(awake);
       LOGD("setting display power %d", awake);
       emit displayPowerChanged(awake);
     }
