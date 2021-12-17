@@ -773,7 +773,7 @@ void OnPaint::ui_draw_debug1( QPainter &p )
 
 
   text1.sprintf("time=%d", scene->scr.nTime );
-  p.drawText( QRect(0, 900, width(), 40), text1, textOpt );
+  p.drawText( QRect(0, 800, width(), 42), text1, textOpt );
   
 }
 

@@ -403,10 +403,10 @@ UIState *uiState() {
 //  atom
 void Device::ScreenAwake() 
 {
- // UIScene  &scene = QUIState::ui_state.scene;
   UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
   const bool draw_alerts = scene.started;
   const float speed = scene.car_state.getVEgo();
+
 
   if( scene.scr.nTime > 0 )
   {
