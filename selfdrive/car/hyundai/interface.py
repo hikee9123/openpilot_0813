@@ -51,7 +51,7 @@ class CarInterface(CarInterfaceBase):
       ret.wheelbase = 2.845
       ret.steerRatio = 16.5  #13.96   #12.5
       ret.steerMaxBP = [0.]
-      ret.steerMaxV = [1.5]
+      ret.steerMaxV = [2]
       ret.steerRateCost = 1.2
       ret.minSteerSpeed = 1 * CV.KPH_TO_MS
 
@@ -71,8 +71,9 @@ class CarInterface(CarInterfaceBase):
       ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
       ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
       ret.lateralTuning.lqr.c = [1., 0.]
-      ret.lateralTuning.lqr.k = [-110., 451.]
-      ret.lateralTuning.lqr.l = [0.33, 0.318]
+      ret.lateralTuning.lqr.k = [-110.73572306, 451.22718255]
+      ret.lateralTuning.lqr.l = [0.3233671, 0.3185757]
+
     elif candidate in [CAR.SANTA_FE, CAR.SANTA_FE_2022, CAR.SANTA_FE_HEV_2022]:
       ret.lateralTuning.pid.kf = 0.00005
       ret.mass = 3982. * CV.LB_TO_KG + STD_CARGO_KG
