@@ -16,7 +16,7 @@ OnPaint::OnPaint(QWidget *parent) : QWidget(parent)
   m_param.bbh_left = 0;
   m_param.bbh_right = 0;
 
-  state = uiState();;
+  state = uiState();
   scene = &(state->scene);
 
   img_compass= QPixmap("../assets/addon/Image/img_compass.png").scaled(img_size_compass, img_size_compass, Qt::KeepAspectRatio, Qt::SmoothTransformation);

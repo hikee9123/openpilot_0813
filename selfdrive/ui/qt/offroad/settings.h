@@ -24,6 +24,7 @@ protected:
 
 signals:
   void closeSettings();
+  void offroadTransition(bool offroad);
   void reviewTrainingGuide();
   void showDriverView();
 
