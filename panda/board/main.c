@@ -699,7 +699,7 @@ void tick_handler(void) {
         if (heartbeat_counter >= (check_started() ? HEARTBEAT_IGNITION_CNT_ON : HEARTBEAT_IGNITION_CNT_OFF)) {
           puts("device hasn't sent a heartbeat for 0x");
           puth(heartbeat_counter);
-          puts(" seconds. Safety is set to SILENT mode.\n");
+          puts(" seconds. Safety is set to NOOUTPUT mode.\n");
 
           if (controls_allowed_countdown > 0U) {
             siren_countdown = 5U;
@@ -711,12 +711,12 @@ void tick_handler(void) {
             heartbeat_lost = true;
           }
 
-          if (current_safety_mode != SAFETY_SILENT) {
-            set_safety_mode(SAFETY_SILENT, 0U);
+          if (current_safety_mode != SAFETY_NOOUTPUT) {  // MDPS will hard fault if SAFETY_SILENT set or panda slept
+            set_safety_mode(SAFETY_NOOUTPUT, 0U);
           }
-          if (power_save_status != POWER_SAVE_STATUS_ENABLED) {
-            set_power_save_state(POWER_SAVE_STATUS_ENABLED);
-          }
+          //if (power_save_status != POWER_SAVE_STATUS_ENABLED) {
+          //  set_power_save_state(POWER_SAVE_STATUS_ENABLED);
+          //}
 
           // Also disable IR when the heartbeat goes missing
           current_board->set_ir_power(0U);
@@ -816,8 +816,9 @@ int main(void) {
 
   microsecond_timer_init();
 
-  // init to SILENT and can silent
-  set_safety_mode(SAFETY_SILENT, 0);
+  
+  // init to SAFETY_NOOUTPUT and can silent
+  set_safety_mode(SAFETY_NOOUTPUT, 0); // MDPS will hard fault if SAFETY_SILENT set
 
   // enable CAN TXs
   current_board->enable_can_transceivers(true);

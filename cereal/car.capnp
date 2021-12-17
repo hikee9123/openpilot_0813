@@ -194,6 +194,10 @@ struct CarState {
   leftBlindspot @33 :Bool; # Is there something blocking the left lane change
   rightBlindspot @34 :Bool; # Is there something blocking the right lane change
 
+  # atom
+  tpms @39 :WheelSpeeds;
+
+
   struct WheelSpeeds {
     # optional wheel speeds
     fl @0 :Float32;
@@ -209,6 +213,12 @@ struct CarState {
     speedOffset @3 :Float32;
     standstill @4 :Bool;
     nonAdaptive @5 :Bool;
+
+    # atom
+    modeSel @6 :Int16;
+    cruiseSwState @7 :Int16;
+    accActive @8 :Bool;
+    gapSet @9 :Int16;
   }
 
   enum GearShifter {
@@ -343,6 +353,9 @@ struct CarControl {
     leftLaneVisible @7: Bool;
     rightLaneDepart @8: Bool;
     leftLaneDepart @9: Bool;
+
+    # atom
+    vFuture @10: Float32;
 
     enum VisualAlert {
       # these are the choices from the Honda
