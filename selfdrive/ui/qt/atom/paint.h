@@ -89,7 +89,7 @@ private:
   void   ui_draw_debug1( QPainter &p );
   void   ui_draw_navi( QPainter &p );
   void   ui_draw_traffic_sign( QPainter &p, float map_sign, float speedLimit,  float speedLimitAheadDistance );
-
+  int    get_param( const std::string &key );
 // kegmen
 private:
   //void ui_draw_circle_image_rotation(const UIState *s, int center_x, int center_y, int radius, const char *image, NVGcolor color, float img_alpha, float angleSteers = 0);

@@ -10,6 +10,14 @@
 #include "selfdrive/logcatd/traffic_sign.h"
 
 
+int OnPaint::get_param( const std::string &key )
+{
+    auto str = QString::fromStdString(Params().get( key ));
+    int value = str.toInt();
+
+    return value;
+}
+
 // OnroadHud
 OnPaint::OnPaint(QWidget *parent) : QWidget(parent) 
 {
