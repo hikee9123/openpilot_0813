@@ -16,8 +16,8 @@ OnPaint::OnPaint(QWidget *parent) : QWidget(parent)
   m_param.bbh_left = 0;
   m_param.bbh_right = 0;
 
-  state = &QUIState::ui_state;
-  scene = &QUIState::ui_state.scene;
+  state = uiState();;
+  scene = state->scene;
 
   img_compass= QPixmap("../assets/addon/Image/img_compass.png").scaled(img_size_compass, img_size_compass, Qt::KeepAspectRatio, Qt::SmoothTransformation);
   img_direction= QPixmap("../assets/addon/Image/img_direction.png").scaled(img_size_compass, img_size_compass, Qt::KeepAspectRatio, Qt::SmoothTransformation);
@@ -760,11 +760,11 @@ void OnPaint::ui_draw_navi( QPainter &p )
 void OnPaint::ui_draw_debug1( QPainter &p ) 
 {
   QString text1 = QString::fromStdString(scene->alert.alertTextMsg1);
-  QString text2 = QString::fromStdString(scene->alert.alertTextMsg2);
-  QString text3 = QString::fromStdString(scene->alert.alertTextMsg3);
+  QString text2 = "QString::fromStdString(scene->alert.alertTextMsg2)";
+  QString text3 = "QString::fromStdString(scene->alert.alertTextMsg3)";
 
   QTextOption  textOpt =  QTextOption( Qt::AlignLeft );
-  configFont( p, "Open Sans",  30, "Regular");
+  configFont( p, "Open Sans",  40, "Regular");
 
   p.drawText( QRect(0, 0, width(), 30), text1, textOpt );
   p.drawText( QRect(0, 945, width(), 30), text2, textOpt );

@@ -68,10 +68,11 @@ int HomeWindow::mouseEventLatch(QMouseEvent* e) {
   //int e_button= e->button();
   bool bSidebar = sidebar->isVisible();
 
-  QUIState::ui_state.scene.scr.sidebar = bSidebar;
-  QUIState::ui_state.scene.mouse.touch_x = e_x;
-  QUIState::ui_state.scene.mouse.touch_y = e_y;
-  QUIState::ui_state.scene.mouse.touch_cnt++;
+  UIScene  *scene =  uiState()->scene;//QUIState::ui_state.scene;
+  scene->scr.sidebar = bSidebar;
+  scene->mouse.touch_x = e_x;
+  scene->mouse.touch_y = e_y;
+  scene->mouse.touch_cnt++;
 
   printf("mousePressEvent %d,%d  \n", e_x, e_y);
 
