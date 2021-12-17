@@ -343,8 +343,6 @@ void Device::resetInteractiveTimout() {
 
   UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
   scene.scr.nTime = scene.scr.autoScreenOff * 60 * UI_FREQ;
-
-  printf("resetInteractiveTimout = %d \n", scene.scr.autoScreenOff );
 }
 
 void Device::updateBrightness(const UIState &s) {
