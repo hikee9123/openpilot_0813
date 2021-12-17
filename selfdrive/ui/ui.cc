@@ -331,6 +331,9 @@ void Device::setAwake(bool on) {
 
 void Device::resetInteractiveTimout() {
   interactive_timeout = (ignition_on ? 10 : 30) * UI_FREQ;
+
+  UIScene  &scene = QUIState::ui_state.scene;
+  scene.scr.nTime = scene.scr.autoScreenOff * 60 * UI_FREQ;
 }
 
 void Device::updateBrightness(const UIState &s) {
