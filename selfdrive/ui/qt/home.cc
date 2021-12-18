@@ -64,7 +64,7 @@ void HomeWindow::showDriverView(bool show) {
 
 int HomeWindow::mouseEventLatch(QMouseEvent* e) {
   //int e_x = e->x();
-  //int e_y = e->y();
+  int e_y = e->y();
   //int e_button= e->button();
   bool bSidebar = sidebar->isVisible();
 
