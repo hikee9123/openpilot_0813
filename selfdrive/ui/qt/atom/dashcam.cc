@@ -205,13 +205,13 @@ void OnDashCam::start_capture()
 
 bool OnDashCam::screen_button_clicked(  Rect rect )
 {
-  UIState &s = uiState();
+  UIState *s = uiState();
 
   static int touch_cnt_old = -1 ;
 
-  int x = s.scene.mouse.touch_x;
-  int y = s.scene.mouse.touch_y;
-  int touch_cnt = s.scene.mouse.touch_cnt;
+  int x = s->scene.mouse.touch_x;
+  int y = s->scene.mouse.touch_y;
+  int touch_cnt = s->scene.mouse.touch_cnt;
 
   if( touch_cnt_old == -1 )
   {
@@ -276,12 +276,13 @@ void OnDashCam::draw_button( QPainter &p, const QString &tring, Rect rect, QColo
     int btn_xc = rect.centerX();
     int btn_yc = rect.centerY();
 
-   configFont( p, "Open Sans",  bb_valueFontSize*2, "SemiBold");
+   configFont( p, "Open Sans",  50, "SemiBold");
    drawText( p, btn_xc, btn_yc, string, txtColor );
 }
 
 void OnDashCam::screen_draw_button(QPainter &p)
 {
+   UIState *s = uiState(); 
   const int bb_dmr_w = 180;
   const int bb_dmr_x = 0 + s->fb_w - bb_dmr_w - bdr_s/2;
 
