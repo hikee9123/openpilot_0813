@@ -4,7 +4,8 @@
 
 #include <QStackedLayout>
 #include <QWidget>
-
+#include <QPushButton>
+#include <QTimer>
 
 #include "selfdrive/ui/ui.h"
 
@@ -25,6 +26,14 @@ class OnDashCam : public QWidget
   Q_OBJECT
 
 
+public:
+  explicit OnDashCam(QWidget *parent);
+  void updateState(const UIState &s);
+
+private:
+  void    mousePressEvent(QMouseEvent* e) override;
+  void    paintEvent(QPaintEvent *event) override;
+
 private:
   long nCurrTimeSec = 0;
   int captureState = CAPTURE_STATE_NOT_CAPTURING;
@@ -40,17 +49,12 @@ private:
   int files_created = 0;
   int  capture_cnt = 0;
   int  program_start = 1;
-
   double prev_draw_t = 0;
 
 
-public:
-  explicit OnDashCam(QWidget *parent);
-  void updateState(const UIState &s);
+
 
 private:
-  void    mousePressEvent(QMouseEvent* e) override;
-  void    paintEvent(QPaintEvent *event) override;
   void    drawText(QPainter &p, int x, int y, const QString &text, QColor qColor = QColor(255,255,255,255), int nAlign = Qt::AlignCenter );
 
 private:
