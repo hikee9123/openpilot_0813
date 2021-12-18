@@ -774,16 +774,16 @@ void OnPaint::ui_draw_navi( QPainter &p )
 
 void OnPaint::ui_draw_debug1( QPainter &p ) 
 {
-  QString text1 = QString::fromStdString(scene->alert.alertTextMsg1);
+  QString text1 = "QString::fromStdString(scene->alert.alertTextMsg1)";
   QString text2 = QString::fromStdString(scene->alert.alertTextMsg2);
   QString text3 = QString::fromStdString(scene->alert.alertTextMsg3);
 
   QTextOption  textOpt =  QTextOption( Qt::AlignLeft );
   configFont( p, "Open Sans",  40, "Regular");
 
-  p.drawText( QRect(0, 0, width(), 40), text1, textOpt );
+  p.drawText( QRect(0, 0, width(), 42), text1, textOpt );
   p.drawText( QRect(0, 930, width(), 42), text2, textOpt );
-  p.drawText( QRect(0, 980, width(), 42), text3, textOpt );
+  p.drawText( QRect(0, 975, width(), 42), text3, textOpt );
 
 
 

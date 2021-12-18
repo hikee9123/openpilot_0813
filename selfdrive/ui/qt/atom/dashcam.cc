@@ -32,13 +32,7 @@ void OnDashCam::updateState(const UIState &s)
   if (dt < 200)  return;
   prev_draw_t = cur_draw_t;
 
- 
-
-
-  update_dashcam( s );
-
- // update(); 
-
+   update_dashcam( s );
 }
 
 
@@ -60,7 +54,7 @@ void OnDashCam::mousePressEvent(QMouseEvent* e)
    UIState *s = uiState();
   const int bb_dmr_w = 180;   
   const int bb_dmr_x = 0 + s->fb_w - bb_dmr_w - bdr_s/2;
-   printf("OnDashCam::mousePressEvent %d,%d  \n", e_x, e_y);
+ //  printf("OnDashCam::mousePressEvent %d,%d  \n", e_x, e_y);
 
   Rect btn_rec = btn_dashcam_rec;
   btn_rec.x = bb_dmr_x;
