@@ -297,14 +297,8 @@ void OnDashCam::draw_button( QPainter &p, const QString &string, Rect rect, QCol
 
     QRect rc( btn_x, btn_y, btn_w, btn_h);
     p.setPen(QPen(QColor(0xff, 0xff, 0xff, 100), 3)); 
-    //p.setBrush(txtColor);
-    //p.drawRoundedRect(rc, 20, 20); 
-    //p.setPen(Qt::NoPen);
-
-   // p.setPen(Qt::NoPen);
     p.setBrush(fillColor);
     p.drawEllipse(btn_x, btn_y, btn_w, btn_h);
-   //p.setOpacity(opacity);
     p.setPen(Qt::NoPen);
 
 
@@ -312,7 +306,16 @@ void OnDashCam::draw_button( QPainter &p, const QString &string, Rect rect, QCol
     int btn_yc = rect.centerY();
 
    configFont( p, "Open Sans",  50, "SemiBold");
-   drawText( p, btn_xc, btn_yc, string, txtColor );
+  // drawText( p, btn_xc, btn_yc, string, txtColor, Qt::AlignCenter | Qt::AlignVCenter  );
+
+  QFontMetrics fm(p.font());
+  QRect init_rect = fm.boundingRect(string);
+  QRect real_rect = fm.boundingRect(init_rect, 0, string);
+
+  real_rect.moveCenter({btn_xc, btn_yc});
+  p.setPen( txtColor ); /
+  p.drawText(real_rect, Qt::AlignCenter | Qt::AlignVCenter, string);   
+
 }
 
 void OnDashCam::screen_draw_button(QPainter &p)
