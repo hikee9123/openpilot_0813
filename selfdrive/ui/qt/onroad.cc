@@ -28,6 +28,9 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
   m_pPaint = new OnPaint(this);
   road_view_layout->addWidget(m_pPaint);
 
+   m_pDashCam = new OnDashCam(this);
+  road_view_layout->addWidget(m_pDashCam); 
+
   QWidget * split_wrapper = new QWidget;
   split = new QHBoxLayout(split_wrapper);
   split->setContentsMargins(0, 0, 0, 0);
@@ -65,6 +68,7 @@ void OnroadWindow::updateState(const UIState &s) {
 
   hud->updateState(s);
   m_pPaint->updateState(s);
+  m_pDashCam->updateState(s);
 
   if (bg != bgColor) {
     // repaint border

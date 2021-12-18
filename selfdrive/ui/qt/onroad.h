@@ -7,7 +7,7 @@
 #include "selfdrive/ui/ui.h"
 
 #include "selfdrive/ui/qt/atom/paint.h"
-
+#include "selfdrive/ui/qt/atom/dashcam.h"
 // ***** onroad widgets *****
 
 class OnroadHud : public QWidget {
@@ -107,6 +107,7 @@ private:
 
   // atom
   OnPaint *m_pPaint;
+  OnDashCam *m_pDashCam;
 
 private slots:
   void offroadTransition(bool offroad);
