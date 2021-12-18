@@ -32,8 +32,6 @@ private:
   int start_time = 0;
   int stop_time = 0;
   int elapsed_time = 0; // Time of current recording
-  int click_elapsed_time = 0;
-  int click_time = 0;
   char filenames[RECORD_FILES][50]; // Track the filenames so they can be deleted when rotating
 
   bool lock_current_video = false; // If true save the current video before rotating
@@ -51,13 +49,14 @@ public:
   void updateState(const UIState &s);
 
 private:
+  void    mousePressEvent(QMouseEvent* e) override;
   void    paintEvent(QPaintEvent *event) override;
   void    drawText(QPainter &p, int x, int y, const QString &text, QColor qColor = QColor(255,255,255,255), int nAlign = Qt::AlignCenter );
 
 private:
    void   draw_button( QPainter &p, const QString &tring, Rect rect, QColor fillColor, QColor txtColor ) ;
    void   screen_draw_button(QPainter &p);
-   bool   screen_button_clicked(  Rect rect );
+  // bool   screen_button_clicked(  Rect rect );
 
 private:
    struct tm  get_time_struct();

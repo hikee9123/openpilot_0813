@@ -76,9 +76,6 @@ int HomeWindow::mouseEventLatch(QMouseEvent* e) {
 
   printf("mousePressEvent %d,%d  \n", e_x, e_y);
 
-  if( btn_dashcam_rec.ptInRect( e_x, e_y ) ) return true;
-
-  //btn_dashcam_rec
   return false;
 }
 

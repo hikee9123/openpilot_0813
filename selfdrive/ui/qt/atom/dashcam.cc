@@ -12,7 +12,7 @@
 
 
 
-
+const Rect btn_dashcam_rec = {1745, 860, 140, 140};
 
 
 OnDashCam::OnDashCam(QWidget *parent) : QWidget(parent) 
@@ -234,6 +234,25 @@ void OnDashCam::start_capture()
 }
 
 
+
+
+
+void OnDashCam::mousePressEvent(QMouseEvent* e) 
+{
+  int e_x = e->x();
+  int e_y = e->y();
+  //int e_button= e->button();
+
+   printf("OnDashCam::mousePressEvent %d,%d  \n", e_x, e_y);
+
+  if( btn_dashcam_rec.ptInRect( e_x, e_y ) ) 
+  {
+    printf( "  captureState = %d \n", captureState );
+    screen_toggle_record_state();
+  }
+}
+
+/*
 bool OnDashCam::screen_button_clicked(  Rect rect )
 {
   UIState *s = uiState();
@@ -260,7 +279,7 @@ bool OnDashCam::screen_button_clicked(  Rect rect )
 
   return false;
 }
-
+*/
 
 void OnDashCam::rotate_video()
 {
@@ -344,17 +363,11 @@ void OnDashCam::screen_draw_button(QPainter &p)
     }
  
    draw_button( p, "REC", btn_rec, fillColor, txtColor ); 
-  if (  screen_button_clicked( btn_rec) )
-  {
-    click_elapsed_time = nCurrTimeSec - click_time;
-
-    printf( "screen_button_clicked %d  captureState = %d \n", click_elapsed_time, captureState );
-    if (click_elapsed_time > 0)
-    {
-      click_time = nCurrTimeSec + 1;
-      screen_toggle_record_state();
-    }
-  }  
+  //if (  screen_button_clicked( btn_rec) )
+  //{
+  //  printf( "  captureState = %d \n", captureState );
+  //  screen_toggle_record_state();
+  //}  
 
 
   if (captureState == CAPTURE_STATE_CAPTURING)

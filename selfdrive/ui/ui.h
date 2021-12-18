@@ -72,7 +72,6 @@ struct Alert {
   }
 };
 
-const Rect btn_dashcam_rec = {1745, 860, 140, 140};
 
 typedef enum UIStatus {
   STATUS_DISENGAGED,
