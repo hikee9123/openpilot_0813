@@ -785,11 +785,6 @@ void OnPaint::ui_draw_debug1( QPainter &p )
   p.drawText( QRect(0, 930, width(), 42), text2, textOpt );
   p.drawText( QRect(0, 975, width(), 42), text3, textOpt );
 
-
-
- // text1.sprintf("time=%d", scene->scr.nTime );
- // p.drawText( QRect(0, 800, width(), 42), text1, textOpt );
-  
 }
 
 

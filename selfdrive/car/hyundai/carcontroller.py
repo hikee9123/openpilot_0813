@@ -107,10 +107,7 @@ class CarController():
 
 
   def update_debug(self, CS, vFuture ):
-    hdaVSetReq = CS.lfahda["HDA_VSetReq"]    
-
-
-    
+  
     str_log1 = ' EPS={:.2f} ST={:.0f} '.format(  CS.out.steeringTorqueEps, CS.out.steeringTorque )
     trace1.printf2( '{}'.format( str_log1 ) )
 
@@ -153,6 +150,39 @@ class CarController():
       can_sends.append(create_frt_radar_opt(self.packer))      
 
     return  can_sends
+
+  def update_resume(self, c, CS, frame, path_plan):
+    can_sends = []
+    pcm_cancel_cmd = c.cruiseControl.cancel
+    if pcm_cancel_cmd:
+      can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.CANCEL))
+    elif CS.out.cruiseState.standstill:
+      # run only first time when the car stopped
+      if self.last_lead_distance == 0:  
+        # get the lead distance from the Radar
+        self.last_lead_distance = CS.lead_distance
+        self.resume_cnt = 0
+      # when lead car starts moving, create 6 RES msgs
+      elif CS.lead_distance != self.last_lead_distance and (frame - self.last_resume_frame) > 5:
+        can_sends.append(create_clu11(self.packer, self.resume_cnt, CS.clu11, Buttons.RES_ACCEL))
+        self.resume_cnt += 1
+        # interval after 6 msgs
+        if self.resume_cnt > 5:
+          self.last_resume_frame = frame
+          self.resume_cnt = 0
+    # reset lead distnce after the car starts moving          
+    elif self.last_lead_distance != 0:
+      self.last_lead_distance = 0
+
+    elif CS.out.cruiseState.accActive:
+      btn_signal = self.NC.update( c, CS, path_plan )
+      if btn_signal != None:
+        can_sends.append(create_clu11(self.packer, self.resume_cnt, CS.clu11, btn_signal ))
+        self.resume_cnt += 1
+      else:
+        self.resume_cnt = 0
+    return  can_sends
+
 
   def update(self, c, CS, frame ):
     enabled = c.enabled
@@ -203,33 +233,8 @@ class CarController():
     if  CS.CP.openpilotLongitudinalControl:
       can_sends.append( self.updateLongitudinal( c, CS, frame ) )
     else:
-      if pcm_cancel_cmd:
-        can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.CANCEL))
-      elif CS.out.cruiseState.standstill:
-        # run only first time when the car stopped
-        if self.last_lead_distance == 0:  
-          # get the lead distance from the Radar
-          self.last_lead_distance = CS.lead_distance
-          self.resume_cnt = 0
-        # when lead car starts moving, create 6 RES msgs
-        elif CS.lead_distance != self.last_lead_distance and (frame - self.last_resume_frame) > 5:
-          can_sends.append(create_clu11(self.packer, self.resume_cnt, CS.clu11, Buttons.RES_ACCEL))
-          self.resume_cnt += 1
-          # interval after 6 msgs
-          if self.resume_cnt > 5:
-            self.last_resume_frame = frame
-            self.resume_cnt = 0
-      # reset lead distnce after the car starts moving          
-      elif self.last_lead_distance != 0:
-        self.last_lead_distance = 0
+      can_sends.append( self.update_resume( c, CS, frame, path_plan ) )
 
-      elif CS.out.cruiseState.accActive:
-        btn_signal = self.NC.update( c, CS, path_plan )
-        if btn_signal != None:
-          can_sends.append(create_clu11(self.packer, self.resume_cnt, CS.clu11, btn_signal ))
-          self.resume_cnt += 1
-        else:
-          self.resume_cnt = 0
 
     # 20 Hz LFA MFA message
     if frame % 5 == 0:
