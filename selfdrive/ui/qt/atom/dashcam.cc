@@ -47,6 +47,20 @@ void OnDashCam::paintEvent(QPaintEvent *event)
 }
 
 
+void OnDashCam::mousePressEvent(QMouseEvent* e) 
+{
+  int e_x = e->x();
+  int e_y = e->y();
+  //int e_button= e->button();
+
+   printf("OnDashCam::mousePressEvent %d,%d  \n", e_x, e_y);
+
+  if( btn_dashcam_rec.ptInRect( e_x, e_y ) ) 
+  {
+    printf( "  captureState = %d \n", captureState );
+    screen_toggle_record_state();
+  }
+}
 
 void OnDashCam::drawText(QPainter &p, int x, int y, const QString &text, QColor qColor, int nAlign ) 
 {
@@ -236,21 +250,6 @@ void OnDashCam::start_capture()
 
 
 
-
-void OnDashCam::mousePressEvent(QMouseEvent* e) 
-{
-  int e_x = e->x();
-  int e_y = e->y();
-  //int e_button= e->button();
-
-   printf("OnDashCam::mousePressEvent %d,%d  \n", e_x, e_y);
-
-  if( btn_dashcam_rec.ptInRect( e_x, e_y ) ) 
-  {
-    printf( "  captureState = %d \n", captureState );
-    screen_toggle_record_state();
-  }
-}
 
 /*
 bool OnDashCam::screen_button_clicked(  Rect rect )

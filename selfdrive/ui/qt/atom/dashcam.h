@@ -2,10 +2,13 @@
 
 #pragma once
 
-#include <QStackedLayout>
-#include <QWidget>
+#include <QFrame>
+#include <QLabel>
 #include <QPushButton>
+#include <QStackedLayout>
 #include <QTimer>
+#include <QWidget>
+
 
 #include "selfdrive/ui/ui.h"
 
