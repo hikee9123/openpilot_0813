@@ -287,7 +287,7 @@ void OnDashCam::screen_toggle_record_state()
   }
 }
 
-void OnDashCam::draw_button( QPainter &p, const QString &tring, Rect rect, QColor fillColor, QColor txtColor ) 
+void OnDashCam::draw_button( QPainter &p, const QString &string, Rect rect, QColor fillColor, QColor txtColor ) 
 {
     int btn_x = rect.x;
     int btn_y = rect.y;
