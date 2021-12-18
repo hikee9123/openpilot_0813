@@ -74,7 +74,9 @@ int HomeWindow::mouseEventLatch(QMouseEvent* e) {
   scene.mouse.touch_y = e_y;
   scene.mouse.touch_cnt++;
 
-  printf("mousePressEvent %d,%d  \n", e_x, e_y);
+  printf("HomeWindow::mousePressEvent %d,%d  \n", e_x, e_y);
+
+  if( e_y < 700 ) return true;
 
   return false;
 }
