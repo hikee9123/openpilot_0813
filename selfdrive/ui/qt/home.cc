@@ -70,11 +70,8 @@ int HomeWindow::mouseEventLatch(QMouseEvent* e) {
 
   UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
   scene.scr.sidebar = bSidebar;
-  scene.mouse.touch_x = e_x;
-  scene.mouse.touch_y = e_y;
-  scene.mouse.touch_cnt++;
 
-  printf("HomeWindow::mousePressEvent %d,%d  \n", e_x, e_y);
+  //printf("HomeWindow::mousePressEvent %d,%d  \n", e_x, e_y);
 
   if( e_y > 700 ) return true;
 

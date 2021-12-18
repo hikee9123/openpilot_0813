@@ -138,13 +138,7 @@ typedef struct UIScene {
      int  sidebar;     
   } scr;
 
-  struct _mouse
-  {
-    int touch_x;
-    int touch_y;
-    int touch_cnt;
 
-  } mouse;
 
   struct _STATUS_
   {

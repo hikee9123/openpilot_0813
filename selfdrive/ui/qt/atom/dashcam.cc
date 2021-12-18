@@ -57,7 +57,8 @@ void OnDashCam::mousePressEvent(QMouseEvent* e)
   int e_y = e->y();
   //int e_button= e->button();
 
-   UIState *s = uiState();   
+   UIState *s = uiState();
+  const int bb_dmr_w = 180;   
   const int bb_dmr_x = 0 + s->fb_w - bb_dmr_w - bdr_s/2;
    printf("OnDashCam::mousePressEvent %d,%d  \n", e_x, e_y);
 
