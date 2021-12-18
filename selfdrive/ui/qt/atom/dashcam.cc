@@ -63,6 +63,7 @@ void OnDashCam::mousePressEvent(QMouseEvent* e)
   {
     printf( "  captureState = %d \n", captureState );
     screen_toggle_record_state();
+    return;
   }
 
   QWidget::mousePressEvent(e);

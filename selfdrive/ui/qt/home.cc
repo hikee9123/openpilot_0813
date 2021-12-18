@@ -76,7 +76,7 @@ int HomeWindow::mouseEventLatch(QMouseEvent* e) {
 
   printf("HomeWindow::mousePressEvent %d,%d  \n", e_x, e_y);
 
-  if( e_y < 700 ) return true;
+  if( e_y > 700 ) return true;
 
   return false;
 }
