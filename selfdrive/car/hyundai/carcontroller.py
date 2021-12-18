@@ -106,13 +106,14 @@ class CarController():
     return  int(round(float(apply_torque)))
 
 
-  def update_debug(self, CS, vFuture ):
-  
+  def update_debug(self, CS, c ):
+    actuators = c.actuators
+    vFuture = c.hudControl.vFuture * 3.6
     str_log1 = ' EPS={:.2f} ST={:.0f} '.format(  CS.out.steeringTorqueEps, CS.out.steeringTorque )
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
-    str_log1 = 'MODE={:.0f} vF={:.1f} gas={:.2f}'.format(  CS.cruise_set_mode,  vFuture, CS.out.gas )
+    str_log1 = 'MODE={:.0f} vF={:.1f} gas={:.2f} acc={:.2f}'.format(  CS.cruise_set_mode,  vFuture, CS.out.gas, actuators.accel )
     trace1.printf3( '{}'.format( str_log1 ) )
   
 
@@ -187,12 +188,12 @@ class CarController():
   def update(self, c, CS, frame ):
     enabled = c.enabled
     actuators = c.actuators
-    pcm_cancel_cmd = c.cruiseControl.cancel
+    # pcm_cancel_cmd = c.cruiseControl.cancel
     left_lane = c.hudControl.leftLaneVisible 
     right_lane = c.hudControl.rightLaneVisible 
     left_lane_warning = c.hudControl.leftLaneDepart 
     right_lane_warning = c.hudControl.rightLaneDepart
-    vFuture = c.hudControl.vFuture * 3.6
+    # vFuture = c.hudControl.vFuture * 3.6
     
     # Steering Torque
     new_steer = int(round(actuators.steer * self.p.STEER_MAX))
@@ -238,7 +239,7 @@ class CarController():
 
     # 20 Hz LFA MFA message
     if frame % 5 == 0:
-      self.update_debug( CS, vFuture )
+      self.update_debug( CS, c )
       if self.car_fingerprint in FEATURES["send_hda_mfa"]:
         can_sends.append(create_hda_mfc(self.packer, CS, c ))
       elif self.car_fingerprint in FEATURES["send_lfa_mfa"]:
