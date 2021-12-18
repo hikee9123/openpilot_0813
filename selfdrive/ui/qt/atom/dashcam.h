@@ -50,6 +50,8 @@ public:
   explicit OnDashCam(QWidget *parent);
   void updateState(const UIState &s);
 
+private:
+  void    paintEvent(QPaintEvent *event) override;
 
 private:
    void   draw_button( QPainter &p, const QString &tring, Rect rect, QColor fillColor, QColor txtColor ) ;
