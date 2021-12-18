@@ -57,12 +57,18 @@ void OnDashCam::mousePressEvent(QMouseEvent* e)
   int e_y = e->y();
   //int e_button= e->button();
 
+   UIState *s = uiState();   
+  const int bb_dmr_x = 0 + s->fb_w - bb_dmr_w - bdr_s/2;
    printf("OnDashCam::mousePressEvent %d,%d  \n", e_x, e_y);
 
-  if( btn_dashcam_rec.ptInRect( e_x, e_y ) ) 
+  Rect btn_rec = btn_dashcam_rec;
+  btn_rec.x = bb_dmr_x;
+
+  if( btn_rec.ptInRect( e_x, e_y ) ) 
   {
     printf( "  captureState = %d \n", captureState );
     screen_toggle_record_state();
+    update(); 
     return;
   }
 
@@ -240,36 +246,6 @@ void OnDashCam::start_capture()
 
 
 
-
-/*
-bool OnDashCam::screen_button_clicked(  Rect rect )
-{
-  UIState *s = uiState();
-
-  static int touch_cnt_old = -1 ;
-
-  int x = s->scene.mouse.touch_x;
-  int y = s->scene.mouse.touch_y;
-  int touch_cnt = s->scene.mouse.touch_cnt;
-
-  if( touch_cnt_old == -1 )
-  {
-    touch_cnt_old = touch_cnt;
-    return false;
-  }
-
-  if( touch_cnt == touch_cnt_old ) return false;
-  touch_cnt_old = touch_cnt;
-
-  if( rect.ptInRect( x, y ) )
-  {
-    return true;
-  }
-
-  return false;
-}
-*/
-
 void OnDashCam::rotate_video()
 {
   // Overwrite the existing video (if needed)
@@ -331,11 +307,10 @@ void OnDashCam::screen_draw_button(QPainter &p)
   const int bb_dmr_w = 180;
   const int bb_dmr_x = 0 + s->fb_w - bb_dmr_w - bdr_s/2;
 
-   //btn_dashcam_rec
-  Rect btn_rec = btn_dashcam_rec;
   QColor fillColor = QColor(255, 150, 150, 200);
   QColor txtColor = QColor(255, 255, 255, 100);
 
+  Rect btn_rec = btn_dashcam_rec;
   btn_rec.x = bb_dmr_x;
 
     if ( lock_current_video == false )
