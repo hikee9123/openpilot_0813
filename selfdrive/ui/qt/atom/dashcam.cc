@@ -297,10 +297,14 @@ void OnDashCam::draw_button( QPainter &p, const QString &string, Rect rect, QCol
 
     QRect rc( btn_x, btn_y, btn_w, btn_h);
     p.setPen(QPen(QColor(0xff, 0xff, 0xff, 100), 3)); 
-    //p.setBrush(QColor(0, 0, 0, 100));
-    p.setBrush(txtColor);
-    
-    p.drawRoundedRect(rc, 20, 20); 
+    //p.setBrush(txtColor);
+    //p.drawRoundedRect(rc, 20, 20); 
+    //p.setPen(Qt::NoPen);
+
+   // p.setPen(Qt::NoPen);
+    p.setBrush(fillColor);
+    p.drawEllipse(btn_x, btn_y, btn_w, btn_h);
+   //p.setOpacity(opacity);
     p.setPen(Qt::NoPen);
 
 
