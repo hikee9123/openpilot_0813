@@ -52,6 +52,7 @@ public:
 
 private:
   void    paintEvent(QPaintEvent *event) override;
+  void    drawText(QPainter &p, int x, int y, const QString &text, QColor qColor = QColor(255,255,255,255), int nAlign = Qt::AlignCenter );
 
 private:
    void   draw_button( QPainter &p, const QString &tring, Rect rect, QColor fillColor, QColor txtColor ) ;
