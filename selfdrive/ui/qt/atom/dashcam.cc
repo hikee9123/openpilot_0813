@@ -5,7 +5,11 @@
 
 #include <cmath>
 
-#include <QDebug>
+#include <QDateTime>
+#include <QHBoxLayout>
+#include <QMouseEvent>
+#include <QVBoxLayout>
+
 
 #include "selfdrive/common/timing.h"
 #include "selfdrive/ui/qt/util.h"
@@ -68,25 +72,8 @@ void OnDashCam::drawText(QPainter &p, int x, int y, const QString &text, QColor 
   QRect init_rect = fm.boundingRect(text);
   QRect real_rect = fm.boundingRect(init_rect, 0, text);
 
-  if( nAlign == Qt::AlignCenter ) // Qt::AlignLeft )
-  {
-     real_rect.moveCenter({x, y - real_rect.height() / 2});
-  }
-  else  if( nAlign ==  Qt::AlignRight  )
-  {
-    real_rect.moveLeft( x );
-  }
-  else  if( nAlign ==  Qt::AlignLeft  )
-  {
-    real_rect.moveRight( x );
-  }
-  else
-  {
-    real_rect.moveTo(x, y - real_rect.height() / 2);
-  }
-
-
-  p.setPen( qColor ); //QColor(0xff, 0xff, 0xff, alpha));
+  real_rect.moveCenter({x, y});
+  p.setPen( qColor ); 
   //p.drawText(real_rect.x(), real_rect.bottom(), text);
   p.drawText(real_rect, nAlign, text);
 }
