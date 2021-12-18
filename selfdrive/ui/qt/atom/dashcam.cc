@@ -311,7 +311,6 @@ void OnDashCam::draw_button( QPainter &p, const QString &string, Rect rect, QCol
   QFontMetrics fm(p.font());
   QRect init_rect = fm.boundingRect(string);
   QRect real_rect = fm.boundingRect(init_rect, 0, string);
-
   real_rect.moveCenter({btn_xc, btn_yc});
   p.setPen( txtColor );
   p.drawText(real_rect, Qt::AlignCenter | Qt::AlignVCenter, string);   
