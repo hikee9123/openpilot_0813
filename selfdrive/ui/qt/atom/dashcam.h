@@ -8,7 +8,7 @@
 #include <QStackedLayout>
 #include <QTimer>
 #include <QWidget>
-
+#include <QMouseEvent>
 
 #include "selfdrive/ui/ui.h"
 
