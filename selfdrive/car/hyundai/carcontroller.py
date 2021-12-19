@@ -232,7 +232,7 @@ class CarController():
     can_sends.append( create_mdps12(self.packer, frame, CS.mdps12) )
 
     if  CS.CP.openpilotLongitudinalControl:
-      can_sends = self.updateLongitudinal( can_sends, c, CS, frame ) )
+      can_sends = self.updateLongitudinal( can_sends, c, CS, frame )
     else:
       can_sends = self.update_resume( can_sends, c, CS, frame, path_plan )
 
