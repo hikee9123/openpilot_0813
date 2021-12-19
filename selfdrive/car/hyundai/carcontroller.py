@@ -117,12 +117,11 @@ class CarController():
     trace1.printf3( '{}'.format( str_log1 ) )
   
 
-  def updateLongitudinal(self, c, CS, frame):
+  def updateLongitudinal(self, can_sends,  c, CS, frame):
     enabled = c.enabled
     actuators = c.actuators
     hud_speed = c.hudControl.setSpeed    
     # tester present - w/ no response (keeps radar disabled)
-    can_sends = []
     if (frame % 100) == 0:
         can_sends.append([0x7D0, 0, b"\x02\x3E\x80\x00\x00\x00\x00\x00", 0])
 
@@ -233,7 +232,7 @@ class CarController():
     can_sends.append( create_mdps12(self.packer, frame, CS.mdps12) )
 
     if  CS.CP.openpilotLongitudinalControl:
-      can_sends.append( self.updateLongitudinal( c, CS, frame ) )
+      can_sends = self.updateLongitudinal( can_sends, c, CS, frame ) )
     else:
       can_sends = self.update_resume( can_sends, c, CS, frame, path_plan )
 
