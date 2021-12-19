@@ -152,8 +152,7 @@ class CarController():
 
     return  can_sends
 
-  def update_resume(self, c, CS, frame, path_plan):
-    can_sends = []
+  def update_resume(self, can_sends,  c, CS, frame, path_plan):
     pcm_cancel_cmd = c.cruiseControl.cancel
     if pcm_cancel_cmd:
       can_sends.append(create_clu11(self.packer, frame, CS.clu11, Buttons.CANCEL))
@@ -236,7 +235,7 @@ class CarController():
     if  CS.CP.openpilotLongitudinalControl:
       can_sends.append( self.updateLongitudinal( c, CS, frame ) )
     else:
-      can_sends.append( self.update_resume( c, CS, frame, path_plan ) )
+      can_sends = self.update_resume( can_sends, c, CS, frame, path_plan ) )
 
 
     # 20 Hz LFA MFA message
