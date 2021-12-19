@@ -235,7 +235,7 @@ class CarController():
     if  CS.CP.openpilotLongitudinalControl:
       can_sends.append( self.updateLongitudinal( c, CS, frame ) )
     else:
-      can_sends = self.update_resume( can_sends, c, CS, frame, path_plan ) )
+      can_sends = self.update_resume( can_sends, c, CS, frame, path_plan )
 
 
     # 20 Hz LFA MFA message
