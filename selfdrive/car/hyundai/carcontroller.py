@@ -77,7 +77,7 @@ class CarController():
 
   def lkas_active_control( self, enabled, CS, path_plan ):
     steerAngleDegAbs = abs(CS.out.steeringAngleDeg)
-    steeringTorque = abs(CS.out.steeringTorque)
+    #steeringTorque = abs(CS.out.steeringTorque)
     
     # 1. steer warning
     if CS.out.steerWarning and CS.out.steeringPressed:
