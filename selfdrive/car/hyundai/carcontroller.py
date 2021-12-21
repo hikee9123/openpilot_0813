@@ -109,7 +109,7 @@ class CarController():
   def update_debug(self, CS, c ):
     actuators = c.actuators
     vFuture = c.hudControl.vFuture * 3.6
-    str_log1 = ' EPS={:.2f} ST={:.0f} '.format(  CS.out.steeringTorqueEps, CS.out.steeringTorque )
+    str_log1 = ' EPS={:.2f} ST={:.0f} AS={:.3f}'.format(  CS.out.steeringTorqueEps, CS.out.steeringTorque, actuators.steer )
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
