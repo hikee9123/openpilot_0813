@@ -4,6 +4,10 @@
 #include <QScrollBar>
 #include <QVBoxLayout>
 #include <QWidget>
+#include <QProcess>
+#include <QHostAddress>
+#include <QNetworkInterface>
+#include <QAbstractSocket>
 
 #include "selfdrive/hardware/hw.h"
 #include "selfdrive/ui/qt/util.h"
@@ -33,9 +37,10 @@ int main(int argc, char *argv[]) {
 
   QPushButton *btn = new QPushButton();
 #ifdef __aarch64__
-  btn->setText("Reboot");
+  btn->setText("Git Pull");
   QObject::connect(btn, &QPushButton::clicked, [=]() {
-    Hardware::reboot();
+    QProcess::execute("/data/openpilot/selfdrive/assets/addon/sh/gitpull.sh");
+    //Hardware::reboot();
   });
 #else
   btn->setText("Exit");

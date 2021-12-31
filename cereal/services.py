@@ -66,6 +66,9 @@ services = {
   "navRoute": (True, 0.),
   "navThumbnail": (True, 0.),
 
+# atom
+  "liveNaviData": (True, 0.),
+
   # debug
   "testJoystick": (False, 0.),
 }

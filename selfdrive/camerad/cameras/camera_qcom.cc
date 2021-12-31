@@ -852,6 +852,30 @@ static void parse_autofocus(CameraState *s, uint8_t *d) {
   s->focus_err = max_focus*1.0;
 }
 
+
+// atom
+static int lens_truepos() 
+{
+  static  int autoFocus = 0;
+  static int nStep = 0;
+  nStep++;
+  if( nStep > 10 )
+  {
+    nStep = 0;
+    Params param = Params();
+    autoFocus = param.getInt("OpkrAutoFocus") * 2;
+    //autoFocus = QUIState::ui_state.scene.scr.autoFocus * 2;
+  }
+
+  int  lensTruePos = 0;
+  if( autoFocus )
+  {
+    lensTruePos = LP3_AF_DAC_DOWN + autoFocus;
+  }
+
+  return lensTruePos;
+}
+
 static void do_autofocus(CameraState *s) {
   float lens_true_pos = s->lens_true_pos.load();
   if (!isnan(s->focus_err)) {
@@ -862,6 +886,12 @@ static void do_autofocus(CameraState *s) {
 
   // stay off the walls
   lens_true_pos = std::clamp(lens_true_pos, float(LP3_AF_DAC_DOWN), float(LP3_AF_DAC_UP));
+
+ // atom
+  int autoFocus = lens_truepos();
+  if( autoFocus )
+    lens_true_pos = autoFocus;
+
   s->lens_true_pos.store(lens_true_pos);
   actuator_move(s, lens_true_pos);
 }

@@ -52,4 +52,15 @@ protected:
   ItemStatus connect_status, panda_status, temp_status;
   QString net_type;
   int net_strength = 0;
+
+
+  // atom
+  const QMap<int, QImage> battery_imgs = {
+    {0, QImage("../assets/images/battery.png")},
+    {1, QImage("../assets/images/battery_charging.png")},
+  };  
+
+  int    m_batteryPercent = 0;
+  int    m_battery_img;  
+  std::string m_strip;
 };

@@ -181,11 +181,59 @@ static void update_state(UIState *s) {
 
     scene.light_sensor = std::clamp<float>(1.0 - (ev / max_ev), 0.0, 1.0);
   }
-  scene.started = sm["deviceState"].getDeviceState().getStarted() && scene.ignition;
+  
+
+  if( scene.IsOpenpilotViewEnabled )
+    scene.started = sm["deviceState"].getDeviceState().getStarted();
+  else
+    scene.started = sm["deviceState"].getDeviceState().getStarted() && scene.ignition;
+
+
+
+
+  // atom 
+   if (sm.updated("gpsLocationExternal")) {
+    scene.gpsLocationExternal = sm["gpsLocationExternal"].getGpsLocationExternal();
+   }
+
+   if (sm.updated("deviceState")) {
+    scene.deviceState = sm["deviceState"].getDeviceState();
+   }
+    
+   if (scene.started && sm.updated("controlsState")) {
+    scene.controls_state = sm["controlsState"].getControlsState();
+// debug Message
+    scene.alert.alertTextMsg1 = scene.controls_state.getAlertTextMsg1();
+    scene.alert.alertTextMsg2 = scene.controls_state.getAlertTextMsg2();
+    scene.alert.alertTextMsg3 = scene.controls_state.getAlertTextMsg3();
+   } 
+   if (sm.updated("carState")) {
+    scene.car_state = sm["carState"].getCarState();
+
+    auto cruiseState = scene.car_state.getCruiseState();
+    scene.scr.awake = cruiseState.getCruiseSwState();
+   } 
+   
+   if( sm.updated("liveNaviData"))
+   {
+     scene.liveNaviData = sm["liveNaviData"].getLiveNaviData();
+     scene.scr.map_is_running = scene.liveNaviData.getMapEnable();
+   } 
+
+   if( sm.updated("liveParameters") )
+   {
+      scene.liveParameters = sm["liveParameters"].getLiveParameters();
+   }
+
+   if (sm.updated("lateralPlan"))
+   {
+    scene.lateralPlan = sm["lateralPlan"].getLateralPlan();
+   } 
 }
 
 void ui_update_params(UIState *s) {
   s->scene.is_metric = Params().getBool("IsMetric");
+  s->scene.IsOpenpilotViewEnabled = Params().getBool("IsOpenpilotViewEnabled");
 }
 
 static void update_status(UIState *s) {
@@ -219,6 +267,7 @@ UIState::UIState(QObject *parent) : QObject(parent) {
   sm = std::make_unique<SubMaster, const std::initializer_list<const char *>>({
     "modelV2", "controlsState", "liveCalibration", "radarState", "deviceState", "roadCameraState",
     "pandaStates", "carParams", "driverMonitoringState", "sensorEvents", "carState", "liveLocationKalman",
+    "liveNaviData", "gpsLocationExternal", "lateralPlan", "liveParameters",
   });
 
   Params params;
@@ -265,14 +314,24 @@ void Device::update(const UIState &s) {
 void Device::setAwake(bool on) {
   if (on != awake) {
     awake = on;
-    Hardware::set_display_power(awake);
-    LOGD("setting display power %d", awake);
-    emit displayPowerChanged(awake);
+
+     printf("setAwake = %d \n", on );
+    // atom
+    UIScene  &scene =  uiState()->scene; 
+    if( scene.ignition || !scene.scr.autoScreenOff )
+    {     
+      Hardware::set_display_power(awake);
+      LOGD("setting display power %d", awake);
+      emit displayPowerChanged(awake);
+    }
   }
 }
 
 void Device::resetInteractiveTimout() {
   interactive_timeout = (ignition_on ? 10 : 30) * UI_FREQ;
+
+  UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+  scene.scr.nTime = scene.scr.autoScreenOff * 60 * UI_FREQ;
 }
 
 void Device::updateBrightness(const UIState &s) {
@@ -295,6 +354,8 @@ void Device::updateBrightness(const UIState &s) {
   int brightness = brightness_filter.update(clipped_brightness);
   if (!awake) {
     brightness = 0;
+  } else if (s.scene.started && s.scene.scr.nTime <= 0 && s.scene.scr.autoScreenOff != 0) {
+    brightness = s.scene.scr.brightness_off * 0.01 * brightness;
   }
 
   if (brightness != last_brightness) {
@@ -326,10 +387,58 @@ void Device::updateWakefulness(const UIState &s) {
     emit interactiveTimout();
   }
 
+  ScreenAwake();
   setAwake(s.scene.ignition || interactive_timeout > 0);
 }
 
 UIState *uiState() {
   static UIState ui_state;
   return &ui_state;
+}
+
+
+//  atom
+void Device::ScreenAwake() 
+{
+  UIScene  &scene =  uiState()->scene;//QUIState::ui_state.scene;
+  const bool draw_alerts = scene.started;
+  const float speed = scene.car_state.getVEgo();
+
+
+
+  if( scene.scr.nTime > 0 )
+  {
+    interactive_timeout = 30 * UI_FREQ;
+    scene.scr.nTime--;
+  }
+  else if( scene.scr.brightness_off )
+  {
+    interactive_timeout = 30 * UI_FREQ;
+  }
+  else if( scene.ignition && (speed < 1))
+  {
+    interactive_timeout = 30 * UI_FREQ;
+  }
+  else if( scene.scr.autoScreenOff && scene.scr.nTime == 0)
+  {
+   // awake = false;
+  }
+
+  int  cur_key = scene.scr.awake;
+  if (draw_alerts && scene.controls_state.getAlertSize() != cereal::ControlsState::AlertSize::NONE) 
+  {
+      cur_key += 1;
+  }
+
+  static int old_key;
+  if( cur_key != old_key )
+  {
+    old_key = cur_key;
+    if(cur_key)
+    {
+      setAwake(true);
+      resetInteractiveTimout();
+    }
+        
+  } 
 }
