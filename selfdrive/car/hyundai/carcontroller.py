@@ -120,7 +120,7 @@ class CarController():
   def updateLongitudinal(self, can_sends,  c, CS, frame):
     enabled = c.enabled
     actuators = c.actuators
-    hud_speed = c.hudControl.setSpeed    
+    hud_speed = c.hudControl.setSpeed
     # tester present - w/ no response (keeps radar disabled)
     if (frame % 100) == 0:
         can_sends.append([0x7D0, 0, b"\x02\x3E\x80\x00\x00\x00\x00\x00", 0])

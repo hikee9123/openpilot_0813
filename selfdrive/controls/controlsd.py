@@ -634,9 +634,9 @@ class Controls:
     # atom
     speeds = self.sm['longitudinalPlan'].speeds
     if len(speeds) > 1:
-      v_future = speeds[-1]
+      v_future = speeds[0]
     else:
-      v_future = 100.0
+      v_future = 0
     CC.hudControl.vFuture = v_future
 
     recent_blinker = (self.sm.frame - self.last_blinker_frame) * DT_CTRL < 5.0  # 5s blinker cooldown
