@@ -105,7 +105,7 @@ void OnPaint::updateState(const UIState &s)
     }
     if( invalidate > 99 )
        invalidate = 1;
-    setProperty("invalidate", invalidate );
+   // setProperty("invalidate", invalidate );
 }
 
 
@@ -316,9 +316,11 @@ void OnPaint::bb_ui_draw_measures_right( QPainter &p, int bb_x, int bb_y, int bb
 
     val_color = get_color( (int) m_param.batteryTemp, 50, 40 );
 
+    uint16_t fan_speed = scene->deviceState.getFanSpeedPercentDesired();
+
     // temp is alway in C * 1000
     val_str.sprintf("%.1f", m_param.batteryTemp );
-    uom_str.sprintf("%d", invalidate );        
+    uom_str.sprintf("%d", fan_speed );        
     bb_h +=bb_ui_draw_measure(p,  val_str, uom_str, "BAT TEMP",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
