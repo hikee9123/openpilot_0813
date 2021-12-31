@@ -322,9 +322,6 @@ def thermald_thread() -> NoReturn:
     if handle_fan is not None:
       fan_speed = handle_fan(controller, max_comp_temp, fan_speed, onroad_conditions["ignition"])
       msg.deviceState.fanSpeedPercentDesired = fan_speed
-    else:
-      print( 'fan_speed={} max_comp_temp={} '.format(fan_speed, max_comp_temp ) )
-      msg.deviceState.fanSpeedPercentDesired = 1
 
     is_offroad_for_5_min = (started_ts is None) and ((not started_seen) or (off_ts is None) or (sec_since_boot() - off_ts > 60 * 5))
     if is_offroad_for_5_min and max_comp_temp > OFFROAD_DANGER_TEMP:
