@@ -113,6 +113,7 @@ def handle_fan_eon(controller, max_cpu_temp, fan_speed, ignition):
     # update speed if using the low thresholds results in fan speed decrement
     fan_speed = new_speed_l
 
+  print( 'fan_speed={} max_comp_temp={} {} {}'.format(fan_speed, max_cpu_temp, new_speed_h, new_speed_l) )
   set_eon_fan(fan_speed // 16384)
 
   return fan_speed
@@ -323,7 +324,6 @@ def thermald_thread() -> NoReturn:
       fan_speed = handle_fan(controller, max_comp_temp, fan_speed, onroad_conditions["ignition"])
       msg.deviceState.fanSpeedPercentDesired = fan_speed
 
-    print( 'fan_speed={}'.format(fan_speed) )
     is_offroad_for_5_min = (started_ts is None) and ((not started_seen) or (off_ts is None) or (sec_since_boot() - off_ts > 60 * 5))
     if is_offroad_for_5_min and max_comp_temp > OFFROAD_DANGER_TEMP:
       # If device is offroad we want to cool down before going onroad
