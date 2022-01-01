@@ -96,14 +96,14 @@ CUserPanel::CUserPanel(QWidget* parent) :   QFrame(parent) // ListWidget(parent 
 
 //   layout()->addWidget(new CAutoResumeToggle());
    layout()->addWidget(new CLiveSteerRatioToggle());
-   layout()->addWidget(new CTurnSteeringDisableToggle());
+//   layout()->addWidget(new CTurnSteeringDisableToggle());
    layout()->addWidget(new CPrebuiltToggle());
   
   layout()->addWidget(horizontal_line());
-  layout()->addWidget(new CPandaFirmWare() );
-  layout()->addWidget(horizontal_line());  
-  layout()->addWidget(new RunNaviOnBootToggle());
-  layout()->addWidget(horizontal_line());
+//  layout()->addWidget(new CPandaFirmWare() );
+//  layout()->addWidget(horizontal_line());  
+//  layout()->addWidget(new RunNaviOnBootToggle());
+//  layout()->addWidget(horizontal_line());
 
   layout()->addWidget(new BrightnessControl());
   layout()->addWidget(new CVolumeControl());  
@@ -130,6 +130,26 @@ CUserPanel::CUserPanel(QWidget* parent) :   QFrame(parent) // ListWidget(parent 
       "../assets/offroad/icon_shell.png",
     },
 
+    {
+      "OpkrRunNaviOnBoot",
+      "부팅 후 네비 자동 실행",
+      "부팅후 네비게이션(티맵)을 자동 실행합니다.",
+      "../assets/offroad/icon_shell.png",
+    },    
+
+    {
+      "OpkrTurnSteeringDisable",
+      "턴시그널 사용시 조향해제 사용",
+      "차선변경속도 이하로 주행할 때 턴시그널을 사용시 자동조향을 일시해제 합니다.",
+      "../assets/offroad/icon_shell.png",
+    },    
+
+    {
+      "OpkrPandaFirmwareCk",
+      "Panda Firmware Check",
+      "판다의 FirmWare를 확인합니다.",
+      "../assets/offroad/icon_shell.png",
+    },   
   };
 
   for (auto &[param, title, desc, icon] : toggles) {
