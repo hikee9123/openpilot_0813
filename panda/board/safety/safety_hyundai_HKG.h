@@ -17,6 +17,14 @@ const CanMsg HYUNDAI_TX_MSGS[] = {
   {593, 2, 8},  // MDPS12, Bus 2      ->0  OP_SCC_live  
  };
 
+const CanMsg HYUNDAI_TX_MSGS_ATOM[] = {
+  {832, 0, 8},  // LKAS11 Bus 0
+  {1265, 0, 4}, // CLU11 Bus 0
+  {1157, 0, 4}, // LFAHDA_MFC Bus 0
+  {593, 2, 8},  // MDPS12, Bus 2      ->0  OP_SCC_live
+  {1057, 0, 8}, // SCC12 Bus 0  
+ };
+
 const CanMsg HYUNDAI_LONG_TX_MSGS[] = {
   {832, 0, 8},  // LKAS11 Bus 0
   {1265, 0, 4}, // CLU11 Bus 0
@@ -62,11 +70,12 @@ AddrCheckStruct hyundai_legacy_addr_checks[] = {
 const int HYUNDAI_PARAM_EV_GAS = 1;
 const int HYUNDAI_PARAM_HYBRID_GAS = 2;
 const int HYUNDAI_PARAM_LONGITUDINAL = 4;
+const int HYUNDAI_PARAM_LONGITUDINAL_ATOM = 8;
 
 bool hyundai_legacy = false;
 bool hyundai_ev_gas_signal = false;
 bool hyundai_hybrid_gas_signal = false;
-bool hyundai_longitudinal = false;
+int  hyundai_longitudinal = 0;
 
 addr_checks hyundai_rx_checks = {hyundai_addr_checks, HYUNDAI_ADDR_CHECK_LEN};
 
@@ -187,7 +196,7 @@ static int hyundai_rx_hook(CANPacket_t *to_push) {
       update_sample(&torque_driver, torque_driver_new);
     }
 
-    if (hyundai_longitudinal) {
+    if (hyundai_longitudinal == 1) {
       // ACC steering wheel buttons
       if (addr == 1265) {
         int button = GET_BYTE(to_push, 0) & 0x7U;
@@ -256,7 +265,9 @@ static int hyundai_tx_hook(CANPacket_t *to_send) {
   int tx = 1;
   int addr = GET_ADDR(to_send);
 
-  if (hyundai_longitudinal) {
+  if (hyundai_longitudinal == 2) {
+    tx = msg_allowed(to_send, HYUNDAI_TX_MSGS_ATOM, sizeof(HYUNDAI_TX_MSGS_ATOM)/sizeof(HYUNDAI_TX_MSGS_ATOM[0]));
+  } else if (hyundai_longitudinal == 1) {
     tx = msg_allowed(to_send, HYUNDAI_LONG_TX_MSGS, sizeof(HYUNDAI_LONG_TX_MSGS)/sizeof(HYUNDAI_LONG_TX_MSGS[0]));
   } else {
     tx = msg_allowed(to_send, HYUNDAI_TX_MSGS, sizeof(HYUNDAI_TX_MSGS)/sizeof(HYUNDAI_TX_MSGS[0]));
@@ -442,7 +453,17 @@ static const addr_checks* hyundai_legacy_init(int16_t param) {
   relay_malfunction_reset();
 
   hyundai_legacy = true;
-  hyundai_longitudinal = false;
+  
+
+  if( GET_FLAG(param, HYUNDAI_PARAM_LONGITUDINAL_ATOM) )
+  {
+    hyundai_longitudinal = 2;
+  }
+  else
+  {
+    hyundai_longitudinal = 0;
+  }
+
   hyundai_ev_gas_signal = GET_FLAG(param, HYUNDAI_PARAM_EV_GAS);
   hyundai_hybrid_gas_signal = !hyundai_ev_gas_signal && GET_FLAG(param, HYUNDAI_PARAM_HYBRID_GAS);
   hyundai_rx_checks = (addr_checks){hyundai_legacy_addr_checks, HYUNDAI_LEGACY_ADDR_CHECK_LEN};

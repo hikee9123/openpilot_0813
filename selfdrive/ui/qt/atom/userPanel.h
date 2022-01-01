@@ -30,7 +30,7 @@ protected:
 
 
 
-
+/*
 class CAutoResumeToggle : public ToggleControl {
   Q_OBJECT
 
@@ -41,7 +41,7 @@ public:
     });
   }
 };
-
+*/
 
 class RunNaviOnBootToggle : public ToggleControl {
   Q_OBJECT

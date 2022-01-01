@@ -3,7 +3,7 @@ from common.realtime import DT_CTRL
 from common.numpy_fast import clip, interp
 from selfdrive.config import Conversions as CV
 from selfdrive.car import apply_std_steer_torque_limits
-from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mfc, create_acc_commands, create_acc_opt, create_frt_radar_opt, create_mdps12, create_hda_mfc
+from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mfc, create_acc_commands, create_acc_opt, create_frt_radar_opt, create_mdps12, create_hda_mfc, create_scc12
 from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR, FEATURES
 from opendbc.can.packer import CANPacker
 
@@ -38,6 +38,8 @@ class CarController():
     self.hud_timer_right = 0
     self.steer_timer_apply_torque = 1.0
     self.DT_STEER = 0.01
+
+    self.scc_live = not CP.radarOffCan
 
 
   def process_hud_alert(self, enabled, c ):
@@ -151,6 +153,8 @@ class CarController():
 
     return  can_sends
 
+
+
   def update_resume(self, can_sends,  c, CS, frame, path_plan):
     pcm_cancel_cmd = c.cruiseControl.cancel
     if pcm_cancel_cmd:
@@ -179,11 +183,24 @@ class CarController():
       btn_signal = self.NC.update( c, CS, path_plan )
       if btn_signal != None:
         can_sends.append(create_clu11(self.packer, self.resume_cnt, CS.clu11, btn_signal ))
+        
         self.resume_cnt += 1
       else:
         self.resume_cnt = 0
     return  can_sends
 
+  def update_scc12(self, can_sends,  c, CS, frame ):
+    actuators = c.actuators
+    enabled = c.enabled
+    
+    if frame % 2 == 0:
+      accel = actuators.accel if enabled else 0
+      accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
+
+      if CS.aReqRaw > accel:
+        can_sends.append( create_scc12(self.packer, accel, enabled, int(frame / 2), self.scc_live, CS.scc12 ) )
+        self.accel = accel
+    return can_sends
 
   def update(self, c, CS, frame ):
     enabled = c.enabled
@@ -228,14 +245,16 @@ class CarController():
                                    CS.lkas11, sys_warning, sys_state, enabled,
                                    left_lane, right_lane,
                                    left_lane_warning, right_lane_warning))
-
-    can_sends.append( create_mdps12(self.packer, frame, CS.mdps12) )
+    if CS.CP.mdpsBus:  # send mdps12 to LKAS to prevent LKAS error
+      can_sends.append( create_mdps12(self.packer, frame, CS.mdps12) )
 
     if  CS.CP.openpilotLongitudinalControl:
       can_sends = self.updateLongitudinal( can_sends, c, CS, frame )
     else:
       can_sends = self.update_resume( can_sends, c, CS, frame, path_plan )
 
+      if CS.CP.atomLongitudinalControl and CS.out.cruiseState.accActive:
+        can_sends = self.update_scc12( can_sends, c, CS, frame )
 
     # 20 Hz LFA MFA message
     if frame % 5 == 0:

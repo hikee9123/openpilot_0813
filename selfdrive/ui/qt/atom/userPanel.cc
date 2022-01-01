@@ -94,7 +94,7 @@ CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
   layout()->addWidget(new IsOpenpilotViewEnabledToggle());
 
 
-   layout()->addWidget(new CAutoResumeToggle());
+//   layout()->addWidget(new CAutoResumeToggle());
    layout()->addWidget(new CLiveSteerRatioToggle());
    layout()->addWidget(new CTurnSteeringDisableToggle());
    layout()->addWidget(new CPrebuiltToggle());
@@ -114,7 +114,35 @@ CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
 
   layout()->addWidget(horizontal_line());
 
+  // param, title, desc, icon
+  std::vector<std::tuple<QString, QString, QString, QString>> toggles{
+    {
+      "OpkratomLongitudinal",
+      "Enable atom Longitudinal",
+      "Use the openpilot system for adaptive cruise control and lane keep driver assistance. Your attention is required at all times to use this feature. Changing this setting takes effect when the car is powered off.",
+      "../assets/offroad/icon_speed_limit.png",
+    },
 
+    {
+      "OpkrAutoResume",
+      "자동출발 기능 사용",
+      "SCC 사용중 정차시 자동출발 기능을 사용합니다.",
+      "../assets/offroad/icon_shell.png",
+    },
+
+  };
+
+  for (auto &[param, title, desc, icon] : toggles) {
+    auto toggle = new ParamControl(param, title, desc, icon, this);
+    bool locked = params.getBool((param + "Lock").toStdString());
+    toggle->setEnabled(!locked);
+    if (!locked) {
+      connect(uiState(), &UIState::offroadTransition, toggle, &ParamControl::setEnabled);
+    }
+    addItem(toggle);
+  }
+
+  layout()->addWidget(horizontal_line());
 
   auto car_interfaces = new ButtonControl("car interfaces 실행", "실행",
                                         "/data/openpilot/selfdrive/car/tests/test_car_interfaces.py 을 실행 합니다.");
