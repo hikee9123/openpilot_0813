@@ -435,6 +435,23 @@ class CarState(CarStateBase):
           ("aReqValue", "SCC12", 0),
           ("CR_VSM_Alive", "SCC12", 0),
           ("CR_VSM_ChkSum", "SCC12", 0),
+
+          ("CF_VSM_Prefill", "SCC12", 0),
+          ("CF_VSM_DecCmdAct", "SCC12", 0),
+          ("CF_VSM_HBACmd", "SCC12", 0),
+          ("CF_VSM_Warn", "SCC12", 0),
+          ("CF_VSM_Stat", "SCC12", 0),
+          ("CF_VSM_BeltCmd", "SCC12", 0),
+          ("ACCFailInfo", "SCC12", 0),
+          ("StopReq", "SCC12", 0),
+          ("CR_VSM_DecCmd", "SCC12", 0),
+          ("TakeOverReq", "SCC12", 0),
+          ("PreFill", "SCC12", 0),
+          ("CF_VSM_ConfMode", "SCC12", 0),
+          ("AEB_Failinfo", "SCC12", 0),
+          ("AEB_Status", "SCC12", 0),
+          ("AEB_CmdAct", "SCC12", 0),
+          ("AEB_StopReq", "SCC12", 0),
         ]
 
       checks += [
