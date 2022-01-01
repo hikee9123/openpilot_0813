@@ -113,7 +113,7 @@ class CarController():
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
-    str_log1 = 'MODE={:.0f} vF={:.1f} gas={:.2f} acc={:.2f}'.format(  CS.cruise_set_mode,  vFuture, CS.out.gas, actuators.accel )
+    str_log1 = 'MODE={:.0f} vF={:.1f} gas={:.2f} acc={:.2f} {:.2f}'.format(  CS.cruise_set_mode,  vFuture, CS.out.gas, actuators.accel, CS.aReqRaw )
     trace1.printf3( '{}'.format( str_log1 ) )
   
 

@@ -311,6 +311,7 @@ class CarState(CarStateBase):
     # save the entire LKAS11 and CLU11
     self.lfahda = copy.copy(cp_cam.vl["LFAHDA_MFC"])
     self.mdps12 = copy.copy(cp.vl["MDPS12"])
+    self.scc12 = copy.copy(cp.vl["SCC12"])
     self.lkas11 = copy.copy(cp_cam.vl["LKAS11"])
     self.clu11 = copy.copy(cp.vl["CLU11"])
     self.park_brake = cp.vl["TCS13"]["PBRAKE_ACT"] == 1
@@ -322,6 +323,7 @@ class CarState(CarStateBase):
     self.lead_distance = cp.vl["SCC11"]["ACC_ObjDist"]
     self.lkas_button_on = cp_cam.vl["LKAS11"]["CF_Lkas_LdwsSysState"]
     self.is_highway = self.lfahda["HDA_Icon_State"] != 0.
+    self.aReqRaw = self.scc12["aReqRaw"]
 
     return ret
 
@@ -423,7 +425,12 @@ class CarState(CarStateBase):
         ("VSetDis", "SCC11", 0),
         ("SCCInfoDisplay", "SCC11", 0),
         ("ACC_ObjDist", "SCC11", 0),
-        ("ACCMode", "SCC12", 1),
+
+        ("ACCMode", "SCC12", 0),
+        ("aReqRaw", "SCC12", 0),
+        ("aReqValue", "SCC12", 0),
+        ("CR_VSM_Alive", "SCC12", 0),
+        ("CR_VSM_ChkSum", "SCC12", 0),
       ]
 
       checks += [
