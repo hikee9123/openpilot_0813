@@ -21,7 +21,7 @@
 
 
 
-CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
+CUserPanel::CUserPanel(QWidget* parent) :  ListWidget(parent )  // QFrame(parent)
 {
   QWidget *w = new QWidget(parent);  
   QVBoxLayout *main_layout = new QVBoxLayout(w);
@@ -85,7 +85,7 @@ CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
 
   main_layout->setMargin(100);
   setLayout(main_layout);
-  layout()->addWidget(horizontal_line());  
+  //layout()->addWidget(horizontal_line());  
   layout()->addWidget(new GitHash());
   layout()->addWidget(new SshLegacyToggle());
 
@@ -119,7 +119,7 @@ CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
     {
       "OpkratomLongitudinal",
       "Enable atom Longitudinal",
-      "Use the openpilot system for adaptive cruise control and lane keep driver assistance. Your attention is required at all times to use this feature. Changing this setting takes effect when the car is powered off.",
+      "Use the openpilot longitudinal system for adaptive cruise control and lane keep driver assistance.  Changing this setting takes effect when the car is powered off.",
       "../assets/offroad/icon_speed_limit.png",
     },
 
