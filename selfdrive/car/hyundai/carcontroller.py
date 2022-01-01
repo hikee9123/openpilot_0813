@@ -199,8 +199,8 @@ class CarController():
       if accel < 0:
         accel = interp(accel - CS.out.aEgo, [-1.0, -0.5], [2 * accel, accel])
       
-      if CS.aReqRaw < accel:
-        accel = CS.aReqRaw
+      if CS.aReqValue < accel:
+        accel = CS.aReqValue
 
       can_sends.append( create_scc12(self.packer, accel, enabled, int(frame / 2), self.scc_live, CS.scc12 ) )
 
