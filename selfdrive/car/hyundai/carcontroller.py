@@ -115,7 +115,7 @@ class CarController():
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
-    str_log1 = 'MODE={:.0f} vF={:.1f} gas={:.2f} acc={:.2f} {:.2f}'.format(  CS.cruise_set_mode,  vFuture, CS.out.gas, actuators.accel, CS.aReqRaw )
+    str_log1 = 'MODE={:.0f} vF={:.1f} gas={:.2f} acc={:.2f}, {:.2f}, {:.2f}'.format(  CS.cruise_set_mode,  vFuture, CS.out.gas, actuators.accel, self.accel, CS.aReqRaw )
     trace1.printf3( '{}'.format( str_log1 ) )
   
 
@@ -196,9 +196,10 @@ class CarController():
     if frame % 2 == 0:
       accel = actuators.accel if enabled else 0
       accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
-
-      if  accel < 0 and CS.aReqRaw > accel:
-        can_sends.append( create_scc12(self.packer, accel, enabled, int(frame / 2), self.scc_live, CS.scc12 ) )
+      if accel < 0:
+        accel = interp(accel - CS.out.aEgo, [-1.0, -0.5], [2 * accel, accel])
+        if CS.aReqRaw > accel:
+          can_sends.append( create_scc12(self.packer, accel, enabled, int(frame / 2), self.scc_live, CS.scc12 ) )
 
       self.accel = accel
     return can_sends
