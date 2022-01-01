@@ -81,6 +81,18 @@ public:
 };
 
 
+
+class CPandaFirmWare : public ToggleControl {
+  Q_OBJECT
+
+public:
+  CPandaFirmWare() : ToggleControl("Panda Firmware Check", "판다의 FirmWare를 확인합니다..", "../assets/offroad/icon_shell.png", Params().getBool("OpkrPandaFirmwareCk")) {
+    QObject::connect(this, &CPandaFirmWare::toggleFlipped, [=](int state) {
+      Params().putBool("OpkrPandaFirmwareCk", (bool)state);
+    });
+  }
+};
+
 class CPrebuiltToggle : public ToggleControl {
   Q_OBJECT
 
@@ -103,16 +115,6 @@ public:
 };
 
 
-class CPandaFirmWare : public ToggleControl {
-  Q_OBJECT
-
-public:
-  CPandaFirmWare() : ToggleControl("Panda Firmware Check", "판다의 FirmWare를 확인합니다..", "../assets/offroad/icon_shell.png", Params().getBool("OpkrPandaFirmwareCk")) {
-    QObject::connect(this, &CPandaFirmWare::toggleFlipped, [=](int state) {
-      Params().putBool("OpkrPandaFirmwareCk", (bool)state);
-    });
-  }
-};
 
 class BrightnessControl : public AbstractControl 
 {

@@ -139,7 +139,8 @@ CUserPanel::CUserPanel(QWidget* parent) :  ListWidget(parent )  // QFrame(parent
     if (!locked) {
       connect(uiState(), &UIState::offroadTransition, toggle, &ParamControl::setEnabled);
     }
-    addItem(toggle);
+    //addItem(toggle);
+    layout()->addWidget(toggle);
   }
 
   layout()->addWidget(horizontal_line());
