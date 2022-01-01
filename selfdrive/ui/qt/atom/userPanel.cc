@@ -21,7 +21,7 @@
 
 
 
-CUserPanel::CUserPanel(QWidget* parent) :  ListWidget(parent )  // QFrame(parent)
+CUserPanel::CUserPanel(QWidget* parent) :   QFrame(parent) // ListWidget(parent )  //
 {
   QWidget *w = new QWidget(parent);  
   QVBoxLayout *main_layout = new QVBoxLayout(w);
