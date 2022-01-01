@@ -84,6 +84,7 @@ class CarInterfaceBase(ABC):
     ret.minEnableSpeed = -1. # enable is done by stock ACC, so ignore this
     ret.steerRatioRear = 0.  # no rear steering, at least on the listed cars aboveA
     ret.openpilotLongitudinalControl = False
+    ret.atomLongitudinalControl = False
     ret.startAccel = -0.8
     ret.stopAccel = -2.0
     ret.startingAccelRate = 3.2 # brake_travel/s while releasing on restart
@@ -135,7 +136,7 @@ class CarInterfaceBase(ABC):
       events.add(EventName.speedTooHigh)
     if cs_out.cruiseState.nonAdaptive:
       events.add(EventName.wrongCruiseMode)
-    if cs_out.brakeHoldActive and self.CP.openpilotLongitudinalControl:
+    if cs_out.brakeHoldActive and (self.CP.openpilotLongitudinalControl or self.CP.atomLongitudinalControl):
       events.add(EventName.brakeHold)
 
 

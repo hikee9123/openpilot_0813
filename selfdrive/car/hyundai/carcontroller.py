@@ -197,9 +197,10 @@ class CarController():
       accel = actuators.accel if enabled else 0
       accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
 
-      if CS.aReqRaw > accel:
+      if  accel < 0 and CS.aReqRaw > accel:
         can_sends.append( create_scc12(self.packer, accel, enabled, int(frame / 2), self.scc_live, CS.scc12 ) )
-        self.accel = accel
+
+      self.accel = accel
     return can_sends
 
   def update(self, c, CS, frame ):
