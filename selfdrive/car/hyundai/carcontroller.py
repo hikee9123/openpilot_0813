@@ -192,19 +192,18 @@ class CarController():
   def update_scc12(self, can_sends,  c, CS, frame ):
     actuators = c.actuators
     enabled = c.enabled
+
+    accel = actuators.accel if enabled else 0
+    accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
+    if accel < 0:
+      accel = interp(accel - CS.out.aEgo, [-1.0, -0.5], [2 * accel, accel])
     
-    if frame % 2 == 0:
-      accel = actuators.accel if enabled else 0
-      accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
-      if accel < 0:
-        accel = interp(accel - CS.out.aEgo, [-1.0, -0.5], [2 * accel, accel])
-      
-      if CS.aReqValue < accel:
-        accel = CS.aReqValue
+    if CS.aReqValue < accel:
+      accel = CS.aReqValue
 
-      can_sends.append( create_scc12(self.packer, accel, enabled, int(frame / 2), self.scc_live, CS.scc12 ) )
+    can_sends.append( create_scc12(self.packer, accel, enabled, int(frame / 2), self.scc_live, CS.scc12 ) )
 
-      self.accel = accel
+    self.accel = accel
     return can_sends
 
   def update(self, c, CS, frame ):
@@ -258,7 +257,7 @@ class CarController():
     else:
       can_sends = self.update_resume( can_sends, c, CS, frame, path_plan )
 
-      if CS.CP.atomLongitudinalControl and CS.out.cruiseState.accActive:
+      if frame % 2 == 0 and CS.CP.atomLongitudinalControl and CS.out.cruiseState.accActive:
         can_sends = self.update_scc12( can_sends, c, CS, frame )
 
     # 20 Hz LFA MFA message
