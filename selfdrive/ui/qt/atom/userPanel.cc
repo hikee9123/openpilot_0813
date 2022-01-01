@@ -94,25 +94,6 @@ CUserPanel::CUserPanel(QWidget* parent) :   QFrame(parent) // ListWidget(parent 
   layout()->addWidget(new IsOpenpilotViewEnabledToggle());
 
 
-//   layout()->addWidget(new CAutoResumeToggle());
-   layout()->addWidget(new CLiveSteerRatioToggle());
-//   layout()->addWidget(new CTurnSteeringDisableToggle());
-   layout()->addWidget(new CPrebuiltToggle());
-  
-  layout()->addWidget(horizontal_line());
-//  layout()->addWidget(new CPandaFirmWare() );
-//  layout()->addWidget(horizontal_line());  
-//  layout()->addWidget(new RunNaviOnBootToggle());
-//  layout()->addWidget(horizontal_line());
-
-  layout()->addWidget(new BrightnessControl());
-  layout()->addWidget(new CVolumeControl());  
-  layout()->addWidget(new AutoScreenOff());
-  layout()->addWidget(new BrightnessOffControl());
-  
-  layout()->addWidget(new CAutoFocus());
-
-  layout()->addWidget(horizontal_line());
 
   // param, title, desc, icon
   std::vector<std::tuple<QString, QString, QString, QString>> toggles{
@@ -164,6 +145,27 @@ CUserPanel::CUserPanel(QWidget* parent) :   QFrame(parent) // ListWidget(parent 
   }
 
   layout()->addWidget(horizontal_line());
+
+//   layout()->addWidget(new CAutoResumeToggle());
+   layout()->addWidget(new CLiveSteerRatioToggle());
+//   layout()->addWidget(new CTurnSteeringDisableToggle());
+   layout()->addWidget(new CPrebuiltToggle());
+  
+//  layout()->addWidget(horizontal_line());
+//  layout()->addWidget(new CPandaFirmWare() );
+//  layout()->addWidget(horizontal_line());  
+//  layout()->addWidget(new RunNaviOnBootToggle());
+//  layout()->addWidget(horizontal_line());
+
+  layout()->addWidget(new BrightnessControl());
+  layout()->addWidget(new CVolumeControl());  
+  layout()->addWidget(new AutoScreenOff());
+  layout()->addWidget(new BrightnessOffControl());
+  
+  layout()->addWidget(new CAutoFocus());
+
+  layout()->addWidget(horizontal_line());
+
 
   auto car_interfaces = new ButtonControl("car interfaces 실행", "실행",
                                         "/data/openpilot/selfdrive/car/tests/test_car_interfaces.py 을 실행 합니다.");
