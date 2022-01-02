@@ -287,7 +287,7 @@ class Controls:
 
       if safety_mismatch or self.mismatch_counter >= 200:
         self.events.add(EventName.controlsMismatch)
-        print('model={}  {}. {}   param={} {}'.format( pandaState.safetyModel, i, self.CP.safetyConfigs[i].safetyModel, pandaState.safetyParam, self.CP.safetyConfigs[i].safetyParam ))
+        print('cnt={} model={}  {}. {}   param={} {}'.format(self.mismatch_counter, pandaState.safetyModel, i, self.CP.safetyConfigs[i].safetyModel, pandaState.safetyParam, self.CP.safetyConfigs[i].safetyParam ))
 
       if log.PandaState.FaultType.relayMalfunction in pandaState.faults:
         self.events.add(EventName.relayMalfunction)
@@ -418,6 +418,7 @@ class Controls:
     if any(not ps.controlsAllowed and self.enabled for ps in self.sm['pandaStates']
            if ps.safetyModel not in IGNORED_SAFETY_MODES):
       self.mismatch_counter += 1
+      print('cnt={} enabled={} '.format(self.mismatch_counter, self.enabled ))
 
     self.distance_traveled += CS.vEgo * DT_CTRL
 
