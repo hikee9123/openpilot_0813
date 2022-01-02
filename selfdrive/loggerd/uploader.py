@@ -241,7 +241,6 @@ def uploader_fn(exit_event):
       continue
 
     d = uploader.next_file_to_upload()
-    print('next_file_to_upload={}'.format(d ) )    
     if d is None:  # Nothing to upload
       if allow_sleep:
         time.sleep(60 if offroad else 5)
@@ -251,6 +250,7 @@ def uploader_fn(exit_event):
 
     cloudlog.debug("upload %r over %s", d, network_type)
     success = uploader.upload(key, fn)
+    print('{}=upload={} {}'.format(success, key, fn) )        
     if success:
       backoff = 0.1
     elif allow_sleep:
