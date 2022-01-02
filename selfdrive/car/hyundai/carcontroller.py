@@ -257,7 +257,7 @@ class CarController():
     else:
       can_sends = self.update_resume( can_sends, c, CS, frame, path_plan )
 
-      if frame % 2 == 0 and CS.CP.atomLongitudinalControl and CS.out.cruiseState.accActive:
+      if frame % 2 == 0 and CS.CP.atomLongitudinalControl: # and CS.out.cruiseState.accActive:
         can_sends = self.update_scc12( can_sends, c, CS, frame )
 
     # 20 Hz LFA MFA message
