@@ -38,6 +38,7 @@ class CarState(CarStateBase):
     self.cruise_set_speed_kph = 0
     self.cruise_set_mode = 1      # 모드 설정.
     self.gasPressed = False
+    self.aReqValue = 0
 
     # engage button
     self.cruise_available = False
@@ -313,6 +314,7 @@ class CarState(CarStateBase):
     self.mdps12 = copy.copy(cp.vl["MDPS12"])
     self.lkas11 = copy.copy(cp_cam.vl["LKAS11"])
     self.clu11 = copy.copy(cp.vl["CLU11"])
+    self.scc12 = copy.copy(cp.vl["SCC12"])
     self.park_brake = cp.vl["TCS13"]["PBRAKE_ACT"] == 1
     self.steer_state = cp.vl["MDPS12"]["CF_Mdps_ToiActive"]  # 0 NOT ACTIVE, 1 ACTIVE
     self.brake_error = cp.vl["TCS13"]["ACCEnable"] != 0 # 0 ACC CONTROL ENABLED, 1-3 ACC CONTROL DISABLED
@@ -322,7 +324,7 @@ class CarState(CarStateBase):
     self.lead_distance = cp.vl["SCC11"]["ACC_ObjDist"]
     self.lkas_button_on = cp_cam.vl["LKAS11"]["CF_Lkas_LdwsSysState"]
     self.is_highway = self.lfahda["HDA_Icon_State"] != 0.
-
+    self.aReqValue =  self.scc12["aReqValue"]
     return ret
 
   @staticmethod
@@ -423,7 +425,30 @@ class CarState(CarStateBase):
         ("VSetDis", "SCC11", 0),
         ("SCCInfoDisplay", "SCC11", 0),
         ("ACC_ObjDist", "SCC11", 0),
+
         ("ACCMode", "SCC12", 1),
+
+        ("aReqRaw", "SCC12", 0),
+        ("aReqValue", "SCC12", 0),
+        ("CR_VSM_Alive", "SCC12", 0),
+        ("CR_VSM_ChkSum", "SCC12", 0),
+
+        ("CF_VSM_Prefill", "SCC12", 0),
+        ("CF_VSM_DecCmdAct", "SCC12", 0),
+        ("CF_VSM_HBACmd", "SCC12", 0),
+        #("CF_VSM_Warn", "SCC12", 0),
+        ("CF_VSM_Stat", "SCC12", 0),
+        ("CF_VSM_BeltCmd", "SCC12", 0),
+        ("ACCFailInfo", "SCC12", 0),
+        ("StopReq", "SCC12", 0),
+        ("CR_VSM_DecCmd", "SCC12", 0),
+        ("TakeOverReq", "SCC12", 0),
+        ("PreFill", "SCC12", 0),
+        ("CF_VSM_ConfMode", "SCC12", 0),
+        ("AEB_Failinfo", "SCC12", 0),
+        ("AEB_Status", "SCC12", 0),
+        #("AEB_CmdAct", "SCC12", 0),
+        ("AEB_StopReq", "SCC12", 0),        
       ]
 
       checks += [

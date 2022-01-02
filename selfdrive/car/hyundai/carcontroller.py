@@ -3,7 +3,7 @@ from common.realtime import DT_CTRL
 from common.numpy_fast import clip, interp
 from selfdrive.config import Conversions as CV
 from selfdrive.car import apply_std_steer_torque_limits
-from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mfc, create_acc_commands, create_acc_opt, create_frt_radar_opt, create_mdps12, create_hda_mfc
+from selfdrive.car.hyundai.hyundaican import create_lkas11, create_clu11, create_lfahda_mfc, create_acc_commands, create_acc_opt, create_frt_radar_opt, create_mdps12, create_hda_mfc, create_scc12
 from selfdrive.car.hyundai.values import Buttons, CarControllerParams, CAR, FEATURES
 from opendbc.can.packer import CANPacker
 
@@ -109,13 +109,29 @@ class CarController():
   def update_debug(self, CS, c ):
     actuators = c.actuators
     vFuture = c.hudControl.vFuture * 3.6
-    str_log1 = ' EPS={:.2f} ST={:.0f} '.format(  CS.out.steeringTorqueEps, CS.out.steeringTorque )
+    str_log1 = 'MODE={:.0f} vF={:.1f}'.format( CS.cruise_set_mode, vFuture )
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
-    str_log1 = 'MODE={:.0f} vF={:.1f} gas={:.2f} acc={:.2f}'.format(  CS.cruise_set_mode,  vFuture, CS.out.gas, actuators.accel )
+    str_log1 = 'acc={:.2f},{:.2f} gas={:.2f} '.format( actuators.accel, CS.aReqValue, CS.out.gas )
     trace1.printf3( '{}'.format( str_log1 ) )
   
+  def update_scc12(self, can_sends,  c, CS, frame ):
+    actuators = c.actuators
+    enabled = c.enabled and CS.out.cruiseState.accActive
+
+    accel = actuators.accel if enabled else 0
+    accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
+    if accel < 0:
+      accel = interp(accel - CS.out.aEgo, [-1.0, -0.5], [2 * accel, accel])
+
+    if CS.aReqValue < accel:
+      accel = CS.aReqValue
+
+    can_sends.append( create_scc12(self.packer, accel, enabled, frame, self.scc_live, CS.scc12 ) )
+    self.accel = accel
+    return can_sends
+
 
   def updateLongitudinal(self, can_sends,  c, CS, frame):
     enabled = c.enabled and CS.out.cruiseState.accActive
