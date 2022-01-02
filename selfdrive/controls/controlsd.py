@@ -417,7 +417,9 @@ class Controls:
     if any(not ps.controlsAllowed and self.enabled for ps in self.sm['pandaStates']
            if ps.safetyModel not in IGNORED_SAFETY_MODES):
       self.mismatch_counter += 1
-      print('cnt={} enabled={} panda={}'.format(self.mismatch_counter, self.enabled, self.sm['pandaStates'] ))
+
+
+    print('cnt={} enabled={} panda={}'.format(self.mismatch_counter, self.enabled, self.sm['pandaStates'] ))
 
     self.distance_traveled += CS.vEgo * DT_CTRL
 
