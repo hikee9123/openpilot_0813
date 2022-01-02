@@ -28,7 +28,7 @@ class CarInterface(CarInterfaceBase):
 
     # WARNING: disabling radar also disables AEB (and we show the same warning on the instrument cluster as if you manually disabled AEB)
     ret.openpilotLongitudinalControl = Params().get_bool("DisableRadar") and (candidate not in LEGACY_SAFETY_MODE_CAR)
-
+    ret.atompilotLongitudinalControl = Params().get_bool("OpkratomLongitudinal") and (candidate in LEGACY_SAFETY_MODE_CAR)
     ret.pcmCruise = not ret.openpilotLongitudinalControl
 
     ret.steerActuatorDelay = 0.1  # Default delay
@@ -305,7 +305,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.enableBsm = 0x58b in fingerprint[0]
 
-    if ret.openpilotLongitudinalControl:
+    if ret.openpilotLongitudinalControl or ret.atompilotLongitudinalControl:
       ret.safetyConfigs[0].safetyParam |= Panda.FLAG_HYUNDAI_LONG
 
     return ret

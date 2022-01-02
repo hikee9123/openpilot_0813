@@ -109,11 +109,11 @@ class CarController():
   def update_debug(self, CS, c ):
     actuators = c.actuators
     vFuture = c.hudControl.vFuture * 3.6
-    str_log1 = 'MODE={:.0f} vF={:.1f}'.format( CS.cruise_set_mode, vFuture )
+    str_log1 = 'MODE={:.0f} vF={:.1f} gas={:.2f}'.format( CS.cruise_set_mode, vFuture, CS.out.gas )
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
-    str_log1 = 'acc={:.2f},{:.2f} gas={:.2f} '.format( actuators.accel, CS.aReqValue, CS.out.gas )
+    str_log1 = 'acc={:.2f},{:.2f},{:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
     trace1.printf3( '{}'.format( str_log1 ) )
   
   def update_scc12(self, can_sends,  c, CS, frame ):
@@ -252,6 +252,8 @@ class CarController():
     else:
       can_sends = self.update_resume( can_sends, c, CS, frame, path_plan )
 
+      #if CS.CP.atompilotLongitudinalControl:
+      #  can_sends = self.update_scc12( can_sends, c, CS, frame )
 
     # 20 Hz LFA MFA message
     if frame % 5 == 0:
