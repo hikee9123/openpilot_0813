@@ -29,7 +29,7 @@ class CarController():
     self.resume_cnt = 0
     self.last_lead_distance = 0
     self.lkas11_cnt = 0
-
+    self.scc12_cnt = 0
     self.NC = NaviControl(self.p)
     self.steerWarning_time = 0
 
@@ -201,7 +201,7 @@ class CarController():
     if CS.aReqValue < accel:
       accel = CS.aReqValue
 
-    can_sends.append( create_scc12(self.packer, accel, enabled, int(frame / 2), self.scc_live, CS.scc12 ) )
+    can_sends.append( create_scc12(self.packer, accel, enabled, frame, self.scc_live, CS.scc12 ) )
 
     self.accel = accel
     return can_sends
@@ -242,7 +242,11 @@ class CarController():
 
     if frame == 0: # initialize counts from last received count signals
       self.lkas11_cnt = CS.lkas11["CF_Lkas_MsgCount"] + 1
+      self.scc12_cnt = CS.scc12["CR_VSM_Alive"] + 1 if not CS.no_radar else 0
+
     self.lkas11_cnt %= 0x10
+    self.scc12_cnt %= 0xF
+  
 
     can_sends = []
     can_sends.append(create_lkas11(self.packer, self.lkas11_cnt, self.car_fingerprint, apply_steer, lkas_active,
@@ -258,8 +262,9 @@ class CarController():
       can_sends = self.update_resume( can_sends, c, CS, frame, path_plan )
 
       if frame % 2 == 0 and CS.CP.atomLongitudinalControl: # and CS.out.cruiseState.accActive:
-        can_sends = self.update_scc12( can_sends, c, CS, frame )
-
+        can_sends = self.update_scc12( can_sends, c, CS, self.scc12_cnt )
+        self.scc12_cnt += 1
+  
     # 20 Hz LFA MFA message
     if frame % 5 == 0:
       self.update_debug( CS, c )

@@ -185,7 +185,7 @@ class Uploader():
       success = True
     else:
       start_time = time.monotonic()
-      print('uploading={}'.format( fn ) )
+      print('uploading = {}'.format( fn ) )
       cloudlog.debug("uploading %r", fn)
       stat = self.normal_upload(key, fn)
       if stat is not None and stat.status_code in (200, 201, 403, 412):
@@ -200,12 +200,11 @@ class Uploader():
         self.last_time = time.monotonic() - start_time
         self.last_speed = (sz / 1e6) / self.last_time
         success = True
-
       else:
         cloudlog.event("upload_failed", stat=stat, exc=self.last_exc, key=key, fn=fn, sz=sz, debug=True)
         success = False
 
-    print('upload {} {}'.format( success, stat ) )
+    print('{} upload {}'.format( success, stat ) )
     return success
 
   def get_msg(self):
