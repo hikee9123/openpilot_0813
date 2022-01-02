@@ -191,7 +191,7 @@ class CarController():
 
   def update_scc12(self, can_sends,  c, CS, frame ):
     actuators = c.actuators
-    enabled = c.enabled
+    enabled = c.enabled and CS.out.cruiseState.accActive
 
     accel = actuators.accel if enabled else 0
     accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
