@@ -235,6 +235,7 @@ def uploader_fn(exit_event):
     sm.update(0)
     offroad = params.get_bool("IsOffroad")
     network_type = sm['deviceState'].networkType if not force_wifi else NetworkType.wifi
+    print('network_type={}'.format(network_type ) )
     if network_type == NetworkType.none:
       if allow_sleep:
         time.sleep(60 if offroad else 5)
