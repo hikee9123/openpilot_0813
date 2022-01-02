@@ -120,7 +120,7 @@ class CarController():
   
 
   def updateLongitudinal(self, can_sends,  c, CS, frame):
-    enabled = c.enabled
+    enabled = c.enabled and CS.out.cruiseState.accActive
     actuators = c.actuators
     hud_speed = c.hudControl.setSpeed
     # tester present - w/ no response (keeps radar disabled)
