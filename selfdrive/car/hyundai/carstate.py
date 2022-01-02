@@ -46,7 +46,6 @@ class CarState(CarStateBase):
     self.engage_enable = False
     self.enagage_status = 0
     self.cruise_buttons_old = 0
-
     self.time_break = 0
 
   def engage_disable( self, ret ):
