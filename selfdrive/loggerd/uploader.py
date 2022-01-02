@@ -200,10 +200,12 @@ class Uploader():
         self.last_time = time.monotonic() - start_time
         self.last_speed = (sz / 1e6) / self.last_time
         success = True
+
       else:
         cloudlog.event("upload_failed", stat=stat, exc=self.last_exc, key=key, fn=fn, sz=sz, debug=True)
         success = False
 
+    print('upload {} {}'.format( success, stat ) )
     return success
 
   def get_msg(self):
