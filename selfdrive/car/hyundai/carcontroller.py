@@ -249,8 +249,8 @@ class CarController():
                                    CS.lkas11, sys_warning, sys_state, enabled,
                                    left_lane, right_lane,
                                    left_lane_warning, right_lane_warning))
-    if CS.CP.mdpsBus:  # send mdps12 to LKAS to prevent LKAS error
-      can_sends.append( create_mdps12(self.packer, frame, CS.mdps12) )
+    # send mdps12 to LKAS to prevent LKAS error
+    can_sends.append( create_mdps12(self.packer, frame, CS.mdps12) )
 
     if  CS.CP.openpilotLongitudinalControl:
       can_sends = self.updateLongitudinal( can_sends, c, CS, frame )
