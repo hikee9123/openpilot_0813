@@ -102,7 +102,7 @@ CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
       "Use the openpilot longitudinal system for adaptive cruise control and lane keep driver assistance.  Changing this setting takes effect when the car is powered off.",
       "../assets/offroad/icon_speed_limit.png",
     },
-/*
+
     {
       "OpkrAutoResume",
       "자동출발 기능 사용",
@@ -130,7 +130,7 @@ CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
       "판다의 FirmWare를 확인합니다.",
       "../assets/offroad/icon_shell.png",
     },
-  */
+
   };
 
   for (auto &[param, title, desc, icon] : toggles) {
@@ -146,17 +146,18 @@ CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
 
 
 
-   layout()->addWidget(new CAutoResumeToggle());
-   layout()->addWidget(new CLiveSteerRatioToggle());
-   layout()->addWidget(new CTurnSteeringDisableToggle());
+   //layout()->addWidget(new CAutoResumeToggle());
+
+   //layout()->addWidget(new CTurnSteeringDisableToggle());
    layout()->addWidget(new CPrebuiltToggle());
   
   layout()->addWidget(horizontal_line());
-  layout()->addWidget(new CPandaFirmWare() );
-  layout()->addWidget(horizontal_line());  
-  layout()->addWidget(new RunNaviOnBootToggle());
-  layout()->addWidget(horizontal_line());
+ // layout()->addWidget(new CPandaFirmWare() );
+ // layout()->addWidget(horizontal_line());  
+//  layout()->addWidget(new RunNaviOnBootToggle());
+//  layout()->addWidget(horizontal_line());
 
+  layout()->addWidget(new CLiveSteerRatioToggle());
   layout()->addWidget(new BrightnessControl());
   layout()->addWidget(new CVolumeControl());  
   layout()->addWidget(new AutoScreenOff());

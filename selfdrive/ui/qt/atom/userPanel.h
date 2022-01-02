@@ -29,8 +29,8 @@ protected:
 
 
 
-
-
+////////////////////////////////////////////////////////////////////
+/*
 class CAutoResumeToggle : public ToggleControl {
   Q_OBJECT
 
@@ -55,6 +55,32 @@ public:
   }
 };
 
+
+
+class CTurnSteeringDisableToggle : public ToggleControl {
+  Q_OBJECT
+
+public:
+  CTurnSteeringDisableToggle() : ToggleControl("턴시그널 사용시 조향해제 사용", "차선변경속도 이하로 주행할 때 턴시그널을 사용시 자동조향을 일시해제 합니다.", "../assets/offroad/icon_shell.png", Params().getBool("OpkrTurnSteeringDisable")) {
+    QObject::connect(this, &CTurnSteeringDisableToggle::toggleFlipped, [=](int state) {
+      Params().putBool("OpkrTurnSteeringDisable", (bool)state);
+    });
+  }
+};
+
+class CPandaFirmWare : public ToggleControl {
+  Q_OBJECT
+
+public:
+  CPandaFirmWare() : ToggleControl("Panda Firmware Check", "판다의 FirmWare를 확인합니다..", "../assets/offroad/icon_shell.png", Params().getBool("OpkrPandaFirmwareCk")) {
+    QObject::connect(this, &CPandaFirmWare::toggleFlipped, [=](int state) {
+      Params().putBool("OpkrPandaFirmwareCk", (bool)state);
+    });
+  }
+};
+*/
+////////////////////////////////////////////////////////////////////////
+
 class CLiveSteerRatioToggle : public AbstractControl {
   Q_OBJECT
 
@@ -68,18 +94,6 @@ private:
 
   void refresh();
 };
-
-class CTurnSteeringDisableToggle : public ToggleControl {
-  Q_OBJECT
-
-public:
-  CTurnSteeringDisableToggle() : ToggleControl("턴시그널 사용시 조향해제 사용", "차선변경속도 이하로 주행할 때 턴시그널을 사용시 자동조향을 일시해제 합니다.", "../assets/offroad/icon_shell.png", Params().getBool("OpkrTurnSteeringDisable")) {
-    QObject::connect(this, &CTurnSteeringDisableToggle::toggleFlipped, [=](int state) {
-      Params().putBool("OpkrTurnSteeringDisable", (bool)state);
-    });
-  }
-};
-
 
 class CPrebuiltToggle : public ToggleControl {
   Q_OBJECT
@@ -103,16 +117,6 @@ public:
 };
 
 
-class CPandaFirmWare : public ToggleControl {
-  Q_OBJECT
-
-public:
-  CPandaFirmWare() : ToggleControl("Panda Firmware Check", "판다의 FirmWare를 확인합니다..", "../assets/offroad/icon_shell.png", Params().getBool("OpkrPandaFirmwareCk")) {
-    QObject::connect(this, &CPandaFirmWare::toggleFlipped, [=](int state) {
-      Params().putBool("OpkrPandaFirmwareCk", (bool)state);
-    });
-  }
-};
 
 class BrightnessControl : public AbstractControl 
 {
