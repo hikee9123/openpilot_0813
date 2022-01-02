@@ -175,7 +175,7 @@ class Uploader():
     cloudlog.event("upload", key=key, fn=fn, sz=sz)
 
     cloudlog.debug("checking %r with size %r", key, sz)
-
+    print('checking={} {} {}'.format( key, fn, sz) )
     if sz == 0:
       try:
         # tag files of 0 size as uploaded
@@ -185,6 +185,7 @@ class Uploader():
       success = True
     else:
       start_time = time.monotonic()
+      print('uploading={}'.format( fn ) )
       cloudlog.debug("uploading %r", fn)
       stat = self.normal_upload(key, fn)
       if stat is not None and stat.status_code in (200, 201, 403, 412):
@@ -250,7 +251,6 @@ def uploader_fn(exit_event):
 
     cloudlog.debug("upload %r over %s", d, network_type)
     success = uploader.upload(key, fn)
-    print('{}=upload={} {}'.format(success, key, fn) )        
     if success:
       backoff = 0.1
     elif allow_sleep:
