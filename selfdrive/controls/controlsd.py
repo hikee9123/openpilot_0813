@@ -284,7 +284,6 @@ class Controls:
         safety_mismatch = pandaState.safetyModel != self.CP.safetyConfigs[i].safetyModel or pandaState.safetyParam != self.CP.safetyConfigs[i].safetyParam
       else:
         safety_mismatch = pandaState.safetyModel not in IGNORED_SAFETY_MODES
-
       if safety_mismatch or self.mismatch_counter >= 200:
         self.events.add(EventName.controlsMismatch)
 
@@ -417,9 +416,6 @@ class Controls:
     if any(not ps.controlsAllowed and self.enabled for ps in self.sm['pandaStates']
            if ps.safetyModel not in IGNORED_SAFETY_MODES):
       self.mismatch_counter += 1
-
-
-    #print('cnt={} enabled={} panda={}'.format(self.mismatch_counter, self.enabled, self.sm['pandaStates'] ))
 
     self.distance_traveled += CS.vEgo * DT_CTRL
 

@@ -191,8 +191,7 @@ std::unordered_map<std::string, uint32_t> keys = {
     {"OpkrMapEnable", PERSISTENT},
     {"OpkrParameters", PERSISTENT},
     {"OpkrCarModel", PERSISTENT},
-    {"OpkratomLongitudinal", PERSISTENT},
-  
+    
 };
 
 } // namespace

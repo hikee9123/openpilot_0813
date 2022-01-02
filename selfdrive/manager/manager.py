@@ -53,7 +53,6 @@ def manager_init() -> None:
     ("OpkrPandaFirmwareCk", "0"),
     ("OpkrRunNaviOnBoot", "0"),
     ("OpkrSSHLegacy", "0"),
-    ("OpkratomLongitudinal", "0"),
     ("OpkrCarModel", "HYUNDAI GRANDEUR HYBRID 2019"), 
     
   ]
