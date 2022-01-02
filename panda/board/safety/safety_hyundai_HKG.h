@@ -252,7 +252,7 @@ static int hyundai_rx_hook(CANPacket_t *to_push) {
 
     // If openpilot is controlling longitudinal we need to ensure the radar is turned off
     // Enforce by checking we don't see SCC12
-    if (hyundai_longitudinal && (addr == 1057)) {
+    if (hyundai_longitudinal == 1 && (addr == 1057)) {
       stock_ecu_detected = true;
     }
     generic_rx_checks(stock_ecu_detected);
