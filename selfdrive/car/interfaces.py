@@ -136,7 +136,7 @@ class CarInterfaceBase(ABC):
       events.add(EventName.speedTooHigh)
     if cs_out.cruiseState.nonAdaptive:
       events.add(EventName.wrongCruiseMode)
-    if cs_out.brakeHoldActive and (self.CP.openpilotLongitudinalControl or self.CP.atomLongitudinalControl):
+    if cs_out.brakeHoldActive and self.CP.openpilotLongitudinalControl:
       events.add(EventName.brakeHold)
 
 

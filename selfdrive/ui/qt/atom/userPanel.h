@@ -15,7 +15,7 @@
 #include "selfdrive/ui/qt/widgets/controls.h"
 
 
-class CUserPanel : public  QFrame   // ListWidget
+class CUserPanel : public QFrame 
 {
   Q_OBJECT
 public:

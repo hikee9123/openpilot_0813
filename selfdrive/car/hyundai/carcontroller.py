@@ -153,8 +153,6 @@ class CarController():
 
     return  can_sends
 
-
-
   def update_resume(self, can_sends,  c, CS, frame, path_plan):
     pcm_cancel_cmd = c.cruiseControl.cancel
     if pcm_cancel_cmd:
@@ -183,7 +181,6 @@ class CarController():
       btn_signal = self.NC.update( c, CS, path_plan )
       if btn_signal != None:
         can_sends.append(create_clu11(self.packer, self.resume_cnt, CS.clu11, btn_signal ))
-        
         self.resume_cnt += 1
       else:
         self.resume_cnt = 0

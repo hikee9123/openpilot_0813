@@ -301,11 +301,12 @@ class CarInterface(CarInterfaceBase):
 
     # set appropriate safety param for gas signal
     if candidate in HYBRID_CAR:
-      ret.safetyConfigs[0].safetyParam = 2
+      ret.safetyConfigs[0].safetyParam = Panda.FLAG_HYUNDAI_HYBRID_GAS
     elif candidate in EV_CAR:
-      ret.safetyConfigs[0].safetyParam = 1
+      ret.safetyConfigs[0].safetyParam = Panda.FLAG_HYUNDAI_EV_GAS
 
     ret.centerToFront = ret.wheelbase * 0.4
+
 
     # TODO: get actual value, for now starting with reasonable value for
     # civic and scaling by mass and wheelbase
@@ -320,9 +321,7 @@ class CarInterface(CarInterfaceBase):
     ret.mdpsBus = 1 if 593 in fingerprint[1] and 1296 not in fingerprint[1] else 0
     ret.sccBus = 0 if 1056 in fingerprint[0] else 1 if 1056 in fingerprint[1] and 1296 not in fingerprint[1] \
                                                                      else 2 if 1056 in fingerprint[2] else -1
-    if ret.atomLongitudinalControl:
-      ret.safetyConfigs[0].safetyParam |= Panda.FLAG_HYUNDAI_LONG_ATOM
-    elif ret.openpilotLongitudinalControl:
+    if ret.openpilotLongitudinalControl:
       ret.safetyConfigs[0].safetyParam |= Panda.FLAG_HYUNDAI_LONG
 
     return ret

@@ -21,7 +21,7 @@
 
 
 
-CUserPanel::CUserPanel(QWidget* parent) :   QFrame(parent) // ListWidget(parent )  //
+CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
 {
   QWidget *w = new QWidget(parent);  
   QVBoxLayout *main_layout = new QVBoxLayout(w);
@@ -165,6 +165,7 @@ CUserPanel::CUserPanel(QWidget* parent) :   QFrame(parent) // ListWidget(parent 
   layout()->addWidget(new CAutoFocus());
 
   layout()->addWidget(horizontal_line());
+
 
 
   auto car_interfaces = new ButtonControl("car interfaces 실행", "실행",
