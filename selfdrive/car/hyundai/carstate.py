@@ -325,7 +325,7 @@ class CarState(CarStateBase):
     self.lkas_button_on = cp_cam.vl["LKAS11"]["CF_Lkas_LdwsSysState"]
     self.is_highway = self.lfahda["HDA_Icon_State"] != 0.
     
-    if CP.atomLongitudinalControl:
+    if self.CP.atomLongitudinalControl:
       self.aReqValue = self.scc12["aReqValue"]
 
 
