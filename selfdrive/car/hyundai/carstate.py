@@ -29,6 +29,7 @@ class CarState(CarStateBase):
     self.time_delay_int = 0
     self.VSetDis = 0
     self.clu_Vanz = 0
+    self.aReqValue = 0
 
     # acc button 
     self.prev_clu_CruiseSwState = 0
@@ -323,7 +324,10 @@ class CarState(CarStateBase):
     self.lead_distance = cp.vl["SCC11"]["ACC_ObjDist"]
     self.lkas_button_on = cp_cam.vl["LKAS11"]["CF_Lkas_LdwsSysState"]
     self.is_highway = self.lfahda["HDA_Icon_State"] != 0.
-    self.aReqValue = self.scc12["aReqValue"]
+    
+    if CP.atomLongitudinalControl:
+      self.aReqValue = self.scc12["aReqValue"]
+
 
     return ret
 
