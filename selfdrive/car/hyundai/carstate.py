@@ -431,13 +431,15 @@ class CarState(CarStateBase):
         ("ACC_ObjDist", "SCC11", 0),
 
         ("ACCMode", "SCC12", 0),
+        ("aReqValue", "SCC12", 0), 
+        ("CR_VSM_Alive", "SCC12", 0),
       ]
 
       if CP.atomLongitudinalControl:
         signals += [
           ("aReqRaw", "SCC12", 0),
-          ("aReqValue", "SCC12", 0),
-          ("CR_VSM_Alive", "SCC12", 0),
+          #("aReqValue", "SCC12", 0),
+          #("CR_VSM_Alive", "SCC12", 0),
           ("CR_VSM_ChkSum", "SCC12", 0),
 
           ("CF_VSM_Prefill", "SCC12", 0),
