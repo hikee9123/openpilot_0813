@@ -427,7 +427,7 @@ void NvgWindow::paintGL() {
 
   double cur_draw_t = millis_since_boot();
   double dt = cur_draw_t - prev_draw_t;
-  if (dt > 66) {
+  if (dt > 90) {
     // warn on sub 15fps
     LOGW("slow frame time: %.2f", dt);
   }
