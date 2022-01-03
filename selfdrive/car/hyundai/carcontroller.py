@@ -259,7 +259,7 @@ class CarController():
       if (frame % 2 == 0) and CS.CP.atompilotLongitudinalControl and CS.cruise_set_mode == 0:
         can_sends = self.update_scc12( can_sends, c, CS, self.scc_live )
 
-      self.scc_live += 1
+        self.scc_live += 1
       
     # 20 Hz LFA MFA message
     if frame % 5 == 0:
