@@ -786,7 +786,7 @@ void OnPaint::ui_draw_debug1( QPainter &p )
 
   QRect rc( bb_x, bb_y, bb_w, 90);
   //p.setPen(QPen(QColor(0xff, 0xff, 0xff, 100), 3)); 
-  p.setPen(Qt::NoPen);
+  //p.setPen(Qt::NoPen);
   p.setBrush(QColor(0, 0, 0, 100));
   p.drawRoundedRect(rc, 20, 20); 
   
