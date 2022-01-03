@@ -113,7 +113,7 @@ class CarController():
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
-    str_log1 = 'acc={:.2f}, {:.2f},  {:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
+    str_log1 = 'acc={:.2f}, RV={:.2f},  {:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
     trace1.printf3( '{}'.format( str_log1 ) )
   
   
