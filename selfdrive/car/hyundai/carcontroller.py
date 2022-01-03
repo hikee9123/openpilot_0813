@@ -116,21 +116,6 @@ class CarController():
     str_log1 = 'acc={:.2f}, RV={:.2f},  {:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
     trace1.printf3( '{}'.format( str_log1 ) )
   
-  
-  def update_scc12(self, can_sends,  c, CS ):
-    actuators = c.actuators
-    enabled = c.enabled and CS.out.cruiseState.accActive
-    accel = actuators.accel if enabled else 0
-    #if accel < 0:
-    #  accel = interp(accel - CS.out.aEgo, [-1.0, -0.5], [2 * accel, accel])
-    accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
-
-    if (CS.aReqValue > accel):
-      can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
-
-    self.accel = accel
-    return can_sends
-
 
   def updateLongitudinal(self, can_sends,  c, CS, frame):
     enabled = c.enabled and CS.out.cruiseState.accActive
@@ -165,6 +150,22 @@ class CarController():
       can_sends.append(create_frt_radar_opt(self.packer))      
 
     return  can_sends
+
+  
+  def update_scc12(self, can_sends,  c, CS ):
+    actuators = c.actuators
+    enabled = c.enabled and CS.out.cruiseState.accActive
+    accel = actuators.accel if enabled else 0
+    #if accel < 0:
+    #  accel = interp(accel - CS.out.aEgo, [-1.0, -0.5], [2 * accel, accel])
+    accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
+
+    if (CS.aReqValue > accel):
+      can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
+
+    self.accel = accel
+    return can_sends    
+
 
   def update_resume(self, can_sends,  c, CS, frame, path_plan):
     pcm_cancel_cmd = c.cruiseControl.cancel

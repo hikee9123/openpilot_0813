@@ -780,12 +780,22 @@ void OnPaint::ui_draw_debug1( QPainter &p )
   QString text2 = QString::fromStdString(scene->alert.alertTextMsg2);
   QString text3 = QString::fromStdString(scene->alert.alertTextMsg3);
 
+  int bb_x = 0;
+  int bb_y = 930;
+  int bb_w = width();
+
+  QRect rc( bb_x, bb_y, bb_w, 90);
+  p.setPen(QPen(QColor(0xff, 0xff, 0xff, 100), 3)); 
+  p.setBrush(QColor(0, 0, 0, 100));
+  p.drawRoundedRect(rc, 20, 20); 
+  p.setPen(Qt::NoPen);
+
   QTextOption  textOpt =  QTextOption( Qt::AlignLeft );
   configFont( p, "Open Sans",  40, "Regular");
 
-  p.drawText( QRect(0, 0, width(), 42), text1, textOpt );
-  p.drawText( QRect(0, 930, width(), 42), text2, textOpt );
-  p.drawText( QRect(0, 975, width(), 42), text3, textOpt );
+  p.drawText( QRect(bb_x, 0, bb_w, 42), text1, textOpt );
+  p.drawText( QRect(bb_x, bb_y, bb_w, 42), text2, textOpt );
+  p.drawText( QRect(bb_x, bb_y+45, bb_w, 42), text3, textOpt );
 
 }
 

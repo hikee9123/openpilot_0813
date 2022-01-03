@@ -321,7 +321,7 @@ class LongitudinalMpc:
 
     # neokii
     tr = T_FOLLOW
-    cruise_gap = 4  #int(clip(carstate.cruiseGap, 1., 4.))
+    cruise_gap = int(clip(carstate.gapSet, 1., 4.))
     if cruise_gap == AUTO_TR_CRUISE_GAP:
       tr = interp(carstate.vEgo, AUTO_TR_BP, AUTO_TR_V)
     else:
