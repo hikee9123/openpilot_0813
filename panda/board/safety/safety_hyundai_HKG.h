@@ -266,7 +266,7 @@ static int hyundai_tx_hook(CANPacket_t *to_send) {
 
   if (hyundai_longitudinal == 1) {
     tx = msg_allowed(to_send, HYUNDAI_LONG_TX_MSGS, sizeof(HYUNDAI_LONG_TX_MSGS)/sizeof(HYUNDAI_LONG_TX_MSGS[0]));
-  else if (hyundai_longitudinal == 2) {
+  } else if (hyundai_longitudinal == 2) {
     tx = msg_allowed(to_send, HYUNDAI_LEGACY_LONG_TX_MSGS, sizeof(HYUNDAI_LEGACY_LONG_TX_MSGS)/sizeof(HYUNDAI_LEGACY_LONG_TX_MSGS[0]));
   } else {
     tx = msg_allowed(to_send, HYUNDAI_TX_MSGS, sizeof(HYUNDAI_TX_MSGS)/sizeof(HYUNDAI_TX_MSGS[0]));
