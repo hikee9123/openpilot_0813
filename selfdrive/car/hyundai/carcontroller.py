@@ -29,7 +29,7 @@ class CarController():
     self.resume_cnt = 0
     self.last_lead_distance = 0
     self.lkas11_cnt = 0
-
+    self.scc_live = 0
     self.NC = NaviControl(self.p)
     self.steerWarning_time = 0
 
@@ -116,6 +116,7 @@ class CarController():
     str_log1 = 'acc={:.2f},{:.2f},{:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
     trace1.printf3( '{}'.format( str_log1 ) )
   
+  
   def update_scc12(self, can_sends,  c, CS, frame ):
     actuators = c.actuators
     enabled = c.enabled and CS.out.cruiseState.accActive
@@ -129,6 +130,8 @@ class CarController():
       accel = CS.aReqValue
 
     can_sends.append( create_scc12(self.packer, accel, enabled, frame, self.scc_live, CS.scc12 ) )
+    self.scc_live += 1
+    self.scc_live %= 0x0F
     self.accel = accel
     return can_sends
 
@@ -204,13 +207,13 @@ class CarController():
   def update(self, c, CS, frame ):
     enabled = c.enabled
     actuators = c.actuators
-    # pcm_cancel_cmd = c.cruiseControl.cancel
     left_lane = c.hudControl.leftLaneVisible 
     right_lane = c.hudControl.rightLaneVisible 
     left_lane_warning = c.hudControl.leftLaneDepart 
     right_lane_warning = c.hudControl.rightLaneDepart
+    # pcm_cancel_cmd = c.cruiseControl.cancel    
     # vFuture = c.hudControl.vFuture * 3.6
-    
+  
     # Steering Torque
     new_steer = int(round(actuators.steer * self.p.STEER_MAX))
     apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.p)
@@ -231,19 +234,19 @@ class CarController():
     sys_warning, sys_state = self.process_hud_alert( lkas_active, c )
 
 
-
     if sys_warning and CS.clu_Vanz < 30:
       sys_warning = False
 
     if frame == 0: # initialize counts from last received count signals
       self.lkas11_cnt = CS.lkas11["CF_Lkas_MsgCount"] + 1
+      self.scc_live = 0
     self.lkas11_cnt %= 0x10
 
     can_sends = []
-    can_sends.append(create_lkas11(self.packer, self.lkas11_cnt, self.car_fingerprint, apply_steer, lkas_active,
+    can_sends.append( create_lkas11(self.packer, self.lkas11_cnt, self.car_fingerprint, apply_steer, lkas_active,
                                    CS.lkas11, sys_warning, sys_state, enabled,
                                    left_lane, right_lane,
-                                   left_lane_warning, right_lane_warning))
+                                   left_lane_warning, right_lane_warning) )
 
     can_sends.append( create_mdps12(self.packer, frame, CS.mdps12) )
 
@@ -259,9 +262,9 @@ class CarController():
     if frame % 5 == 0:
       self.update_debug( CS, c )
       if self.car_fingerprint in FEATURES["send_hda_mfa"]:
-        can_sends.append(create_hda_mfc(self.packer, CS, c ))
+        can_sends.append( create_hda_mfc(self.packer, CS, c ) )
       elif self.car_fingerprint in FEATURES["send_lfa_mfa"]:
-        can_sends.append(create_lfahda_mfc(self.packer, enabled))
+        can_sends.append( create_lfahda_mfc(self.packer, enabled) )
    
     self.lkas11_cnt += 1
 

@@ -263,7 +263,7 @@ void OnroadHud::paintEvent(QPaintEvent *event) {
 
   // dm icon
   if (!hideDM) {
-    drawIcon(p, radius / 2 + (bdr_s * 1), rect().bottom() - footer_h / 2,
+    drawIcon(p, radius / 2 + (bdr_s * 1), rect().bottom() - footer_h / 1.5,
              dm_img, QColor(0, 0, 0, 70), dmActive ? 1.0 : 0.2);
   }
 }
