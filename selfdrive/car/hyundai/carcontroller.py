@@ -29,7 +29,7 @@ class CarController():
     self.resume_cnt = 0
     self.last_lead_distance = 0
     self.lkas11_cnt = 0
-    self.scc_live = 0
+    self.scc12_cnt = 0
     self.NC = NaviControl(self.p)
     self.steerWarning_time = 0
 
@@ -38,7 +38,7 @@ class CarController():
     self.hud_timer_right = 0
     self.steer_timer_apply_torque = 1.0
     self.DT_STEER = 0.01
-
+    self.scc_live = not CP.radarOffCan
 
   def process_hud_alert(self, enabled, c ):
     visual_alert = c.hudControl.visualAlert
@@ -117,19 +117,16 @@ class CarController():
     trace1.printf3( '{}'.format( str_log1 ) )
   
   
-  def update_scc12(self, can_sends,  c, CS, frame ):
+  def update_scc12(self, can_sends,  c, CS ):
     actuators = c.actuators
     enabled = c.enabled and CS.out.cruiseState.accActive
-
     accel = actuators.accel if enabled else 0
     #if accel < 0:
     #  accel = interp(accel - CS.out.aEgo, [-1.0, -0.5], [2 * accel, accel])
-
     accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
 
-    if CS.out.vEgo > 0.1 and (CS.aReqValue > accel) and enabled:
-      #accel = CS.aReqValue
-      can_sends.append( create_scc12(self.packer, accel, enabled, frame, self.scc_live, CS.scc12 ) )
+    if (CS.aReqValue > accel):
+      can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
 
     self.accel = accel
     return can_sends
@@ -200,6 +197,11 @@ class CarController():
         self.resume_cnt += 1
       else:
         self.resume_cnt = 0
+
+      if (frame % 2 == 0) and CS.CP.atompilotLongitudinalControl and CS.cruise_set_mode == 2:
+        can_sends = self.update_scc12( can_sends, c, CS )
+        self.scc12_cnt += 1
+
     return  can_sends
 
 
@@ -238,10 +240,10 @@ class CarController():
 
     if frame == 0: # initialize counts from last received count signals
       self.lkas11_cnt = CS.lkas11["CF_Lkas_MsgCount"] + 1
-      self.scc_live =  CS.scc12["CR_VSM_Alive"] 
+      self.scc12_cnt =  CS.scc12["CR_VSM_Alive"] +1
 
     self.lkas11_cnt %= 0x10
-    self.scc_live %= 0x0F
+    self.scc12_cnt %= 0x0F
 
     can_sends = []
     can_sends.append( create_lkas11(self.packer, self.lkas11_cnt, self.car_fingerprint, apply_steer, lkas_active,
@@ -256,10 +258,9 @@ class CarController():
     else:
       can_sends = self.update_resume( can_sends, c, CS, frame, path_plan )
 
-      if (frame % 2 == 0) and CS.CP.atompilotLongitudinalControl and CS.cruise_set_mode == 0:
-        can_sends = self.update_scc12( can_sends, c, CS, self.scc_live )
 
-        self.scc_live += 1
+
+
       
     # 20 Hz LFA MFA message
     if frame % 5 == 0:

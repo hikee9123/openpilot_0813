@@ -171,10 +171,10 @@ class NaviControl():
 
   def auto_speed_control( self, c, CS, ctrl_speed, path_plan ):
     cruise_speed = False
-    if CS.cruise_set_mode == 2:
-      vFuture = c.hudControl.vFuture * CV.MS_TO_KPH
-      ctrl_speed = vFuture    
-    elif CS.gasPressed:
+    #if CS.cruise_set_mode == 2:
+    #  vFuture = c.hudControl.vFuture * CV.MS_TO_KPH
+    #  ctrl_speed = vFuture    
+    if CS.gasPressed:
       self.gasPressed_time += 1
       if self.gasPressed_time > 100:
         self.gasPressed_time = 0
