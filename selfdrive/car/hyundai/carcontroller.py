@@ -162,6 +162,8 @@ class CarController():
 
     if (CS.aReqValue > accel):
       can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
+    else:
+      accel = CS.aReqValue
 
     self.accel = accel
     return can_sends    
