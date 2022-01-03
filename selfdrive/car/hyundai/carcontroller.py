@@ -113,7 +113,7 @@ class CarController():
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
-    str_log1 = 'acc={:.2f},{:.2f},{:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
+    str_log1 = 'acc={:.2f}, {:.2f},  {:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
     trace1.printf3( '{}'.format( str_log1 ) )
   
   
@@ -122,11 +122,12 @@ class CarController():
     enabled = c.enabled and CS.out.cruiseState.accActive
 
     accel = actuators.accel if enabled else 0
-    accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
-    if accel < 0:
-      accel = interp(accel - CS.out.aEgo, [-1.0, -0.5], [2 * accel, accel])
+    #if accel < 0:
+    #  accel = interp(accel - CS.out.aEgo, [-1.0, -0.5], [2 * accel, accel])
 
-    if CS.aReqValue < accel and CS.out.cruiseState.accActive:
+    accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
+
+    if (accel < 0) and (CS.aReqValue < accel) and enabled:
       accel = CS.aReqValue
       can_sends.append( create_scc12(self.packer, accel, enabled, frame, self.scc_live, CS.scc12 ) )
 
