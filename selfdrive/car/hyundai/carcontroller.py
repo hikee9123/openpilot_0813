@@ -127,7 +127,7 @@ class CarController():
 
     accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
 
-    if CS.vEgo > 1 and (CS.aReqValue > accel) and enabled:
+    if CS.out.vEgo > 0.1 and (CS.aReqValue > accel) and enabled:
       #accel = CS.aReqValue
       can_sends.append( create_scc12(self.packer, accel, enabled, frame, self.scc_live, CS.scc12 ) )
 
