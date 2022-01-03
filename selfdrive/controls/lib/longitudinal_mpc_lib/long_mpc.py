@@ -57,7 +57,7 @@ T_IDXS = np.array(T_IDXS_LST)
 T_DIFFS = np.diff(T_IDXS, prepend=[0.])
 MIN_ACCEL = -3.5
 T_FOLLOW = 1.45
-T_FOLLOW_TR = 1.45
+T_FOLLOW_TR = 1.5
 COMFORT_BRAKE = 2.5
 STOP_DISTANCE = 6.0
 
@@ -327,7 +327,7 @@ class LongitudinalMpc:
     else:
       tr = interp(float(cruise_gap), CRUISE_GAP_BP, CRUISE_GAP_V)
     
-    T_FOLLOW_TR = tr
+    # T_FOLLOW_TR = tr
 
     # To estimate a safe distance from a moving lead, we calculate how much stopping
     # distance that lead needs as a minimum. We can add that to the current distance

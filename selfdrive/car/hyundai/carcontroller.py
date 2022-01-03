@@ -128,10 +128,8 @@ class CarController():
 
     if CS.aReqValue < accel:
       accel = CS.aReqValue
+      can_sends.append( create_scc12(self.packer, accel, enabled, frame, self.scc_live, CS.scc12 ) )
 
-    can_sends.append( create_scc12(self.packer, accel, enabled, frame, self.scc_live, CS.scc12 ) )
-    self.scc_live += 1
-    self.scc_live %= 0x0F
     self.accel = accel
     return can_sends
 
@@ -239,8 +237,10 @@ class CarController():
 
     if frame == 0: # initialize counts from last received count signals
       self.lkas11_cnt = CS.lkas11["CF_Lkas_MsgCount"] + 1
-      self.scc_live = 0
+      self.scc_live =  CS.scc12["CR_VSM_Alive"] 
+
     self.lkas11_cnt %= 0x10
+    self.scc_live %= 0x0F
 
     can_sends = []
     can_sends.append( create_lkas11(self.packer, self.lkas11_cnt, self.car_fingerprint, apply_steer, lkas_active,
@@ -255,9 +255,11 @@ class CarController():
     else:
       can_sends = self.update_resume( can_sends, c, CS, frame, path_plan )
 
-      #if CS.CP.atompilotLongitudinalControl:
-      #  can_sends = self.update_scc12( can_sends, c, CS, frame )
+      if (frame % 2 == 0) and CS.CP.atompilotLongitudinalControl:
+        can_sends = self.update_scc12( can_sends, c, CS, self.scc_live )
 
+      self.scc_live += 1
+      
     # 20 Hz LFA MFA message
     if frame % 5 == 0:
       self.update_debug( CS, c )
