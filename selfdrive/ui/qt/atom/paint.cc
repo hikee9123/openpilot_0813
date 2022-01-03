@@ -785,10 +785,11 @@ void OnPaint::ui_draw_debug1( QPainter &p )
   int bb_w = width();
 
   QRect rc( bb_x, bb_y, bb_w, 90);
-  p.setPen(QPen(QColor(0xff, 0xff, 0xff, 100), 3)); 
+  //p.setPen(QPen(QColor(0xff, 0xff, 0xff, 100), 3)); 
+  p.setPen(Qt::NoPen);
   p.setBrush(QColor(0, 0, 0, 100));
   p.drawRoundedRect(rc, 20, 20); 
-  p.setPen(Qt::NoPen);
+  
 
   QTextOption  textOpt =  QTextOption( Qt::AlignLeft );
   configFont( p, "Open Sans",  40, "Regular");
