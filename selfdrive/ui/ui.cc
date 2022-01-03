@@ -150,6 +150,7 @@ static void update_state(UIState *s) {
   }
   if (sm.updated("carParams")) {
     scene.longitudinal_control = sm["carParams"].getCarParams().getOpenpilotLongitudinalControl();
+    scene.longitudinal_control |= sm["carParams"].getCarParams().getAtompilotLongitudinalControl();
   }
   if (!scene.started && sm.updated("sensorEvents")) {
     for (auto sensor : sm["sensorEvents"].getSensorEvents()) {
