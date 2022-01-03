@@ -172,8 +172,8 @@ class CarState(CarStateBase):
       else:
         set_speed_kph -=  1
 
-    if set_speed_kph < 30:
-      set_speed_kph = 30
+    if set_speed_kph < 20:
+      set_speed_kph = 20
 
     self.cruise_set_speed_kph = set_speed_kph
     return  set_speed_kph
