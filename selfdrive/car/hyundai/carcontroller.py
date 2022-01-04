@@ -160,7 +160,7 @@ class CarController():
     #  accel = interp(accel - CS.out.aEgo, [-1.0, -0.5], [2 * accel, accel])
     accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
 
-    if (CS.aReqValue > accel):
+    if (CS.aReqValue > accel) and accel < 0 and CS.clu_Vanz > 3:
       can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
     else:
       accel = CS.aReqValue

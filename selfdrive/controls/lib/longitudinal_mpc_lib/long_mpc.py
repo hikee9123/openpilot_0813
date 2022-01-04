@@ -57,7 +57,7 @@ T_IDXS = np.array(T_IDXS_LST)
 T_DIFFS = np.diff(T_IDXS, prepend=[0.])
 MIN_ACCEL = -3.5
 T_FOLLOW = 1.45
-T_FOLLOW_TR = 1.5
+T_FOLLOW_TR = 1.45
 COMFORT_BRAKE = 2.5
 STOP_DISTANCE = 6.0
 
@@ -321,7 +321,7 @@ class LongitudinalMpc:
 
     # neokii
     tr = T_FOLLOW
-    cruise_gap = 4  #int(clip(carstate.gapSet, 1., 4.))
+    cruise_gap = int(clip(carstate.cruiseState.gapSet, 1., 4.))
     if cruise_gap == AUTO_TR_CRUISE_GAP:
       tr = interp(carstate.vEgo, AUTO_TR_BP, AUTO_TR_V)
     else:
