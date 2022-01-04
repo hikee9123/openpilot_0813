@@ -250,6 +250,7 @@ def uploader_fn(exit_event):
 
     cloudlog.debug("upload %r over %s", d, network_type)
     success = uploader.upload(key, fn)
+    print('{}  key={}'.format( success, key ) )
     if success:
       backoff = 0.1
     elif allow_sleep:
