@@ -172,8 +172,12 @@ class CarState(CarStateBase):
       else:
         set_speed_kph -=  1
 
-    if set_speed_kph < 20:
-      set_speed_kph = 20
+    limit_kph = 30
+    if self.CP.atompilotLongitudinalControl:
+       limit_kph = 20
+
+    if set_speed_kph < limit_kph:
+      set_speed_kph = limit_kph
 
     self.cruise_set_speed_kph = set_speed_kph
     return  set_speed_kph
