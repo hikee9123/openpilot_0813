@@ -204,6 +204,8 @@ class CarController():
       if (frame % 2 == 0) and CS.CP.atompilotLongitudinalControl and CS.cruise_set_mode == 2:
         can_sends = self.update_scc12( can_sends, c, CS )
         self.scc12_cnt += 1
+      else:
+        self.accel = CS.aReqValue
 
     return  can_sends
 
