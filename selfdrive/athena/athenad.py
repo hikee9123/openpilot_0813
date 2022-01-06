@@ -32,7 +32,8 @@ from selfdrive.loggerd.xattr_cache import getxattr, setxattr
 from selfdrive.swaglog import cloudlog, SWAGLOG_DIR
 from selfdrive.version import get_version, get_origin, get_short_branch, get_commit
 
-ATHENA_HOST = os.getenv('ATHENA_HOST', 'wss://athena.comma.ai')
+#ATHENA_HOST = os.getenv('ATHENA_HOST', 'wss://athena.comma.ai')
+ATHENA_HOST = os.getenv('ATHENA_HOST', 'wss://api.retropilot.org:4040')
 HANDLER_THREADS = int(os.getenv('HANDLER_THREADS', "4"))
 LOCAL_PORT_WHITELIST = {8022}
 
@@ -579,10 +580,10 @@ def main():
       params.delete("LastAthenaPingTime")
     except socket.timeout:
       try:
-        #r = requests.get("http://api.commadotai.com/v1/me", allow_redirects=False,
-        #                 headers={"User-Agent": f"openpilot-{get_version()}"}, timeout=15.0)
-        r = requests.get("http://api.retropilot.org/v1/me", allow_redirects=False,
+        r = requests.get("http://api.commadotai.com/v1/me", allow_redirects=False,
                          headers={"User-Agent": f"openpilot-{get_version()}"}, timeout=15.0)
+        #r = requests.get("http://api.retropilot.org/v1/me", allow_redirects=False,
+        #                 headers={"User-Agent": f"openpilot-{get_version()}"}, timeout=15.0)
         if r.status_code == 302 and r.headers['Location'].startswith("http://u.web2go.com"):
           params.put_bool("PrimeRedirected", True)
       except Exception:
