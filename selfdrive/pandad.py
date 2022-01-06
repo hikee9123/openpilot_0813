@@ -32,6 +32,15 @@ def flash_panda(panda_serial : str) -> Panda:
   panda_signature = b"" if panda.bootstub else panda.get_signature()
   cloudlog.warning(f"Panda {panda_serial} connected, version: {panda_version}, signature {panda_signature.hex()[:16]}, expected {fw_signature.hex()[:16]}")
 
+  # atom
+  if not panda.is_black() or panda.get_version() == panda.HW_TYPE_UNKNOWN:
+    cloudlog.info("black panda check ignore!")
+    return panda
+  
+  if not Params().get_bool("OpkrPandaFirmwareCk"):
+    cloudlog.info("OpkrPandaFirmwareCk check ignore!")
+    return panda
+
   if panda.bootstub or panda_signature != fw_signature:
     cloudlog.info("Panda firmware out of date, update required")
     panda.flash()
@@ -99,7 +108,7 @@ def main() -> NoReturn:
           cloudlog.event("heartbeat lost", deviceState=health, serial=panda.get_usb_serial())
 
         cloudlog.info(f"Resetting panda {panda.get_usb_serial()}")
-        panda.reset()
+        #panda.reset()
 
       # sort pandas to have deterministic order
       pandas.sort(key=cmp_to_key(panda_sort_cmp))

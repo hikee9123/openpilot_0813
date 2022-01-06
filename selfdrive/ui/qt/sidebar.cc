@@ -21,7 +21,7 @@ void Sidebar::drawMetric(QPainter &p, const QString &label, QColor c, int y) {
 
   p.setPen(QColor(0xff, 0xff, 0xff));
   configFont(p, "Open Sans", 35, "Bold");
-  const QRect r = QRect(rect.x() + 30, rect.y(), rect.width() - 40, rect.height());
+  const QRect r = QRect(rect.x() + 35, rect.y(), rect.width() - 50, rect.height());
   p.drawText(r, Qt::AlignCenter, label);
 }
 
@@ -57,19 +57,29 @@ void Sidebar::updateState(const UIState &s) {
   ItemStatus connectStatus;
   auto last_ping = deviceState.getLastAthenaPingTime();
   if (last_ping == 0) {
-    connectStatus = params.getBool("PrimeRedirected") ? ItemStatus{"NO\nPRIME", danger_color} : ItemStatus{"CONNECT\nOFFLINE", warning_color};
+    //connectStatus = params.getBool("PrimeRedirected") ? ItemStatus{"NO\nPRIME", danger_color} : ItemStatus{"CONNECT\nOFFLINE", warning_color};
+    connectStatus = ItemStatus{"CONNECT\nOFFLINE", warning_color};
   } else {
     connectStatus = nanos_since_boot() - last_ping < 80e9 ? ItemStatus{"CONNECT\nONLINE", good_color} : ItemStatus{"CONNECT\nERROR", danger_color};
   }
   setProperty("connectStatus", QVariant::fromValue(connectStatus));
 
-  ItemStatus tempStatus = {"TEMP\nHIGH", danger_color};
+
+  QString strTempC = "HIGH\n";
+  QColor  tempColor = danger_color;
   auto ts = deviceState.getThermalStatus();
   if (ts == cereal::DeviceState::ThermalStatus::GREEN) {
-    tempStatus = {"TEMP\nGOOD", good_color};
+    strTempC = "GOOD\n";    
+    tempColor = good_color;
   } else if (ts == cereal::DeviceState::ThermalStatus::YELLOW) {
-    tempStatus = {"TEMP\nOK", warning_color};
+    strTempC = "OK\n";    
+    tempColor = warning_color;
   }
+
+
+  //strTempC.append( QVariant::fromValue(ItemStatus{QString("%1°C").arg((int)deviceState.getAmbientTempC()), tempColor}) );
+  strTempC.append( QString("%1°C").arg((int)deviceState.getAmbientTempC()) );
+  ItemStatus tempStatus = { strTempC, tempColor};
   setProperty("tempStatus", QVariant::fromValue(tempStatus));
 
   ItemStatus pandaStatus = {"VEHICLE\nONLINE", good_color};
@@ -79,6 +89,15 @@ void Sidebar::updateState(const UIState &s) {
     pandaStatus = {"GPS\nSEARCHING", warning_color};
   }
   setProperty("pandaStatus", QVariant::fromValue(pandaStatus));
+
+
+  // atom
+  if (s.sm->updated("deviceState") || s.sm->updated("pandaStates")) {
+    m_battery_img = s.scene.deviceState.getBatteryStatusDEPRECATED() == "Charging" ? 1 : 0;
+    m_batteryPercent = s.scene.deviceState.getBatteryPercent();
+    m_strip = s.scene.deviceState.getWifiIpAddress();
+    repaint();
+  }
 }
 
 void Sidebar::paintEvent(QPaintEvent *event) {
@@ -105,11 +124,34 @@ void Sidebar::paintEvent(QPaintEvent *event) {
 
   configFont(p, "Open Sans", 35, "Regular");
   p.setPen(QColor(0xff, 0xff, 0xff));
-  const QRect r = QRect(50, 247, 100, 50);
+  const QRect r = QRect(50, 237, 100, 50);
   p.drawText(r, Qt::AlignCenter, net_type);
 
   // metrics
-  drawMetric(p, temp_status.first, temp_status.second, 338);
-  drawMetric(p, panda_status.first, panda_status.second, 496);
-  drawMetric(p, connect_status.first, connect_status.second, 654);
+  drawMetric(p, temp_status.first, temp_status.second, 340);
+  drawMetric(p, panda_status.first, panda_status.second, 518);
+  drawMetric(p, connect_status.first, connect_status.second, 676);
+
+
+
+  // atom - ip
+  if( m_batteryPercent <= 1) return;
+  QString  strip = m_strip.c_str();
+  const QRect r2 = QRect(40, 295, 210, 50);
+  configFont(p, "Open Sans", 28, "Regular");
+  p.drawText(r2, Qt::AlignLeft, strip);
+
+  // atom - battery
+  QRect  rect(160, 247, 76, 36);
+  QRect  bq(rect.left() + 6, rect.top() + 5, int((rect.width() - 19) * m_batteryPercent * 0.01), rect.height() - 11 );
+  QBrush bgBrush("#149948");
+  p.fillRect(bq, bgBrush);  
+  p.drawImage(rect, battery_imgs[m_battery_img]);
+
+  p.setPen(Qt::white);
+  configFont(p, "Open Sans", 25, "Regular");
+
+  char temp_value_str1[32];
+  snprintf(temp_value_str1, sizeof(temp_value_str1), "%d", m_batteryPercent );
+  p.drawText(rect, Qt::AlignCenter, temp_value_str1);
 }
