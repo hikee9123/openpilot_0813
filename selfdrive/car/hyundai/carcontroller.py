@@ -161,11 +161,12 @@ class CarController():
     accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
 
     if (CS.aReqValue > accel) and accel < 0 and CS.clu_Vanz > 3:
-      can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
+      #can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
+      pass
     else:
       accel = CS.aReqValue
 
-    #can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
+    can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
     self.accel = accel
     return can_sends    
 
