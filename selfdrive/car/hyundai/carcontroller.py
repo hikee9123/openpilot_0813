@@ -161,10 +161,12 @@ class CarController():
     accel = clip(accel, CarControllerParams.ACCEL_MIN, CarControllerParams.ACCEL_MAX)
 
     if (CS.aReqValue > accel) and accel < 0 and CS.clu_Vanz > 3:
-      can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
+      #can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
+      pass
     else:
       accel = CS.aReqValue
 
+    can_sends.append( create_scc12(self.packer, accel, enabled, self.scc12_cnt, self.scc_live, CS.scc12 ) )
     self.accel = accel
     return can_sends    
 
@@ -245,8 +247,7 @@ class CarController():
 
     if frame == 0: # initialize counts from last received count signals
       self.lkas11_cnt = CS.lkas11["CF_Lkas_MsgCount"] + 1
-
-    self.scc12_cnt =  CS.scc12["CR_VSM_Alive"] + 1
+      self.scc12_cnt =  CS.scc12["CR_VSM_Alive"] + 1
   
     self.lkas11_cnt %= 0x10
     self.scc12_cnt %= 0x0F
