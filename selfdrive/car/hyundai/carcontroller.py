@@ -203,11 +203,7 @@ class CarController():
       else:
         self.resume_cnt = 0
 
-      if (frame % 2 == 0) and CS.CP.atompilotLongitudinalControl and CS.cruise_set_mode == 2:
-        can_sends = self.update_scc12( can_sends, c, CS )
-        self.scc12_cnt += 1
-      else:
-        self.accel = CS.aReqValue
+
 
     return  can_sends
 
@@ -265,9 +261,12 @@ class CarController():
     else:
       can_sends = self.update_resume( can_sends, c, CS, frame, path_plan )
 
-
-
-
+    if CS.CP.atompilotLongitudinalControl:
+      if (frame % 2 == 0) and CS.cruise_set_mode == 2:
+        can_sends = self.update_scc12( can_sends, c, CS )
+        self.scc12_cnt += 1
+    else:
+      self.accel = CS.aReqValue
       
     # 20 Hz LFA MFA message
     if frame % 5 == 0:
