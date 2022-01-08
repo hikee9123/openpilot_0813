@@ -173,7 +173,7 @@ class NaviControl():
     cruise_speed = False
     if CS.cruise_set_mode == 2:
       vFuture = c.hudControl.vFuture * CV.MS_TO_KPH
-      ctrl_speed = vFuture    
+      ctrl_speed = min( vFuture, ctrl_speed )
     elif CS.gasPressed:
       self.gasPressed_time += 1
       if self.gasPressed_time > 100:
