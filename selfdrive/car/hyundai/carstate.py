@@ -36,7 +36,7 @@ class CarState(CarStateBase):
     self.prev_acc_set_btn = False
     self.acc_active = 0
     self.cruise_set_speed_kph = 0
-    self.cruise_set_mode = 2      # 모드 설정.
+    self.cruise_set_mode = 1     # 모드 설정.
     self.gasPressed = False
     self.aReqValue = 0
 
