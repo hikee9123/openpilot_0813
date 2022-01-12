@@ -221,6 +221,8 @@ def main():
           dat.roadLimitSpeed.camSpeedFactor = server.get_limit_val("cam_speed_factor", CAMERA_SPEED_FACTOR)
           roadLimitSpeed.send(dat.to_bytes())
 
+          print('neokii road={} cam={} {} sec={} {}'.format( dat.roadLimitSpeed.roadLimitSpeed, dat.roadLimitSpeed.camLimitSpeed, dat.roadLimitSpeed.camLimitSpeedLeftDist, dat.roadLimitSpeed.sectionLimitSpeed, dat.roadLimitSpeed.sectionLeftDist  ) )
+
         server.check()
 
     except Exception as e:

@@ -33,6 +33,8 @@ class CarController():
     self.NC = NaviControl(self.p)
     self.steerWarning_time = 0
 
+    
+
     # hud
     self.hud_timer_left = 0
     self.hud_timer_right = 0
@@ -107,13 +109,15 @@ class CarController():
 
 
   def update_debug(self, CS, c ):
+    apply_limit_speed, road_limit_speed, dist, first_started = self.NC.neokii_tmap( CS )
     actuators = c.actuators
     vFuture = c.hudControl.vFuture * 3.6
     str_log1 = 'MODE={:.0f} vF={:.1f} gas={:.2f}'.format( CS.cruise_set_mode, vFuture, CS.out.gas )
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
-    str_log1 = 'acc={:.2f}, RV={:.2f},  {:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
+    #str_log1 = 'acc={:.2f}, RV={:.2f},  {:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
+    str_log1 = 'spd={} {} dist={} first={} '.format( apply_limit_speed, road_limit_speed, dist, first_started )
     trace1.printf3( '{}'.format( str_log1 ) )
   
 
@@ -222,6 +226,7 @@ class CarController():
     new_steer = int(round(actuators.steer * self.p.STEER_MAX))
     apply_steer = apply_std_steer_torque_limits(new_steer, self.apply_steer_last, CS.out.steeringTorque, self.p)
     self.steer_rate_limited = new_steer != apply_steer
+
 
     # disable when temp fault is active, or below LKA minimum speed
     # lkas_active = enabled and not CS.out.steerWarning and CS.out.vEgo >= CS.CP.minSteerSpeed and CS.out.cruiseState.enabled
