@@ -36,7 +36,7 @@ class CarState(CarStateBase):
     self.prev_acc_set_btn = False
     self.acc_active = 0
     self.cruise_set_speed_kph = 0
-    self.cruise_set_mode = 2      # 모드 설정.
+    self.cruise_set_mode = 1     # 모드 설정.
     self.gasPressed = False
     self.aReqValue = 0
 
@@ -61,7 +61,7 @@ class CarState(CarStateBase):
     if self.time_break:
       limitAngleDeg = 60
 
-    if not self.acc_mode and self.clu_Vanz < 30 and steeringAngleDeg > limitAngleDeg and steeringTorque > 250:
+    if not self.acc_mode and self.clu_Vanz < 30 and steeringAngleDeg > limitAngleDeg and steeringTorque > 300:
        return True
 
     return False
