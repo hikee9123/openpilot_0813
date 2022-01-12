@@ -11,7 +11,7 @@ import cereal.messaging as messaging
 import common.loger as trace1
 import common.MoveAvg as mvAvg
 
-
+from selfdrive.road_speed_limiter import  road_speed_limiter_get_active, get_road_speed_limiter
 
 
 class NaviControl():
@@ -33,6 +33,14 @@ class NaviControl():
     self.gasWait_time = 0
 
 
+  def neokii_tmap( self, CS ):
+    clu11_speed = CS.clu_Vanz
+    road_speed_limiter = get_road_speed_limiter()
+    apply_limit_speed, road_limit_speed, left_dist, first_started, max_speed_log = road_speed_limiter.get_max_speed(clu11_speed)
+    roadLimitSpeedActive = road_speed_limiter_get_active()   # HDA
+    return  apply_limit_speed, road_limit_speed, left_dist, first_started
+
+
   def update_lateralPlan( self ):
     self.sm.update(0)
     path_plan = self.sm['lateralPlan']
@@ -48,8 +56,6 @@ class NaviControl():
     else:
       return 1
     return 0
-
-
 
 
   # buttn acc,dec control
