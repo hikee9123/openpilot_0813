@@ -95,7 +95,20 @@ void OnPaint::updateState(const UIState &s)
     auto radar_state = sm["radarState"].getRadarState();  // radar
     m_param.lead_radar = radar_state.getLeadOne();
 
-    m_param.road_limitSpeed = sm['roadLimitSpeed'].getRoadLimitSpeed();
+    if( sm.updated("roadLimitSpeed") )
+    {
+      auto roadLimitSpeed = sm["roadLimitSpeed"].getRoadLimitSpeed();
+
+      road_limitSpeed.active = roadLimitSpeed.active;
+      road_limitSpeed.roadLimitSpeed = roadLimitSpeed.roadLimitSpeed;
+      road_limitSpeed.isHighway = roadLimitSpeed.isHighway;
+      road_limitSpeed.camType = roadLimitSpeed.camType;
+      road_limitSpeed.camLimitSpeedLeftDist = roadLimitSpeed.camLimitSpeedLeftDist;
+      road_limitSpeed.camLimitSpeed = roadLimitSpeed.camLimitSpeed;
+      road_limitSpeed.sectionLimitSpeed = roadLimitSpeed.sectionLimitSpeed;
+      road_limitSpeed.sectionLeftDist = roadLimitSpeed.sectionLeftDist;
+    }
+
 
 
     if( memcmp( &m_param, &m_old, sizeof(m_param)) )

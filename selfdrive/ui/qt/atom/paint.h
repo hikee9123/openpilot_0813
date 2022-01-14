@@ -48,7 +48,19 @@ private:
     
     cereal::RadarState::LeadData::Reader lead_radar;
     cereal::CarState::Reader car_state;
-    cereal::RoadLimitSpeed::Reader road_limitSpeed;
+    struct RoadLimitSpeed
+    {
+      int active;
+      int roadLimitSpeed;
+      int isHighway;
+      int camType;
+      int camLimitSpeedLeftDist;
+      int camLimitSpeed;
+      int sectionLimitSpeed;
+      int sectionLeftDist;
+      float camSpeedFactor;
+    } road_limitSpeed;
+    
 
   } m_param, m_old;
   
