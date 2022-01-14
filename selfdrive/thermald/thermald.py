@@ -66,6 +66,8 @@ def read_thermal(thermal_config):
   dat.deviceState.memoryTempC = read_tz(thermal_config.mem[0]) / thermal_config.mem[1]
   dat.deviceState.ambientTempC = read_tz(thermal_config.ambient[0]) / thermal_config.ambient[1]
   dat.deviceState.pmicTempC = [read_tz(z) / thermal_config.pmic[1] for z in thermal_config.pmic[0]]
+  dat.deviceState.batteryTempCDEPRECATED = read_tz(thermal_config.bat[0]) / thermal_config.bat[1]
+  dat.deviceState.modemTempC = HARDWARE.get_modem_temperatures()
   return dat
 
 
@@ -183,6 +185,7 @@ def thermald_thread() -> NoReturn:
   registered_count = 0
   nvme_temps = None
   modem_temps = None
+  wifiIpAddress = 'N/A'
 
   current_filter = FirstOrderFilter(0., CURRENT_TAU, DT_TRML)
   temp_filter = FirstOrderFilter(0., TEMP_TAU, DT_TRML)
@@ -205,6 +208,7 @@ def thermald_thread() -> NoReturn:
   controller = PIController(k_p=0, k_i=2e-3, neg_limit=-80, pos_limit=0, rate=(1 / DT_TRML))
 
   while True:
+    ts = sec_since_boot()
     pandaStates = messaging.recv_sock(pandaState_sock, wait=True)
 
     sm.update(0)
@@ -250,6 +254,13 @@ def thermald_thread() -> NoReturn:
           pandaState_prev.pandaType != log.PandaState.PandaType.unknown:
           params.clear_all(ParamKeyType.CLEAR_ON_PANDA_DISCONNECT)
       pandaState_prev = pandaState
+    else:
+      # atom
+      is_openpilot_view_enabled = params.get_bool("IsOpenpilotViewEnabled") # IsRHD
+      if is_openpilot_view_enabled:
+        onroad_conditions["ignition"] = True
+      elif onroad_conditions["ignition"] == True:
+        onroad_conditions["ignition"] = False
 
     # these are expensive calls. update every 10s
     if (count % int(10. / DT_TRML)) == 0:
@@ -259,6 +270,7 @@ def thermald_thread() -> NoReturn:
         network_info = HARDWARE.get_network_info()  # pylint: disable=assignment-from-none
         nvme_temps = HARDWARE.get_nvme_temperatures()
         modem_temps = HARDWARE.get_modem_temperatures()
+        wifiIpAddress = HARDWARE.get_ip_address()
 
         # Log modem version once
         if modem_version is None:
@@ -296,6 +308,9 @@ def thermald_thread() -> NoReturn:
       for i, temp in enumerate(modem_temps):
         statlog.gauge(f"modem_temperature{i}", temp)
 
+    msg.deviceState.wifiIpAddress = wifiIpAddress
+    msg.deviceState.batteryStatusDEPRECATED = HARDWARE.get_battery_status()
+    msg.deviceState.batteryVoltageDEPRECATED = HARDWARE.get_battery_voltage()
     msg.deviceState.screenBrightnessPercent = HARDWARE.get_screen_brightness()
     msg.deviceState.batteryPercent = HARDWARE.get_battery_capacity()
     msg.deviceState.batteryCurrent = HARDWARE.get_battery_current()
@@ -442,6 +457,17 @@ def thermald_thread() -> NoReturn:
       statlog.gauge(f"pmic{i}_temperature", temp)
     statlog.gauge("fan_speed_percent_desired", msg.deviceState.fanSpeedPercentDesired)
     statlog.gauge("screen_brightness_percent", msg.deviceState.screenBrightnessPercent)
+
+
+    #battery_changing = HARDWARE.get_battery_charging()
+    usbOnline = HARDWARE.get_usb_present()
+
+    #if pandaState is not None:
+    #  print( "  pandaState={} ".format( pandaState ) )
+
+    #print( "  usb_power={}  usbOnline={} battery_changing={}".format( usb_power, usbOnline, battery_changing ) )
+    if usbOnline and usb_power:
+      power_monitor.charging_ctrl( msg, ts, 60, 40 )    
 
     # report to server once every 10 minutes
     if (count % int(600. / DT_TRML)) == 0:

@@ -10,11 +10,18 @@ def create_lkas11(packer, frame, car_fingerprint, apply_steer, steer_req,
   values = lkas11
   values["CF_Lkas_LdwsSysState"] = sys_state
   values["CF_Lkas_SysWarning"] = 3 if sys_warning else 0
-  values["CF_Lkas_LdwsLHWarning"] = left_lane_depart
-  values["CF_Lkas_LdwsRHWarning"] = right_lane_depart
+  #values["CF_Lkas_LdwsLHWarning"] = left_lane_depart
+  #values["CF_Lkas_LdwsRHWarning"] = right_lane_depart
   values["CR_Lkas_StrToqReq"] = apply_steer
   values["CF_Lkas_ActToi"] = steer_req
   values["CF_Lkas_MsgCount"] = frame % 0x10
+
+  if car_fingerprint in [CAR.GRANDEUR_HEV_19]:
+    values["CF_Lkas_SysWarning"] = 4 if sys_warning else 0
+     
+
+    # CF_Lkas_SysWarning  4 keep hand on wheel
+    # CF_Lkas_SysWarning  9 keep hands on wheel (red) + beep
 
   if car_fingerprint in (CAR.SONATA, CAR.PALISADE, CAR.KIA_NIRO_EV, CAR.KIA_NIRO_HEV_2021, CAR.SANTA_FE,
                          CAR.IONIQ_EV_2020, CAR.IONIQ_PHEV, CAR.KIA_SELTOS, CAR.ELANTRA_2021, CAR.GENESIS_G70_2020,
@@ -76,6 +83,23 @@ def create_lfahda_mfc(packer, enabled, hda_set_speed=0):
     "HDA_Icon_State": 2 if hda_set_speed else 0,
     "HDA_VSetReq": hda_set_speed,
   }
+  return packer.make_can_msg("LFAHDA_MFC", 0, values)
+
+def create_hda_mfc(packer, CS, c ):
+  values = CS.lfahda
+  enabled = c.enabled
+
+  #if CS.cruise_set_mode == 0:
+  ldwSysState = 0
+  if c.hudControl.leftLaneVisible :
+     ldwSysState += 1
+  if c.hudControl.rightLaneVisible:
+     ldwSysState += 2
+
+    #values["HDA_Icon_Wheel"] = 1 if enabled else 0
+    #values["HDA_Icon_State"] = hda_icon_state
+  values["HDA_LdwSysState"] = ldwSysState
+  values["HDA_Icon_Wheel"] = 1 if enabled else 0
   return packer.make_can_msg("LFAHDA_MFC", 0, values)
 
 def create_acc_commands(packer, enabled, accel, jerk, idx, lead_visible, set_speed, stopping):
@@ -155,3 +179,30 @@ def create_frt_radar_opt(packer):
     "CF_FCA_Equip_Front_Radar": 1,
   }
   return packer.make_can_msg("FRT_RADAR11", 0, frt_radar11_values)
+
+def create_mdps12(packer, frame, mdps12):
+  values = mdps12
+  values["CF_Mdps_ToiActive"] = 0
+  values["CF_Mdps_ToiUnavail"] = 1
+  values["CF_Mdps_MsgCount2"] = frame % 0x100
+  values["CF_Mdps_Chksum2"] = 0
+
+  dat = packer.make_can_msg("MDPS12", 2, values)[2]
+  checksum = sum(dat) % 256
+  values["CF_Mdps_Chksum2"] = checksum
+
+  return packer.make_can_msg("MDPS12", 2, values)   # 0
+
+def create_scc12(packer, apply_accel, enabled, frame, scc_live, scc12):
+  values = scc12
+  values["aReqRaw"] = apply_accel if enabled else 0 #aReqMax
+  values["aReqValue"] = apply_accel if enabled else 0 #aReqMin
+  values["CR_VSM_Alive"] = frame % 0x0F
+  values["CR_VSM_ChkSum"] = 0
+  if not scc_live:
+    values["ACCMode"] = 1  if enabled else 0 # 2 if gas padel pressed
+
+  dat = packer.make_can_msg("SCC12", 0, values)[2]
+  values["CR_VSM_ChkSum"] = 16 - sum([sum(divmod(i, 16)) for i in dat]) % 16
+
+  return packer.make_can_msg("SCC12", 0, values)

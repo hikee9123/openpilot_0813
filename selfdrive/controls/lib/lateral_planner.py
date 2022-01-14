@@ -9,11 +9,14 @@ from selfdrive.config import Conversions as CV
 import cereal.messaging as messaging
 from cereal import log
 
+from selfdrive.car.hyundai.values import Buttons
+
 LaneChangeState = log.LateralPlan.LaneChangeState
 LaneChangeDirection = log.LateralPlan.LaneChangeDirection
 
-LANE_CHANGE_SPEED_MIN = 30 * CV.MPH_TO_MS
+LANE_CHANGE_SPEED_MIN = 40 * CV.KPH_TO_MS
 LANE_CHANGE_TIME_MAX = 10.
+LANE_CHANGE_AUTO_TIME = 0.5
 
 DESIRES = {
   LaneChangeDirection.none: {
@@ -63,6 +66,27 @@ class LateralPlanner:
     self.lat_mpc = LateralMpc()
     self.reset_mpc(np.zeros(6))
 
+
+  def auto_lanechange( self, md, torque_applied ):
+    # auto
+    self.lane_change_timer_auto += DT_MDL
+    ll_probs = md.laneLineProbs   # 0,1,2,3
+    if torque_applied or self.lane_change_timer_auto < LANE_CHANGE_AUTO_TIME:
+        pass    
+    elif self.lane_change_direction == LaneChangeDirection.left:
+      if ll_probs[0] > 0.5:
+        torque_applied = True
+    elif self.lane_change_direction == LaneChangeDirection.right:
+      if ll_probs[3] > 0.5:
+        torque_applied = True
+  
+    return torque_applied
+
+  def lanechange_cancel( self, cruiseState, steeringTorqueAbs ):
+    if cruiseState.cruiseSwState == Buttons.CANCEL or steeringTorqueAbs > 200:
+      self.lane_change_state = LaneChangeState.off
+      self.lane_change_direction = LaneChangeDirection.none
+
   def reset_mpc(self, x0=np.zeros(6)):
     self.x0 = x0
     self.lat_mpc.reset(x0=self.x0)
@@ -71,9 +95,14 @@ class LateralPlanner:
     v_ego = sm['carState'].vEgo
     active = sm['controlsState'].active
     measured_curvature = sm['controlsState'].curvature
+    cruiseState  = sm['carState'].cruiseState    
+    steeringTorqueAbs = abs(sm['carState'].steeringTorque)
 
     md = sm['modelV2']
-    self.LP.parse_model(sm['modelV2'])
+    if sm.frame % 2 == 0:
+      self.LP.cal_model_speed( md, v_ego )
+
+    self.LP.parse_model( md )
     if len(md.position.x) == TRAJECTORY_SIZE and len(md.orientation.x) == TRAJECTORY_SIZE:
       self.path_xyz = np.column_stack([md.position.x, md.position.y, md.position.z])
       self.t_idxs = np.array(md.position.t)
@@ -89,11 +118,15 @@ class LateralPlanner:
       self.lane_change_state = LaneChangeState.off
       self.lane_change_direction = LaneChangeDirection.none
     else:
+      # atom
+      self.lanechange_cancel( cruiseState, steeringTorqueAbs )
+
+
       # LaneChangeState.off
       if self.lane_change_state == LaneChangeState.off and one_blinker and not self.prev_one_blinker and not below_lane_change_speed:
         self.lane_change_state = LaneChangeState.preLaneChange
         self.lane_change_ll_prob = 1.0
-
+        self.lane_change_timer_auto = 0.0
       # LaneChangeState.preLaneChange
       elif self.lane_change_state == LaneChangeState.preLaneChange:
         # Set lane change direction
@@ -110,6 +143,8 @@ class LateralPlanner:
 
         blindspot_detected = ((sm['carState'].leftBlindspot and self.lane_change_direction == LaneChangeDirection.left) or
                               (sm['carState'].rightBlindspot and self.lane_change_direction == LaneChangeDirection.right))
+
+        torque_applied = self.auto_lanechange( md, torque_applied )
 
         if not one_blinker or below_lane_change_speed:
           self.lane_change_state = LaneChangeState.off
@@ -220,5 +255,6 @@ class LateralPlanner:
     lateralPlan.useLaneLines = self.use_lanelines
     lateralPlan.laneChangeState = self.lane_change_state
     lateralPlan.laneChangeDirection = self.lane_change_direction
+    lateralPlan.modelSpeed = float(self.LP.soft_model_speed)
 
     pm.send('lateralPlan', plan_send)

@@ -83,7 +83,7 @@ function two_init {
   LD_LIBRARY_PATH="" content insert --uri content://settings/system --bind name:s:user_rotation --bind value:i:1
 
   # disable bluetooth
-  service call bluetooth_manager 8
+  service call bluetooth_manager 8    # 6 on, 8 off
 
   # wifi scan
   wpa_cli IFNAME=wlan0 SCAN
