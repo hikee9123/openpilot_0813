@@ -792,22 +792,24 @@ void OnPaint::ui_draw_debug1( QPainter &p )
 {
   configFont( p, "Open Sans",  40, "Regular");
 
-
+  int    nXPos = 200;
+  int    nYPos = 300;
+  int    nWidth = 200;
   QString  szSLD;
   szSLD.sprintf("nda:%d", m_param.road_limitSpeed.active );
-  drawText( p, 100, 200, szSLD );
+  p.drawText( QRect(nXPos, nYPos+0, nWidth, 50),  szSLD, Qt::AlignLeft );
 
   szSLD.sprintf("highway:%d %d", m_param.road_limitSpeed.isHighway, m_param.road_limitSpeed.roadLimitSpeed );
-  drawText( p, 100, 220, szSLD );
+  p.drawText( QRect(nXPos, nYPos+50, nWidth, 50),  szSLD, Qt::AlignLeft );
 
   szSLD.sprintf("camtype:%d", m_param.road_limitSpeed.camType );
-  drawText( p, 100, 240, szSLD );
+  p.drawText( QRect(nXPos, nYPos+100, nWidth, 50),  szSLD, Qt::AlignLeft );
 
   szSLD.sprintf("cam:%d %d", m_param.road_limitSpeed.camLimitSpeed,  m_param.road_limitSpeed.camLimitSpeedLeftDist );
-  drawText( p, 100, 260, szSLD );
+  p.drawText( QRect(nXPos, nYPos+150, nWidth, 50),  szSLD, Qt::AlignLeft );
 
   szSLD.sprintf("section:%d %d", m_param.road_limitSpeed.sectionLimitSpeed,  m_param.road_limitSpeed.sectionLeftDist );
-  drawText( p, 100, 280, szSLD );
+  p.drawText( QRect(nXPos, nYPos+200, nWidth, 50),  szSLD, Qt::AlignLeft );
 
 
 
