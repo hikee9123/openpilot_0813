@@ -48,7 +48,7 @@ private:
     
     cereal::RadarState::LeadData::Reader lead_radar;
     cereal::CarState::Reader car_state;
-
+    cereal::RoadLimitSpeed::Reader road_limitSpeed;
 
   } m_param, m_old;
   

@@ -95,6 +95,7 @@ void OnPaint::updateState(const UIState &s)
     auto radar_state = sm["radarState"].getRadarState();  // radar
     m_param.lead_radar = radar_state.getLeadOne();
 
+    m_param.road_limitSpeed = sm['roadLimitSpeed'].getRoadLimitSpeed();
 
 
     if( memcmp( &m_param, &m_old, sizeof(m_param)) )
@@ -776,6 +777,27 @@ void OnPaint::ui_draw_navi( QPainter &p )
 
 void OnPaint::ui_draw_debug1( QPainter &p ) 
 {
+  configFont( p, "Open Sans",  40, "Regular");
+
+
+  QString  szSLD;
+  szSLD.sprintf("nda:%d", m_param.road_limitSpeed.active );
+  drawText( p, 100, 200, szSLD );
+
+  szSLD.sprintf("highway:%d %d", m_param.road_limitSpeed.isHighway, m_param.road_limitSpeed.roadLimitSpeed );
+  drawText( p, 100, 220, szSLD );
+
+  szSLD.sprintf("camtype:%d", m_param.road_limitSpeed.camType );
+  drawText( p, 100, 220, szSLD );
+
+  szSLD.sprintf("cam:%d %d", m_param.road_limitSpeed.camLimitSpeed,  m_param.road_limitSpeed.camLimitSpeedLeftDist );
+  drawText( p, 100, 220, szSLD );
+
+  szSLD.sprintf("section:%d %d", m_param.road_limitSpeed.sectionLimitSpeed,  m_param.road_limitSpeed.sectionLeftDist );
+  drawText( p, 100, 220, szSLD );
+
+
+
   QString text1 = QString::fromStdString(scene->alert.alertTextMsg1);
   QString text2 = QString::fromStdString(scene->alert.alertTextMsg2);
   QString text3 = QString::fromStdString(scene->alert.alertTextMsg3);
