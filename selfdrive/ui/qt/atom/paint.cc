@@ -56,7 +56,10 @@ OnPaint::OnPaint(QWidget *parent) : QWidget(parent)
   scene->scr.brightness_off = get_param("OpkrUIBrightnessOff");
   scene->scr.autoScreenOff = get_param("OpkrAutoScreenOff");
   scene->scr.brightness = get_param("OpkrUIBrightness");
-  scene->scr.nTime = scene->scr.autoScreenOff * 60 * UI_FREQ;  
+  scene->scr.nTime = scene->scr.autoScreenOff * 60 * UI_FREQ;
+
+
+  memset( &m_param.road_limitSpeed, NULL, sizeof(m_param.road_limitSpeed ) );
 }
 
 void OnPaint::updateState(const UIState &s)
@@ -108,6 +111,7 @@ void OnPaint::updateState(const UIState &s)
       m_param.road_limitSpeed.sectionLimitSpeed = roadLimitSpeed.getSectionLimitSpeed();
       m_param.road_limitSpeed.sectionLeftDist = roadLimitSpeed.getSectionLeftDist();
     }
+    
 
 
 
