@@ -99,14 +99,14 @@ void OnPaint::updateState(const UIState &s)
     {
       auto roadLimitSpeed = sm["roadLimitSpeed"].getRoadLimitSpeed();
 
-      m_param.road_limitSpeed.active = roadLimitSpeed.active;
-      m_param.road_limitSpeed.roadLimitSpeed = roadLimitSpeed.roadLimitSpeed;
-      m_param.road_limitSpeed.isHighway = roadLimitSpeed.isHighway;
-      m_param.road_limitSpeed.camType = roadLimitSpeed.camType;
-      m_param.road_limitSpeed.camLimitSpeedLeftDist = roadLimitSpeed.camLimitSpeedLeftDist;
-      m_param.road_limitSpeed.camLimitSpeed = roadLimitSpeed.camLimitSpeed;
-      m_param.road_limitSpeed.sectionLimitSpeed = roadLimitSpeed.sectionLimitSpeed;
-      m_param.road_limitSpeed.sectionLeftDist = roadLimitSpeed.sectionLeftDist;
+      m_param.road_limitSpeed.active = roadLimitSpeed.getActive();
+      m_param.road_limitSpeed.roadLimitSpeed = roadLimitSpeed.getRoadLimitSpeed();
+      m_param.road_limitSpeed.isHighway = roadLimitSpeed.getIsHighway();
+      m_param.road_limitSpeed.camType = roadLimitSpeed.getCamType();
+      m_param.road_limitSpeed.camLimitSpeedLeftDist = roadLimitSpeed.getCamLimitSpeedLeftDist();
+      m_param.road_limitSpeed.camLimitSpeed = roadLimitSpeed.getCamLimitSpeed();
+      m_param.road_limitSpeed.sectionLimitSpeed = roadLimitSpeed.getSectionLimitSpeed();
+      m_param.road_limitSpeed.sectionLeftDist = roadLimitSpeed.getSectionLeftDist();
     }
 
 
