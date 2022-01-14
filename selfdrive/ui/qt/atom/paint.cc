@@ -801,19 +801,19 @@ void OnPaint::ui_draw_debug1( QPainter &p )
   int    nWidth = 200;
   QString  szSLD;
   szSLD.sprintf("nda:%d", m_param.road_limitSpeed.active );
-  p.drawText( QRect(nXPos, nYPos+0, nWidth, 50),  szSLD, Qt::AlignLeft );
+  p.drawText( QRect(nXPos, nYPos+0, nWidth, 50), Qt::AlignLeft,  szSLD );
 
   szSLD.sprintf("highway:%d %d", m_param.road_limitSpeed.isHighway, m_param.road_limitSpeed.roadLimitSpeed );
-  p.drawText( QRect(nXPos, nYPos+50, nWidth, 50),  szSLD, Qt::AlignLeft );
+  p.drawText( QRect(nXPos, nYPos+50, nWidth, 50), Qt::AlignLeft,  szSLD );
 
   szSLD.sprintf("camtype:%d", m_param.road_limitSpeed.camType );
-  p.drawText( QRect(nXPos, nYPos+100, nWidth, 50),  szSLD, Qt::AlignLeft );
+  p.drawText( QRect(nXPos, nYPos+100, nWidth, 50), Qt::AlignLeft,  szSLD  );
 
   szSLD.sprintf("cam:%d %d", m_param.road_limitSpeed.camLimitSpeed,  m_param.road_limitSpeed.camLimitSpeedLeftDist );
-  p.drawText( QRect(nXPos, nYPos+150, nWidth, 50),  szSLD, Qt::AlignLeft );
+  p.drawText( QRect(nXPos, nYPos+150, nWidth, 50), Qt::AlignLeft,  szSLD  );
 
   szSLD.sprintf("section:%d %d", m_param.road_limitSpeed.sectionLimitSpeed,  m_param.road_limitSpeed.sectionLeftDist );
-  p.drawText( QRect(nXPos, nYPos+200, nWidth, 50),  szSLD, Qt::AlignLeft );
+  p.drawText( QRect(nXPos, nYPos+200, nWidth, 50), Qt::AlignLeft,  szSLD  );
 
 
 
