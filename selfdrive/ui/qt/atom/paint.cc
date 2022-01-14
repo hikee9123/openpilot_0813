@@ -788,13 +788,13 @@ void OnPaint::ui_draw_debug1( QPainter &p )
   drawText( p, 100, 220, szSLD );
 
   szSLD.sprintf("camtype:%d", m_param.road_limitSpeed.camType );
-  drawText( p, 100, 220, szSLD );
+  drawText( p, 100, 240, szSLD );
 
   szSLD.sprintf("cam:%d %d", m_param.road_limitSpeed.camLimitSpeed,  m_param.road_limitSpeed.camLimitSpeedLeftDist );
-  drawText( p, 100, 220, szSLD );
+  drawText( p, 100, 260, szSLD );
 
   szSLD.sprintf("section:%d %d", m_param.road_limitSpeed.sectionLimitSpeed,  m_param.road_limitSpeed.sectionLeftDist );
-  drawText( p, 100, 220, szSLD );
+  drawText( p, 100, 280, szSLD );
 
 
 
