@@ -134,7 +134,7 @@ def manager_cleanup() -> None:
 
 
 def manager_thread() -> None:
-  Process(name="road_speed_limiter", target=launcher, args=("selfdrive.road_speed_limiter", "road_speed_limiter")).start()
+  #Process(name="road_speed_limiter", target=launcher, args=("selfdrive.road_speed_limiter", "road_speed_limiter")).start()
 
   cloudlog.bind(daemon="manager")
   cloudlog.info("manager start")
@@ -147,9 +147,7 @@ def manager_thread() -> None:
     # save boot log
     subprocess.call("./bootlog", cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
   else:
-    ignore += ["loggerd","logmessaged","deleter","tombstoned","uploader","updated"] #,"androidd"]
-    # ignore += ["loggerd","logmessaged","deleter","tombstoned","uploader","updated","androidd"] #,"rtshield"]
-    # ignore += ["manage_athenad","proclogd","clocksd","timezoned"]
+    ignore += ["loggerd","logmessaged","deleter","tombstoned","uploader","updated","statsd"]
 
 
   if params.get("DongleId", encoding='utf8') == UNREGISTERED_DONGLE_ID:

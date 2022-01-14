@@ -47,11 +47,11 @@ class NaviControl():
       #roadLimitSpeed.camSpeedFactor
       return apply_limit_speed, road_limit_speed, left_dist, -1
 
-    clu11_speed = CS.clu_Vanz
-    road_speed_limiter = get_road_speed_limiter()
-    apply_limit_speed, road_limit_speed, left_dist, first_started, max_speed_log = road_speed_limiter.get_max_speed(clu11_speed)
+    #clu11_speed = CS.clu_Vanz
+    #road_speed_limiter = get_road_speed_limiter()
+    #apply_limit_speed, road_limit_speed, left_dist, first_started, max_speed_log = road_speed_limiter.get_max_speed(clu11_speed)
     #roadLimitSpeedActive = road_speed_limiter_get_active()   # HDA
-    return  apply_limit_speed, road_limit_speed, left_dist, 1
+    return  0, 0, 0, 1
 
 
   def update_lateralPlan( self ):
