@@ -59,7 +59,7 @@ OnPaint::OnPaint(QWidget *parent) : QWidget(parent)
   scene->scr.nTime = scene->scr.autoScreenOff * 60 * UI_FREQ;
 
 
-  memset( &m_param.road_limitSpeed, NULL, sizeof(m_param.road_limitSpeed ) );
+  memset( &m_param.road_limitSpeed, 0, sizeof(m_param.road_limitSpeed ) );
 }
 
 void OnPaint::updateState(const UIState &s)
@@ -800,6 +800,8 @@ void OnPaint::ui_draw_debug1( QPainter &p )
   int    nYPos = 300;
   int    nWidth = 200;
   QString  szSLD;
+
+
   szSLD.sprintf("nda:%d", m_param.road_limitSpeed.active );
   p.drawText( QRect(nXPos, nYPos+0, nWidth, 50), Qt::AlignLeft,  szSLD );
 
