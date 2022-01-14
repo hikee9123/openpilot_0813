@@ -798,7 +798,7 @@ void OnPaint::ui_draw_debug1( QPainter &p )
 
   int    nXPos = 250;
   int    nYPos = 300;
-  int    nWidth = 700;
+  int    nWidth = 1000;
   QString  szSLD;
 
 
