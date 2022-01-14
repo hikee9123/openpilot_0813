@@ -796,9 +796,9 @@ void OnPaint::ui_draw_debug1( QPainter &p )
 {
   configFont( p, "Open Sans",  40, "Regular");
 
-  int    nXPos = 200;
+  int    nXPos = 250;
   int    nYPos = 300;
-  int    nWidth = 200;
+  int    nWidth = 700;
   QString  szSLD;
 
 
