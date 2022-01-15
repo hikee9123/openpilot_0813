@@ -63,9 +63,9 @@ class CarInterface(CarInterfaceBase):
 
       
       ret.lateralTuning.init('lqr')
-      ret.lateralTuning.lqr.scale = 1500     #1700.0
+      ret.lateralTuning.lqr.scale = 1700     #1700.0
       ret.lateralTuning.lqr.ki = 0.01      #0.01
-      ret.lateralTuning.lqr.dcGain =  0.0030  #0.0027  #0.00285   # 0.002237852961363602
+      ret.lateralTuning.lqr.dcGain =  0.0029  #0.0027  #0.00285   # 0.002237852961363602
       # 호야  1500, 0.015, 0.0027
       #  1700, 0.01, 0.0029
       #  2000, 0.01, 0.003
