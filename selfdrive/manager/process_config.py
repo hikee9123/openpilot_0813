@@ -37,7 +37,7 @@ procs = [
   PythonProcess("updated", "selfdrive.updated", enabled=not PC, persistent=True),
   PythonProcess("uploader", "selfdrive.loggerd.uploader", persistent=True),
   PythonProcess("statsd", "selfdrive.statsd", persistent=True),
-  PythonProcess("road_speed_limiter", "selfdrive.road_speed_limiter", persistent=True),
+  #PythonProcess("road_speed_limiter", "selfdrive.road_speed_limiter", persistent=True),
 
   # EON only
   PythonProcess("rtshield", "selfdrive.rtshield", enabled=EON),
