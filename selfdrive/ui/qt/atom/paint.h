@@ -47,20 +47,7 @@ private:
     float cpuTemp; 
     
     cereal::RadarState::LeadData::Reader lead_radar;
-    cereal::CarState::Reader car_state;
-    struct RoadLimitSpeed
-    {
-      int active;
-      int roadLimitSpeed;
-      int isHighway;
-      int camType;
-      int camLimitSpeedLeftDist;
-      int camLimitSpeed;
-      int sectionLimitSpeed;
-      int sectionLeftDist;
-      float camSpeedFactor;
-    } road_limitSpeed;
-    
+    cereal::CarState::Reader car_state;    
 
   } m_param, m_old;
   

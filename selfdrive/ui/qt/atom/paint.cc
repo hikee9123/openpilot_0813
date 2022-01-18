@@ -57,9 +57,6 @@ OnPaint::OnPaint(QWidget *parent) : QWidget(parent)
   scene->scr.autoScreenOff = get_param("OpkrAutoScreenOff");
   scene->scr.brightness = get_param("OpkrUIBrightness");
   scene->scr.nTime = scene->scr.autoScreenOff * 60 * UI_FREQ;
-
-
-  memset( &m_param.road_limitSpeed, 0, sizeof(m_param.road_limitSpeed ) );
 }
 
 void OnPaint::updateState(const UIState &s)
@@ -97,21 +94,6 @@ void OnPaint::updateState(const UIState &s)
     m_param.car_state = s.scene.car_state;
     auto radar_state = sm["radarState"].getRadarState();  // radar
     m_param.lead_radar = radar_state.getLeadOne();
-
-    if( sm.updated("roadLimitSpeed") )
-    {
-      auto roadLimitSpeed = sm["roadLimitSpeed"].getRoadLimitSpeed();
-
-      m_param.road_limitSpeed.active = roadLimitSpeed.getActive();
-      m_param.road_limitSpeed.roadLimitSpeed = roadLimitSpeed.getRoadLimitSpeed();
-      m_param.road_limitSpeed.isHighway = roadLimitSpeed.getIsHighway();
-      m_param.road_limitSpeed.camType = roadLimitSpeed.getCamType();
-      m_param.road_limitSpeed.camLimitSpeedLeftDist = roadLimitSpeed.getCamLimitSpeedLeftDist();
-      m_param.road_limitSpeed.camLimitSpeed = roadLimitSpeed.getCamLimitSpeed();
-      m_param.road_limitSpeed.sectionLimitSpeed = roadLimitSpeed.getSectionLimitSpeed();
-      m_param.road_limitSpeed.sectionLeftDist = roadLimitSpeed.getSectionLeftDist();
-    }
-    
 
 
 
@@ -794,31 +776,6 @@ void OnPaint::ui_draw_navi( QPainter &p )
 
 void OnPaint::ui_draw_debug1( QPainter &p ) 
 {
-  configFont( p, "Open Sans",  40, "Regular");
-
-  int    nXPos = 230;
-  int    nYPos = 300;
-  int    nWidth = 1000;
-  QString  szSLD;
-
-
-  szSLD.sprintf("nda:%d", m_param.road_limitSpeed.active );
-  p.drawText( QRect(nXPos, nYPos+0, nWidth, 50), Qt::AlignLeft,  szSLD );
-
-  szSLD.sprintf("highway:%d %d", m_param.road_limitSpeed.isHighway, m_param.road_limitSpeed.roadLimitSpeed );
-  p.drawText( QRect(nXPos, nYPos+50, nWidth, 50), Qt::AlignLeft,  szSLD );
-
-  szSLD.sprintf("camtype:%d", m_param.road_limitSpeed.camType );
-  p.drawText( QRect(nXPos, nYPos+100, nWidth, 50), Qt::AlignLeft,  szSLD  );
-
-  szSLD.sprintf("cam:%d %d", m_param.road_limitSpeed.camLimitSpeed,  m_param.road_limitSpeed.camLimitSpeedLeftDist );
-  p.drawText( QRect(nXPos, nYPos+150, nWidth, 50), Qt::AlignLeft,  szSLD  );
-
-  szSLD.sprintf("section:%d %d", m_param.road_limitSpeed.sectionLimitSpeed,  m_param.road_limitSpeed.sectionLeftDist );
-  p.drawText( QRect(nXPos, nYPos+200, nWidth, 50), Qt::AlignLeft,  szSLD  );
-
-
-
   QString text1 = QString::fromStdString(scene->alert.alertTextMsg1);
   QString text2 = QString::fromStdString(scene->alert.alertTextMsg2);
   QString text3 = QString::fromStdString(scene->alert.alertTextMsg3);

@@ -18,7 +18,7 @@ class NaviControl():
   def __init__(self, p = None ):
     self.p = p
     
-    self.sm = messaging.SubMaster(['liveNaviData','lateralPlan','radarState','roadLimitSpeed']) 
+    self.sm = messaging.SubMaster(['liveNaviData','lateralPlan','radarState']) 
 
     self.btn_cnt = 0
     self.seq_command = 0
@@ -33,25 +33,6 @@ class NaviControl():
     self.gasWait_time = 0
 
 
-  def neokii_tmap( self, CS ):
-    roadLimitSpeed = self.sm['roadLimitSpeed']
-    if roadLimitSpeed is not None:
-      #roadLimitSpeed.active
-      road_limit_speed = roadLimitSpeed.roadLimitSpeed
-      #roadLimitSpeed.isHighway
-      #roadLimitSpeed.camType
-      left_dist = roadLimitSpeed.camLimitSpeedLeftDist
-      apply_limit_speed = roadLimitSpeed.camLimitSpeed
-      #roadLimitSpeed.sectionLimitSpeed
-      #roadLimitSpeed.sectionLeftDist
-      #roadLimitSpeed.camSpeedFactor
-      return apply_limit_speed, road_limit_speed, left_dist, -1
-
-    #clu11_speed = CS.clu_Vanz
-    #road_speed_limiter = get_road_speed_limiter()
-    #apply_limit_speed, road_limit_speed, left_dist, first_started, max_speed_log = road_speed_limiter.get_max_speed(clu11_speed)
-    #roadLimitSpeedActive = road_speed_limiter_get_active()   # HDA
-    return  0, 0, 0, 1
 
 
   def update_lateralPlan( self ):

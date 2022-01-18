@@ -69,7 +69,6 @@ services = {
 
 # atom
   "liveNaviData": (True, 0.),
-  "roadLimitSpeed": (True, 0.),
 
   # debug
   "testJoystick": (False, 0.),

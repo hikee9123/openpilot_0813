@@ -1358,17 +1358,6 @@ struct LiveNaviData {
    arrivalDistance @12 :Float32;
 }
 
-struct RoadLimitSpeed {
-    active @0 :UInt16;
-    roadLimitSpeed @1 :UInt16;
-    isHighway @2 :Bool;
-    camType @3 :UInt16;
-    camLimitSpeedLeftDist @4 :UInt16;
-    camLimitSpeed @5 :UInt16;
-    sectionLimitSpeed @6 :UInt16;
-    sectionLeftDist @7 :UInt16;
-    camSpeedFactor @8 :Float32;
-}
 
 struct LiveMapDataDEPRECATED {
   speedLimitValid @0 :Bool;
@@ -1538,8 +1527,7 @@ struct Event {
     # atom NAVI Info
     liveNaviData @86 :LiveNaviData;
 
-    # neokii T Map Info.
-    roadLimitSpeed @87 :RoadLimitSpeed;    
+
 
     # *********** debug ***********
     testJoystick @52 :Joystick;

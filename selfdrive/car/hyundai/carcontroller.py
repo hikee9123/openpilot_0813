@@ -109,16 +109,14 @@ class CarController():
 
 
   def update_debug(self, CS, c ):
-    #apply_limit_speed, road_limit_speed, dist, first_started = self.NC.neokii_tmap( CS )
     actuators = c.actuators
     vFuture = c.hudControl.vFuture * 3.6
     str_log1 = 'MODE={:.0f} vF={:.1f} gas={:.2f}'.format( CS.cruise_set_mode, vFuture, CS.out.gas )
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
-    #str_log1 = 'acc={:.2f}, RV={:.2f},  {:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
-    #str_log1 = 'spd={} {} dist={} first={} '.format( apply_limit_speed, road_limit_speed, dist, first_started )
-    #trace1.printf3( '{}'.format( str_log1 ) )
+    str_log1 = 'acc={:.2f}, RV={:.2f},  {:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
+    trace1.printf3( '{}'.format( str_log1 ) )
   
 
   def updateLongitudinal(self, can_sends,  c, CS, frame):
