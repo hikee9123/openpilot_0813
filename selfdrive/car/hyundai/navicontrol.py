@@ -11,7 +11,7 @@ import cereal.messaging as messaging
 import common.loger as trace1
 import common.MoveAvg as mvAvg
 
-from selfdrive.road_speed_limiter import  road_speed_limiter_get_active, get_road_speed_limiter
+#from selfdrive.road_speed_limiter import  road_speed_limiter_get_active, get_road_speed_limiter
 
 
 class NaviControl():
