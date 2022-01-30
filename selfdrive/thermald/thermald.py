@@ -36,7 +36,7 @@ DISCONNECT_TIMEOUT = 5.  # wait 5 seconds before going offroad after disconnect 
 PANDA_STATES_TIMEOUT = int(1000 * 2.5 * DT_TRML)  # 2.5x the expected pandaState frequency
 
 ThermalBand = namedtuple("ThermalBand", ['min_temp', 'max_temp'])
-HardwareState = namedtuple("HardwareState", ['network_type', 'network_strength', 'network_info', 'nvme_temps', 'modem_temps'])
+HardwareState = namedtuple("HardwareState", ['network_type', 'network_strength', 'network_info', 'nvme_temps', 'modem_temps','wifiIpAddress'])
 
 # List of thermal bands. We will stay within this region as long as we are within the bounds.
 # When exiting the bounds, we'll jump to the lower or higher band. Bands are ordered in the dict.
@@ -177,8 +177,6 @@ def hw_state_thread(end_event, hw_queue):
           nvme_temps=HARDWARE.get_nvme_temperatures(),
           modem_temps=HARDWARE.get_modem_temperatures(),
           wifiIpAddress = HARDWARE.get_ip_address(),
-          batteryStatus = HARDWARE.get_battery_status(),
-          batteryVoltage = HARDWARE.get_battery_voltage(),
         )
 
         try:
@@ -229,8 +227,6 @@ def thermald_thread(end_event, hw_queue):
     nvme_temps=[],
     modem_temps=[],
     wifiIpAddress='N/A',
-    batteryStatus = None,
-    batteryVoltage = None,
   )
 
   current_filter = FirstOrderFilter(0., CURRENT_TAU, DT_TRML)
@@ -309,8 +305,8 @@ def thermald_thread(end_event, hw_queue):
     msg.deviceState.modemTempC = last_hw_state.modem_temps
 
     msg.deviceState.wifiIpAddress = last_hw_state.wifiIpAddress
-    msg.deviceState.batteryStatusDEPRECATED = last_hw_state.batteryStatus
-    msg.deviceState.batteryVoltageDEPRECATED = last_hw_state.batteryVoltage
+    msg.deviceState.batteryStatusDEPRECATED = HARDWARE.get_battery_status()
+    msg.deviceState.batteryVoltageDEPRECATED = HARDWARE.get_battery_voltage()
 
     msg.deviceState.screenBrightnessPercent = HARDWARE.get_screen_brightness()
     msg.deviceState.batteryPercent = HARDWARE.get_battery_capacity()
