@@ -23,11 +23,15 @@ class CarInterface(CarInterfaceBase):
 
     ret.carName = "hyundai"
     ret.safetyConfigs = [get_safety_config(car.CarParams.SafetyModel.hyundai, 0)]
-    ret.radarOffCan = RADAR_START_ADDR not in fingerprint[1]
+    ret.radarOffCan = False  # RADAR_START_ADDR not in fingerprint[1]
+    # ret.communityFeature = True
 
-    # WARNING: disabling radar also disables AEB (and we show the same warning on the instrument cluster as if you manually disabled AEB)
-    ret.openpilotLongitudinalControl = Params().get_bool("DisableRadar") and (candidate not in LEGACY_SAFETY_MODE_CAR)
-
+    if (candidate in LEGACY_SAFETY_MODE_CAR):
+      ret.atompilotLongitudinalControl = Params().get_bool("OpkratomLongitudinal")
+    else:
+      # WARNING: disabling radar also disables AEB (and we show the same warning on the instrument cluster as if you manually disabled AEB)
+      ret.openpilotLongitudinalControl = Params().get_bool("DisableRadar")
+    
     ret.pcmCruise = not ret.openpilotLongitudinalControl
 
     ret.steerActuatorDelay = 0.1  # Default delay
@@ -44,7 +48,35 @@ class CarInterface(CarInterfaceBase):
 
     ret.longitudinalActuatorDelayUpperBound = 1.0 # s
 
-    if candidate in (CAR.SANTA_FE, CAR.SANTA_FE_2022, CAR.SANTA_FE_HEV_2022, CAR.SANTA_FE_PHEV_2022):
+    if candidate in (CAR.GRANDEUR_HEV_19):
+      ret.mass = 1675. + STD_CARGO_KG
+      ret.wheelbase = 2.845
+      ret.steerRatio = 16.5  #13.96   #12.5
+      ret.steerMaxBP = [0., 20]
+      ret.steerMaxV = [1,2]
+      ret.steerRateCost = 0.8
+      ret.minSteerSpeed = 1 * CV.KPH_TO_MS
+
+      ret.lateralTuning.pid.kf = 0.000005
+      ret.lateralTuning.pid.kpBP, ret.lateralTuning.pid.kpV = [[0.], [0.15]]
+      ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kiV = [[0.], [0.01]]
+
+      
+      ret.lateralTuning.init('lqr')
+      ret.lateralTuning.lqr.scale = 1700     #1700.0
+      ret.lateralTuning.lqr.ki = 0.01      #0.01
+      ret.lateralTuning.lqr.dcGain =  0.0029  #0.0027  #0.00285   # 0.002237852961363602
+      # 호야  1500, 0.015, 0.0027
+      #  1700, 0.01, 0.0029
+      #  2000, 0.01, 0.003
+  
+      ret.lateralTuning.lqr.a = [0., 1., -0.22619643, 1.21822268]
+      ret.lateralTuning.lqr.b = [-1.92006585e-04, 3.95603032e-05]
+      ret.lateralTuning.lqr.c = [1., 0.]
+      ret.lateralTuning.lqr.k = [-110.73572306, 451.22718255]
+      ret.lateralTuning.lqr.l = [0.3233671, 0.3185757]
+
+    elif candidate in (CAR.SANTA_FE, CAR.SANTA_FE_2022, CAR.SANTA_FE_HEV_2022, CAR.SANTA_FE_PHEV_2022):
       ret.lateralTuning.pid.kf = 0.00005
       ret.mass = 3982. * CV.LB_TO_KG + STD_CARGO_KG
       ret.wheelbase = 2.766
@@ -76,7 +108,7 @@ class CarInterface(CarInterfaceBase):
       tire_stiffness_factor = 0.63
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.3], [0.05]]
-    elif candidate in (CAR.ELANTRA, CAR.ELANTRA_GT_I30):
+    elif candidate in [CAR.ELANTRA, CAR.ELANTRA_GT_I30]:
       ret.lateralTuning.pid.kf = 0.00006
       ret.mass = 1275. + STD_CARGO_KG
       ret.wheelbase = 2.7
@@ -132,7 +164,7 @@ class CarInterface(CarInterfaceBase):
       tire_stiffness_factor = 0.385
       ret.lateralTuning.pid.kiBP, ret.lateralTuning.pid.kpBP = [[0.], [0.]]
       ret.lateralTuning.pid.kpV, ret.lateralTuning.pid.kiV = [[0.25], [0.05]]
-      if candidate not in (CAR.IONIQ_EV_2020, CAR.IONIQ_PHEV, CAR.IONIQ_HEV_2022):
+      if candidate not in [CAR.IONIQ_EV_2020, CAR.IONIQ_PHEV, CAR.IONIQ_HEV_2022]:
         ret.minSteerSpeed = 32 * CV.MPH_TO_MS
     elif candidate == CAR.VELOSTER:
       ret.lateralTuning.pid.kf = 0.00005
@@ -258,9 +290,9 @@ class CarInterface(CarInterfaceBase):
 
     # set appropriate safety param for gas signal
     if candidate in HYBRID_CAR:
-      ret.safetyConfigs[0].safetyParam = 2
+      ret.safetyConfigs[0].safetyParam = Panda.FLAG_HYUNDAI_HYBRID_GAS
     elif candidate in EV_CAR:
-      ret.safetyConfigs[0].safetyParam = 1
+      ret.safetyConfigs[0].safetyParam = Panda.FLAG_HYUNDAI_EV_GAS
 
     ret.centerToFront = ret.wheelbase * 0.4
 
@@ -275,7 +307,7 @@ class CarInterface(CarInterfaceBase):
 
     ret.enableBsm = 0x58b in fingerprint[0]
 
-    if ret.openpilotLongitudinalControl:
+    if ret.openpilotLongitudinalControl or ret.atompilotLongitudinalControl:
       ret.safetyConfigs[0].safetyParam |= Panda.FLAG_HYUNDAI_LONG
 
     return ret
@@ -289,7 +321,7 @@ class CarInterface(CarInterfaceBase):
     self.cp.update_strings(can_strings)
     self.cp_cam.update_strings(can_strings)
 
-    ret = self.CS.update(self.cp, self.cp_cam)
+    ret = self.CS.update(self.cp, self.cp_cam, c)
     ret.canValid = self.cp.can_valid and self.cp_cam.can_valid
     ret.steeringRateLimited = self.CC.steer_rate_limited if self.CC is not None else False
 
@@ -339,6 +371,9 @@ class CarInterface(CarInterfaceBase):
       self.low_speed_alert = False
     if self.low_speed_alert:
       events.add(car.CarEvent.EventName.belowSteerSpeed)
+    elif self.CS.lkas_button_on == 15:
+      events.add(car.CarEvent.EventName.invalidLkasSetting)
+    
 
     ret.events = events.to_msg()
 
@@ -346,9 +381,7 @@ class CarInterface(CarInterfaceBase):
     return self.CS.out
 
   def apply(self, c):
-    hud_control = c.hudControl
-    ret = self.CC.update(c, c.enabled, self.CS, self.frame, c.actuators,
-                         c.cruiseControl.cancel, hud_control.visualAlert, hud_control.setSpeed, hud_control.leftLaneVisible,
-                         hud_control.rightLaneVisible, hud_control.leftLaneDepart, hud_control.rightLaneDepart)
+    ret = self.CC.update( c, self.CS, self.frame )
+
     self.frame += 1
     return ret

@@ -25,6 +25,12 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
   hud = new OnroadHud(this);
   road_view_layout->addWidget(hud);
 
+  m_pPaint = new OnPaint(this);
+  road_view_layout->addWidget(m_pPaint);
+
+   m_pDashCam = new OnDashCam(this);
+  road_view_layout->addWidget(m_pDashCam); 
+
   QWidget * split_wrapper = new QWidget;
   split = new QHBoxLayout(split_wrapper);
   split->setContentsMargins(0, 0, 0, 0);
@@ -47,17 +53,24 @@ OnroadWindow::OnroadWindow(QWidget *parent) : QWidget(parent) {
 
 void OnroadWindow::updateState(const UIState &s) {
   QColor bgColor = bg_colors[s.status];
-  Alert alert = Alert::get(*(s.sm), s.scene.started_frame);
-  if (s.sm->updated("controlsState") || !alert.equal({})) {
-    if (alert.type == "controlsUnresponsive") {
-      bgColor = bg_colors[STATUS_ALERT];
-    } else if (alert.type == "controlsUnresponsivePermanent") {
-      bgColor = bg_colors[STATUS_DISENGAGED];
+  if( s.scene.IsOpenpilotViewEnabled )
+  {
+    
+  } else  {  
+    Alert alert = Alert::get(*(s.sm), s.scene.started_frame);
+    if (s.sm->updated("controlsState") || !alert.equal({})) {
+      if (alert.type == "controlsUnresponsive") {
+        bgColor = bg_colors[STATUS_ALERT];
+      } else if (alert.type == "controlsUnresponsivePermanent") {
+        bgColor = bg_colors[STATUS_DISENGAGED];
+      }
+      alerts->updateAlert(alert, bgColor);
     }
-    alerts->updateAlert(alert, bgColor);
   }
 
   hud->updateState(s);
+  m_pPaint->updateState(s);
+  m_pDashCam->updateState(s);
 
   if (bg != bgColor) {
     // repaint border
@@ -191,6 +204,15 @@ void OnroadHud::updateState(const UIState &s) {
   setProperty("hideDM", cs.getAlertSize() != cereal::ControlsState::AlertSize::NONE);
   setProperty("status", s.status);
 
+
+  m_gasVal = s.scene.car_state.getGas();
+  bool  brakePress = s.scene.car_state.getBrakePressed();
+  bool  brakeLights = s.scene.car_state.getBrakeLightsDEPRECATED();
+
+
+  if( brakePress ) m_nBrakeStatus = 1; else m_nBrakeStatus = 0;
+  if( brakeLights ) m_nBrakeStatus |= 2;
+
   // update engageability and DM icons at 2Hz
   if (sm.frame % (UI_FREQ / 2) == 0) {
     setProperty("engageable", cs.getEngageable() || cs.getEnabled());
@@ -209,40 +231,73 @@ void OnroadHud::paintEvent(QPaintEvent *event) {
   p.fillRect(0, 0, width(), header_h, bg);
 
   // max speed
-  QRect rc(bdr_s * 2, bdr_s * 1.5, 184, 202);
+  QRect rc(bdr_s * 1, bdr_s * 1.0, 184, 202);
   p.setPen(QPen(QColor(0xff, 0xff, 0xff, 100), 10));
   p.setBrush(QColor(0, 0, 0, 100));
   p.drawRoundedRect(rc, 20, 20);
   p.setPen(Qt::NoPen);
 
-  configFont(p, "Open Sans", 48, "Regular");
-  drawText(p, rc.center().x(), 118, "MAX", is_cruise_set ? 200 : 100);
+  configFont(p, "Open Sans", 45, "Regular");
+  drawText(p, rc.center().x(), 85, "MAX", is_cruise_set ? 200 : 100);
   if (is_cruise_set) {
     configFont(p, "Open Sans", 88, is_cruise_set ? "Bold" : "SemiBold");
-    drawText(p, rc.center().x(), 212, maxSpeed, 255);
+    drawText(p, rc.center().x(), 205, maxSpeed, 255);
   } else {
-    configFont(p, "Open Sans", 80, "SemiBold");
-    drawText(p, rc.center().x(), 212, maxSpeed, 100);
+    configFont(p, "Open Sans", 63, "SemiBold");
+    drawText(p, rc.center().x(), 190, maxSpeed, 100);
   }
 
   // current speed
+  drawCurrentSpeed( p, rect().center().x(), 210 );
+  /*
   configFont(p, "Open Sans", 176, "Bold");
   drawText(p, rect().center().x(), 210, speed);
   configFont(p, "Open Sans", 66, "Regular");
   drawText(p, rect().center().x(), 290, speedUnit, 200);
-
+  */
   // engage-ability icon
   if (engageable) {
-    drawIcon(p, rect().right() - radius / 2 - bdr_s * 2, radius / 2 + int(bdr_s * 1.5),
+    drawIcon(p, rect().right() - radius / 2 - bdr_s * 1, radius / 2 + int(bdr_s * 1.0),
              engage_img, bg_colors[status], 1.0);
   }
 
   // dm icon
   if (!hideDM) {
-    drawIcon(p, radius / 2 + (bdr_s * 2), rect().bottom() - footer_h / 2,
+    drawIcon(p, radius / 2 + (bdr_s * 1), rect().bottom() - footer_h / 1.5,
              dm_img, QColor(0, 0, 0, 70), dmActive ? 1.0 : 0.2);
   }
 }
+
+void OnroadHud::drawCurrentSpeed(QPainter &p, int x, int y) 
+{
+  QColor  val_color = QColor(255, 255, 255, 255);
+  int  brakePress = m_nBrakeStatus & 0x01;
+  int  brakeLights = m_nBrakeStatus & 0x02;
+
+
+  if( brakePress  ) val_color = QColor(255, 0, 0, 255);
+  else if( brakeLights ) val_color = QColor(201, 34, 49, 100);
+  else if( m_gasVal > 0 ) 
+  {
+    int  gasVal = 255 - (m_gasVal * 500);
+    if( gasVal > 255 ) gasVal = 255;
+    else if( gasVal < 50 ) gasVal = 50;
+    val_color = QColor(255, 255, 0, gasVal);
+  }
+
+  configFont(p, "Open Sans", 250, "Bold");
+  QFontMetrics fm(p.font());
+  QRect init_rect = fm.boundingRect(speed);
+  QRect real_rect = fm.boundingRect(init_rect, 0, speed);
+  real_rect.moveCenter({x, y - real_rect.height() / 2});
+  p.setPen( val_color );
+  p.drawText(real_rect.x(), real_rect.bottom(), speed);
+
+
+  configFont(p, "Open Sans", 50, "Regular");
+  drawText(p, x, y+70, speedUnit, 200);
+}
+
 
 void OnroadHud::drawText(QPainter &p, int x, int y, const QString &text, int alpha) {
   QFontMetrics fm(p.font());
@@ -359,7 +414,7 @@ void NvgWindow::paintGL() {
 
     drawLaneLines(painter, s->scene);
 
-    if (s->scene.longitudinal_control) {
+    if (s->scene.longitudinal_control || 1) {
       auto leads = (*s->sm)["modelV2"].getModelV2().getLeadsV3();
       if (leads[0].getProb() > .5) {
         drawLead(painter, leads[0], s->scene.lead_vertices[0]);
@@ -374,7 +429,7 @@ void NvgWindow::paintGL() {
   double dt = cur_draw_t - prev_draw_t;
   if (dt > 66) {
     // warn on sub 15fps
-    LOGW("slow frame time: %.2f", dt);
+   // LOGW("slow frame time: %.2f", dt);
   }
   prev_draw_t = cur_draw_t;
 }

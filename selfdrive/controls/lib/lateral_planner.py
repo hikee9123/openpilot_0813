@@ -39,6 +39,9 @@ class LateralPlanner:
 
     # Parse model predictions
     md = sm['modelV2']
+    if sm.frame % 2 == 0:
+      self.LP.cal_model_speed( md, v_ego )
+
     self.LP.parse_model(md)
     if len(md.position.x) == TRAJECTORY_SIZE and len(md.orientation.x) == TRAJECTORY_SIZE:
       self.path_xyz = np.column_stack([md.position.x, md.position.y, md.position.z])
@@ -49,7 +52,7 @@ class LateralPlanner:
 
     # Lane change logic
     lane_change_prob = self.LP.l_lane_change_prob + self.LP.r_lane_change_prob
-    self.DH.update(sm['carState'], sm['controlsState'].active, lane_change_prob)
+    self.DH.update(sm, lane_change_prob)
 
     # Turn off lanes during lane change
     if self.DH.desire == log.LateralPlan.Desire.laneChangeRight or self.DH.desire == log.LateralPlan.Desire.laneChangeLeft:
@@ -119,5 +122,6 @@ class LateralPlanner:
     lateralPlan.useLaneLines = self.use_lanelines
     lateralPlan.laneChangeState = self.DH.lane_change_state
     lateralPlan.laneChangeDirection = self.DH.lane_change_direction
+    lateralPlan.modelSpeed = float(self.LP.soft_model_speed)
 
     pm.send('lateralPlan', plan_send)

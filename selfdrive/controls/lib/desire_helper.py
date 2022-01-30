@@ -1,12 +1,14 @@
 from cereal import log
 from common.realtime import DT_MDL
 from selfdrive.config import Conversions as CV
+from selfdrive.car.hyundai.values import Buttons
 
 LaneChangeState = log.LateralPlan.LaneChangeState
 LaneChangeDirection = log.LateralPlan.LaneChangeDirection
 
-LANE_CHANGE_SPEED_MIN = 30 * CV.MPH_TO_MS
+LANE_CHANGE_SPEED_MIN = 40 * CV.KPH_TO_MS
 LANE_CHANGE_TIME_MAX = 10.
+LANE_CHANGE_AUTO_TIME = 0.5
 
 DESIRES = {
   LaneChangeDirection.none: {
@@ -40,19 +42,48 @@ class DesireHelper:
     self.prev_one_blinker = False
     self.desire = log.LateralPlan.Desire.none
 
-  def update(self, carstate, active, lane_change_prob):
+  def auto_lanechange( self, md, torque_applied ):
+    # auto
+    self.lane_change_timer_auto += DT_MDL
+    ll_probs = md.laneLineProbs   # 0,1,2,3
+    if torque_applied or self.lane_change_timer_auto < LANE_CHANGE_AUTO_TIME:
+        pass    
+    elif self.lane_change_direction == LaneChangeDirection.left:
+      if ll_probs[0] > 0.5:
+        torque_applied = True
+    elif self.lane_change_direction == LaneChangeDirection.right:
+      if ll_probs[3] > 0.5:
+        torque_applied = True
+  
+    return torque_applied
+
+  def lanechange_cancel( self, cruiseState, steeringTorqueAbs ):
+    if cruiseState.cruiseSwState == Buttons.CANCEL or steeringTorqueAbs > 200:
+      self.lane_change_state = LaneChangeState.off
+      self.lane_change_direction = LaneChangeDirection.none
+
+  def update(self, sm, lane_change_prob):
+    md = sm['modelV2']
+    carstate = sm['carState']
+    active = sm['controlsState'].active
     v_ego = carstate.vEgo
     one_blinker = carstate.leftBlinker != carstate.rightBlinker
     below_lane_change_speed = v_ego < LANE_CHANGE_SPEED_MIN
+    cruiseState  = carstate.cruiseState    
+    steeringTorqueAbs = abs(carstate.steeringTorque)
 
     if not active or self.lane_change_timer > LANE_CHANGE_TIME_MAX:
       self.lane_change_state = LaneChangeState.off
       self.lane_change_direction = LaneChangeDirection.none
     else:
+      # atom
+      self.lanechange_cancel( cruiseState, steeringTorqueAbs )
+
       # LaneChangeState.off
       if self.lane_change_state == LaneChangeState.off and one_blinker and not self.prev_one_blinker and not below_lane_change_speed:
         self.lane_change_state = LaneChangeState.preLaneChange
         self.lane_change_ll_prob = 1.0
+        self.lane_change_timer_auto = 0.0
 
       # LaneChangeState.preLaneChange
       elif self.lane_change_state == LaneChangeState.preLaneChange:
@@ -67,6 +98,7 @@ class DesireHelper:
         blindspot_detected = ((carstate.leftBlindspot and self.lane_change_direction == LaneChangeDirection.left) or
                               (carstate.rightBlindspot and self.lane_change_direction == LaneChangeDirection.right))
 
+        torque_applied = self.auto_lanechange( md, torque_applied )
         if not one_blinker or below_lane_change_speed:
           self.lane_change_state = LaneChangeState.off
         elif torque_applied and not blindspot_detected:
