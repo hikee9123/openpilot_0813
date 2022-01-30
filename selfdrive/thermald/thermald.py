@@ -452,7 +452,7 @@ def thermald_thread(end_event, hw_queue):
     statlog.gauge("screen_brightness_percent", msg.deviceState.screenBrightnessPercent)
 
     if usb_power:
-      power_monitor.charging_ctrl( msg, ts, 60, 40 )    
+      power_monitor.charging_ctrl( msg, ts, 60, 45 )    
 
     # report to server once every 10 minutes
     if (count % int(600. / DT_TRML)) == 0:
