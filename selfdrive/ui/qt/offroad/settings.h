@@ -28,7 +28,7 @@ signals:
   void showDriverView();
 
 private slots:
-  void offroadTransition(bool offroad);
+  void offroadTransition(bool offroad) {}
   
 private:
   QPushButton *sidebar_alert_widget;
