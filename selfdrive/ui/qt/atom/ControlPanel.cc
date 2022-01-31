@@ -45,7 +45,7 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
     {"Community", new CommunityPanel(this)},
   };
 
-for (auto &[name, panel] : panels) {
+  for (auto &[name, panel] : panels) {
     QPushButton *btn = new QPushButton(name);
     btn->setCheckable(true);
     btn->setChecked(nav_btns->buttons().size() == 0);
@@ -79,8 +79,9 @@ for (auto &[name, panel] : panels) {
       btn->setChecked(true);
       panel_widget->setCurrentWidget(w);
     });
+  }
 
-    main_layout->addWidget(panel_widget); 
+  main_layout->addWidget(panel_widget); 
 
 
   setStyleSheet(R"(
