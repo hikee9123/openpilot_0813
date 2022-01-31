@@ -98,10 +98,11 @@ class CarController():
   def smooth_steer( self, apply_torque ):
     if self.steer_timer_apply_torque >= 1:
       return int(round(float(apply_torque)))
-    elif self.steer_timer_apply_torque >= 1:
-      self.steer_timer_apply_torque = 1
-    else:
-      self.steer_timer_apply_torque += self.DT_STEER 
+
+
+    self.steer_timer_apply_torque += self.DT_STEER
+    if self.steer_timer_apply_torque >= 1:
+      self.steer_timer_apply_torque = 1    
 
     apply_torque *= self.steer_timer_apply_torque
 
