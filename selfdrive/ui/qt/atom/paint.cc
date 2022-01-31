@@ -320,7 +320,7 @@ void OnPaint::bb_ui_draw_measures_right( QPainter &p, int bb_x, int bb_y, int bb
 
     // temp is alway in C * 1000
     val_str.sprintf("%.1f", m_param.batteryTemp );
-    uom_str.sprintf("%.0f" fan_speed * 0.001);        
+    uom_str.sprintf("%.0f", fan_speed * 0.001);        
     bb_h +=bb_ui_draw_measure(p,  val_str, uom_str, "BAT TEMP",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
