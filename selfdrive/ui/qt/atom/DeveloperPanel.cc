@@ -15,17 +15,17 @@
 #include "selfdrive/common/util.h"
 #include "selfdrive/ui/ui.h"
 
-#include "userPanel.h"
+#include "DeveloperPanel.h"
 
 // 일부 코드 OPKR 참고.
 
 
 
-CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
+DeveloperPanel::DeveloperPanel(QWidget* parent) : QFrame(parent)
 {
   QWidget *w = new QWidget(parent);  
   QVBoxLayout *main_layout = new QVBoxLayout(w);
-  main_layout->setSpacing(30);
+  main_layout->setSpacing(10);
 
   // wifi + tethering buttons
   auto updateBtn = new ButtonControl("업데이트 체크 및 적용", "업데이트");
@@ -85,7 +85,7 @@ CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
 
   main_layout->setMargin(100);
   setLayout(main_layout);
-  //layout()->addWidget(horizontal_line());  
+
   layout()->addWidget(new GitHash());
   layout()->addWidget(new SshLegacyToggle());
 
@@ -146,16 +146,9 @@ CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
 
 
 
-   //layout()->addWidget(new CAutoResumeToggle());
-
-   //layout()->addWidget(new CTurnSteeringDisableToggle());
    layout()->addWidget(new CPrebuiltToggle());
   
   layout()->addWidget(horizontal_line());
- // layout()->addWidget(new CPandaFirmWare() );
- // layout()->addWidget(horizontal_line());  
-//  layout()->addWidget(new RunNaviOnBootToggle());
-//  layout()->addWidget(horizontal_line());
 
   layout()->addWidget(new CLiveSteerRatioToggle());
   layout()->addWidget(new BrightnessControl());
@@ -274,7 +267,7 @@ CUserPanel::CUserPanel(QWidget* parent) : QFrame(parent)
   
 }
 
-void CUserPanel::showEvent(QShowEvent *event) 
+void DeveloperPanel::showEvent(QShowEvent *event) 
 {
   Params params = Params();
 

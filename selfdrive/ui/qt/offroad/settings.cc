@@ -26,7 +26,7 @@
 #include "selfdrive/ui/qt/util.h"
 #include "selfdrive/ui/qt/qt_window.h"
 
-#include "atom/userPanel.h"
+#include "atom/DeveloperPanel.h"
 
 TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   // param, title, desc, icon
@@ -389,7 +389,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"Network", network_panel(this)},
     {"Toggles", new TogglesPanel(this)},
     {"Software", new SoftwarePanel(this)},
-    {"Developer", new CUserPanel(this)},
+    {"Developer", new DeveloperPanel(this)},
   };
   // sidebar_layout->addSpacing(45);
 #ifdef ENABLE_MAPS
@@ -398,7 +398,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   QObject::connect(map_panel, &MapPanel::closeSettings, this, &SettingsWindow::closeSettings);
 #endif
 
-  const int padding = panels.size() > 3 ? 3 : 15;
+  const int padding = panels.size() > 3 ? 5 : 15;
 
   nav_btns = new QButtonGroup(this);
   for (auto &[name, panel] : panels) {
@@ -410,7 +410,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
         color: grey;
         border: none;
         background: none;
-        font-size: 54px;
+        font-size: 65px;
         font-weight: 500;
         padding-top: %1px;
         padding-bottom: %1px;

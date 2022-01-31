@@ -15,11 +15,11 @@
 #include "selfdrive/ui/qt/widgets/controls.h"
 
 
-class CUserPanel : public QFrame 
+class DeveloperPanel : public QFrame 
 {
   Q_OBJECT
 public:
-  explicit CUserPanel(QWidget* parent = nullptr);
+  explicit DeveloperPanel(QWidget* parent = nullptr);
 
 
 protected:
@@ -29,56 +29,6 @@ protected:
 
 
 
-////////////////////////////////////////////////////////////////////
-/*
-class CAutoResumeToggle : public ToggleControl {
-  Q_OBJECT
-
-public:
-  CAutoResumeToggle() : ToggleControl("자동출발 기능 사용", "SCC 사용중 정차시 자동출발 기능을 사용합니다.", "../assets/offroad/icon_shell.png", Params().getBool("OpkrAutoResume")) {
-    QObject::connect(this, &CAutoResumeToggle::toggleFlipped, [=](int state) {
-      Params().putBool("OpkrAutoResume", (bool)state);
-    });
-  }
-};
-
-
-class RunNaviOnBootToggle : public ToggleControl {
-  Q_OBJECT
-
-public:
-  RunNaviOnBootToggle() : ToggleControl("부팅 후 네비 자동 실행", "부팅후 네비게이션(티맵)을 자동 실행합니다.", "../assets/offroad/icon_shell.png", Params().getBool("OpkrRunNaviOnBoot")) {
-    QObject::connect(this, &RunNaviOnBootToggle::toggleFlipped, [=](int state) {
-      char value = state ? '1' : '0';
-      Params().put("OpkrRunNaviOnBoot", &value, 1);
-    });
-  }
-};
-
-
-
-class CTurnSteeringDisableToggle : public ToggleControl {
-  Q_OBJECT
-
-public:
-  CTurnSteeringDisableToggle() : ToggleControl("턴시그널 사용시 조향해제 사용", "차선변경속도 이하로 주행할 때 턴시그널을 사용시 자동조향을 일시해제 합니다.", "../assets/offroad/icon_shell.png", Params().getBool("OpkrTurnSteeringDisable")) {
-    QObject::connect(this, &CTurnSteeringDisableToggle::toggleFlipped, [=](int state) {
-      Params().putBool("OpkrTurnSteeringDisable", (bool)state);
-    });
-  }
-};
-
-class CPandaFirmWare : public ToggleControl {
-  Q_OBJECT
-
-public:
-  CPandaFirmWare() : ToggleControl("Panda Firmware Check", "판다의 FirmWare를 확인합니다..", "../assets/offroad/icon_shell.png", Params().getBool("OpkrPandaFirmwareCk")) {
-    QObject::connect(this, &CPandaFirmWare::toggleFlipped, [=](int state) {
-      Params().putBool("OpkrPandaFirmwareCk", (bool)state);
-    });
-  }
-};
-*/
 ////////////////////////////////////////////////////////////////////////
 
 class CLiveSteerRatioToggle : public AbstractControl {
