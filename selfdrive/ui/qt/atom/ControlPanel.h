@@ -21,7 +21,10 @@ class ControlPanel : public ListWidget
 public:
   explicit ControlPanel(QWidget* parent = nullptr);
 
+signals:
+  void closeSettings();
 
+  
 protected:
   void hideEvent(QHideEvent *event) override;
   void showEvent(QShowEvent *event) override;

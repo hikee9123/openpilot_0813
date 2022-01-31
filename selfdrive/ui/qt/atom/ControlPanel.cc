@@ -38,12 +38,14 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
     background-color: #292929;
   )");
 
-
+  // setup panels
   nav_btns = new QButtonGroup(this);
    QList<QPair<QString, QWidget *>> panels = {
     {"Developer", new DeveloperPanel(this)},
     {"Community", new CommunityPanel(this)},
   };
+
+  const int padding = panels.size() > 3 ? 5 : 35;
 
   for (auto &[name, panel] : panels) {
     QPushButton *btn = new QPushButton(name);
@@ -70,7 +72,7 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
     nav_btns->addButton(btn);
 
 
-    main_layout->addWidget(btn, 0, Qt::AlignRight);
+    main_layout->addWidget(btn);//, 0, Qt::AlignRight);
 
     ScrollView *panel_frame = new ScrollView(panel, this);
     panel_widget->addWidget(panel_frame);
