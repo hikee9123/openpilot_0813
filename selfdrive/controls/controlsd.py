@@ -494,8 +494,11 @@ class Controls:
     x = max(params.stiffnessFactor, 0.1)
     sr = max(params.steerRatio, 0.1)
 
+    
      # atom
-    if self.OpkrLiveSteerRatio == 2:
+    if self.OpkrLiveSteerRatio == 2:  # 수동(고정)
+      sr = max(self.CP.steerRatio, 5.0)
+    elif self.OpkrLiveSteerRatio == 1:  # 반학습
       steerRatio = self.update_modelToSteerRatio( params.steerRatio )
       sr = max(steerRatio, 5.0)
 
@@ -763,7 +766,7 @@ class Controls:
     if self.read_only:
       self.openpilot_mode = 0
     elif CS.cruiseState.available:
-      self.openpilot_mode = 50
+      self.openpilot_mode = 10
 
 
     self.update_events(CS)

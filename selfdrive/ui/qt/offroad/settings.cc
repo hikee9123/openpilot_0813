@@ -366,7 +366,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
       padding-bottom: 20px;
       font-weight: bold;
       border 1px grey solid;
-      border-radius: 100px;
+      border-radius: 50px;
       background-color: #292929;
       font-weight: 400;
     }
@@ -374,8 +374,8 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
       background-color: #3B3B3B;
     }
   )");
-  close_btn->setFixedSize(200, 200);
-  sidebar_layout->addSpacing(45);
+  close_btn->setFixedSize(220, 130);
+  sidebar_layout->addSpacing(5);
   sidebar_layout->addWidget(close_btn, 0, Qt::AlignCenter);
   QObject::connect(close_btn, &QPushButton::clicked, this, &SettingsWindow::closeSettings);
 
@@ -389,7 +389,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"Network", network_panel(this)},
     {"Toggles", new TogglesPanel(this)},
     {"Software", new SoftwarePanel(this)},
-    {"Community", new CUserPanel(this)},    
+    {"Developer", new CUserPanel(this)},    
   };
 
 #ifdef ENABLE_MAPS
@@ -398,7 +398,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
   QObject::connect(map_panel, &MapPanel::closeSettings, this, &SettingsWindow::closeSettings);
 #endif
 
-  const int padding = panels.size() > 3 ? 15 : 35;
+  const int padding = panels.size() > 3 ? 10 : 35;
 
   nav_btns = new QButtonGroup(this);
   for (auto &[name, panel] : panels) {

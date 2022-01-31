@@ -361,15 +361,15 @@ void CLiveSteerRatioToggle::refresh()
   QString option = QString::fromStdString(Params().get("OpkrLiveSteerRatio"));
   if (option == "0") 
   {
-    label.setText(QString::fromStdString("수동"));
+    label.setText(QString::fromStdString("학습"));
   } 
   else if (option == "1") 
   {
-    label.setText(QString::fromStdString("학습"));
+    label.setText(QString::fromStdString("반학습"));
   }
   else if (option == "2") 
   {
-    label.setText(QString::fromStdString("반학습"));
+    label.setText(QString::fromStdString("고정"));
   } 
   else 
   {
