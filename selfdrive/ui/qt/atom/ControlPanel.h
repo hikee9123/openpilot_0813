@@ -24,12 +24,11 @@ public:
 signals:
   void closeSettings();
 
-  
+
 protected:
   void hideEvent(QHideEvent *event) override;
   void showEvent(QShowEvent *event) override;
 private:
-  QButtonGroup *nav_btns;
   QStackedWidget *panel_widget;
 
 

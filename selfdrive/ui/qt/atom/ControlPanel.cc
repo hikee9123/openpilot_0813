@@ -29,17 +29,15 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
   //sidebar_widget = new QWidget;
   //QVBoxLayout *sidebar_layout = new QVBoxLayout(sidebar_widget);
   //sidebar_layout->setMargin(0);
+ 
   QHBoxLayout *main_layout = new QHBoxLayout(this); 
-
   panel_widget = new QStackedWidget();
-  
   panel_widget->setStyleSheet(R"(
     border-radius: 30px;
     background-color: #292929;
   )");
 
   // setup panels
-  nav_btns = new QButtonGroup(this);
    QList<QPair<QString, QWidget *>> panels = {
     {"Developer", new DeveloperPanel(this)},
     {"Community", new CommunityPanel(this)},
@@ -50,7 +48,6 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
   for (auto &[name, panel] : panels) {
     QPushButton *btn = new QPushButton(name);
     btn->setCheckable(true);
-    btn->setChecked(nav_btns->buttons().size() == 0);
     btn->setStyleSheet(QString(R"(
       QPushButton {
         color: grey;
@@ -69,8 +66,6 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
       }
     )").arg(padding));
 
-    nav_btns->addButton(btn);
-
 
     main_layout->addWidget(btn);//, 0, Qt::AlignRight);
 
@@ -83,6 +78,7 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
     });
   }
 
+  
   main_layout->addWidget(panel_widget); 
 
 
@@ -95,10 +91,9 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
       background-color: black;
     }
   )");    
-  }
+  
 
   // power buttons
-
   main_layout->setSpacing(30);
 
   QPushButton *reboot_btn = new QPushButton("Reboot");
