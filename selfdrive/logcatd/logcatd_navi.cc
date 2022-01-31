@@ -91,7 +91,7 @@ void update_event(  LiveNaviDataResult *pEvet, float  dSpeed_ms )
     }
     else
     {
-      pEvet->dHideTimeSec =  pEvet->dEventSec + 3;
+      pEvet->dHideTimeSec =  pEvet->dEventSec + 5;
     }
 }
 
