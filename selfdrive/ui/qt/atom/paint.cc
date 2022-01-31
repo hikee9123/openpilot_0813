@@ -121,22 +121,22 @@ float OnPaint::interp( float xv, float xp[], float fp[], int N)
 	low = hi - 1;
 	if( low < 0 )
 	{
-		low = N-1;
-		return fp[0];
+	    low = N-1;
+	    return fp[0];
 	}
 
 	if (hi == N && xv > xp[low])
 	{
-		return fp[N-1];
+	    return fp[N-1];
 	}
 	else if( hi == 0 )
 	{
-	return fp[0];
+	    return fp[0];
 	}
 	else
 	{
-	dResult = (xv - xp[low]) * (fp[hi] - fp[low]) / (xp[hi] - xp[low]) + fp[low];
-	return dResult;
+	   dResult = (xv - xp[low]) * (fp[hi] - fp[low]) / (xp[hi] - xp[low]) + fp[low];
+
 	}
 	return  dResult;
 }
