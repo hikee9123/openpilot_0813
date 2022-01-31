@@ -28,6 +28,8 @@
 
 #include "atom/DeveloperPanel.h"
 #include "atom/CommunityPanel.h"
+#include "atom/ControlPanel.h"
+
 
 TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   // param, title, desc, icon
@@ -386,6 +388,8 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"Software", new SoftwarePanel(this)},
     {"Developer", new DeveloperPanel(this)},
     {"Community", new CommunityPanel(this)},
+    {"Control", new ControlPanel(this)},
+    
   };
   // sidebar_layout->addSpacing(45);
 #ifdef ENABLE_MAPS
