@@ -130,7 +130,7 @@ float OnPaint::interp( float xv, float xp[], float fp[], int N)
 		return fp[N-1];
 	}
 	else
-	
+	{
 		if( hi == 0 )
 		{
 			return fp[0];
