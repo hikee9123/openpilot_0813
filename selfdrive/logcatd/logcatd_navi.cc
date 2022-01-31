@@ -75,7 +75,7 @@ void update_event(  LiveNaviDataResult *pEvet, float  dSpeed_ms )
     float  dArrivalSec;
 
     if( dEventDistance > 10 ) {}
-    else if(  pEvet->safetySign == 124 ) // 과속방지턱
+    else if(  pEvet->safetySign == TS_BUMP_ROAD ) // 과속방지턱
     {
         dEventDistance = 200;
     }
