@@ -21,9 +21,8 @@
 
 
 
-CommunityPanel::CommunityPanel(QWidget* parent) : QFrame(parent)
+CommunityPanel::CommunityPanel(QWidget* parent) : ListWidget(parent)
 {
-
   // param, title, desc, icon
   std::vector<std::tuple<QString, QString, QString, QString>> toggles{
     {
@@ -77,17 +76,8 @@ CommunityPanel::CommunityPanel(QWidget* parent) : QFrame(parent)
     if (!locked) {
      // connect(uiState(), &UIState::offroadTransition, toggle, &ParamControl::setEnabled);
     }
-    //addItem(toggle);
-    layout()->addWidget(toggle);
+    addItem(toggle);
+    //layout()->addWidget(toggle);
   }
 
-
-  
 }
-
-void CommunityPanel::showEvent(QShowEvent *event) 
-{
-
-
-}
-

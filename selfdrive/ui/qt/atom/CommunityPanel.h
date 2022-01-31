@@ -15,15 +15,14 @@
 #include "selfdrive/ui/qt/widgets/controls.h"
 
 
-class CommunityPanel : public QFrame 
+class CommunityPanel : public ListWidget 
 {
   Q_OBJECT
 public:
   explicit CommunityPanel(QWidget* parent = nullptr);
 
 
-protected:
-  void showEvent(QShowEvent *event) override;
+
 
 };
 
