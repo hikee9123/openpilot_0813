@@ -94,58 +94,6 @@ DeveloperPanel::DeveloperPanel(QWidget* parent) : QFrame(parent)
   layout()->addWidget(new IsOpenpilotViewEnabledToggle());
 
 
-  // param, title, desc, icon
-  std::vector<std::tuple<QString, QString, QString, QString>> toggles{
-    {
-      "OpkratomLongitudinal",
-      "Enable atom Longitudinal",
-      "Use the openpilot longitudinal system for adaptive cruise control and lane keep driver assistance.  Changing this setting takes effect when the car is powered off.",
-      "../assets/offroad/icon_speed_limit.png",
-    },
-
-    {
-      "OpkrAutoResume",
-      "자동출발 기능 사용",
-      "SCC 사용중 정차시 자동출발 기능을 사용합니다.",
-      "../assets/offroad/icon_shell.png",
-    },
-
-    {
-      "OpkrRunNaviOnBoot",
-      "부팅 후 네비 자동 실행",
-      "부팅후 네비게이션(티맵)을 자동 실행합니다.",
-      "../assets/offroad/icon_shell.png",
-    },    
-
-    {
-      "OpkrTurnSteeringDisable",
-      "턴시그널 사용시 조향해제 사용",
-      "차선변경속도 이하로 주행할 때 턴시그널을 사용시 자동조향을 일시해제 합니다.",
-      "../assets/offroad/icon_shell.png",
-    },    
-
-    {
-      "OpkrPandaFirmwareCk",
-      "Panda Firmware Check",
-      "판다의 FirmWare를 확인합니다.",
-      "../assets/offroad/icon_shell.png",
-    },
-
-  };
-
-  for (auto &[param, title, desc, icon] : toggles) {
-    auto toggle = new ParamControl(param, title, desc, icon, this);
-    bool locked = Params().getBool((param + "Lock").toStdString());
-    toggle->setEnabled(!locked);
-    if (!locked) {
-     // connect(uiState(), &UIState::offroadTransition, toggle, &ParamControl::setEnabled);
-    }
-    //addItem(toggle);
-    layout()->addWidget(toggle);
-  }
-
-
-
    layout()->addWidget(new CPrebuiltToggle());
   
   layout()->addWidget(horizontal_line());
