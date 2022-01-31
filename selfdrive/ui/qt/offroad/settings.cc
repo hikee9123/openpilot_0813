@@ -27,6 +27,7 @@
 #include "selfdrive/ui/qt/qt_window.h"
 
 #include "atom/DeveloperPanel.h"
+#include "atom/CommunityPanel.h"
 
 TogglesPanel::TogglesPanel(SettingsWindow *parent) : ListWidget(parent) {
   // param, title, desc, icon
@@ -390,6 +391,7 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"Toggles", new TogglesPanel(this)},
     {"Software", new SoftwarePanel(this)},
     {"Developer", new DeveloperPanel(this)},
+    {"Community", new CommunityPanel(this)},
   };
   // sidebar_layout->addSpacing(45);
 #ifdef ENABLE_MAPS
