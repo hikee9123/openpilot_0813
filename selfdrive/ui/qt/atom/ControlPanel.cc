@@ -25,63 +25,8 @@
 
 ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
 {
-  // setup two main layouts
-  //sidebar_widget = new QWidget;
-  //QVBoxLayout *sidebar_layout = new QVBoxLayout(sidebar_widget);
-  //sidebar_layout->setMargin(0);
- 
-  QHBoxLayout *main_layout = new QHBoxLayout(this); 
-
-  // setup panels
-   QList<QPair<QString, func *>> panels = {
-    {"Reboot", &ControlPanel::reboot},
-    {"Power Off", &ControlPanel::poweroff},
-  };
-
-  const int padding = 35;
-
-  for (auto &[name, panel] : panels) {
-    QPushButton *btn = new QPushButton(name);
-    btn->setCheckable(true);
-    btn->setStyleSheet(QString(R"(
-      QPushButton {
-        color: grey;
-        font-size: 65px;
-        font-weight: 500;
-        height: 120px;
-         background-color: #393939;
-      }
-      QPushButton:checked {
-        color: white;
-      }
-      QPushButton:pressed {
-        color: #ADADAD;
-        background-color: #4a4a4a; 
-      }
-    )").arg(padding));
-
-
-    main_layout->addWidget(btn);//, 0, Qt::AlignRight);
-
-    QObject::connect(btn, &QPushButton::clicked, [=, func]() {
-      btn->setChecked(true);
-     // main_layout->setCurrentWidget(w);
-    });
-  }
-
-
-  setStyleSheet(R"(
-    * {
-      color: white;
-      font-size: 50px;
-    }
-    ControlPanel {
-      background-color: black;
-    }
-  )");    
-  
-/*
   // power buttons
+  QHBoxLayout *main_layout = new QHBoxLayout();
   main_layout->setSpacing(30);
 
   QPushButton *reboot_btn = new QPushButton("Reboot");
@@ -100,7 +45,7 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
     #poweroff_btn { height: 120px; border-radius: 15px; background-color: #E22C2C; }
     #poweroff_btn:pressed { background-color: #FF2424; }
   )");
-*/  
+
   addItem(main_layout);
 
 }
