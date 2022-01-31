@@ -195,6 +195,7 @@ int main() {
       {
         if( dSpeed_ms > 2.0 )
         {
+          update_event( &event, dSpeed_ms );
           dEventLastSec = dCurrentSec - event.dEventSec;  // 마지막 Event Time
           event.dArrivalTimeSec = event.dHideTimeSec - dCurrentSec;
           event.dArrivalDistance =  event.dArrivalTimeSec * dSpeed_ms;
