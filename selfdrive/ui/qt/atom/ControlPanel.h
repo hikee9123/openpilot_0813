@@ -21,8 +21,13 @@ class ControlPanel : public ListWidget
 public:
   explicit ControlPanel(QWidget* parent = nullptr);
 
+
+protected:
+  void hideEvent(QHideEvent *event) override;
+  void showEvent(QShowEvent *event) override;
 private:
   QButtonGroup *nav_btns;
+  QStackedWidget *panel_widget;
 
 private:
   void  reboot();

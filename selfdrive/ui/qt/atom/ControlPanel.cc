@@ -10,6 +10,7 @@
 #include "selfdrive/ui/qt/widgets/toggle.h"
 #include "selfdrive/ui/qt/widgets/offroad_alerts.h"
 #include "selfdrive/ui/qt/widgets/controls.h"
+#include "selfdrive/ui/qt/widgets/scrollview.h"
 
 #include "selfdrive/common/params.h"
 #include "selfdrive/common/util.h"
@@ -28,7 +29,7 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
   //sidebar_widget = new QWidget;
   //QVBoxLayout *sidebar_layout = new QVBoxLayout(sidebar_widget);
   //sidebar_layout->setMargin(0);
-  QHBoxLayout *box_layout = new QHBoxLayout(); 
+  QHBoxLayout *box_layout = new QHBoxLayout(this); 
 
   panel_widget = new QStackedWidget();
   
@@ -116,6 +117,17 @@ for (auto &[name, panel] : panels) {
   addItem(box_layout);
 }
 
+void ControlPanel::showEvent(QShowEvent *event) {
+  panel_widget->setCurrentIndex(0);
+  nav_btns->buttons()[0]->setChecked(true);
+}
+
+
+void SettingsWindow::hideEvent(QHideEvent *event) {
+#ifdef QCOM
+  //HardwareEon::close_activities();
+#endif
+}
 
 
 void ControlPanel::reboot() {
