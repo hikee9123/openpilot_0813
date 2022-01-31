@@ -51,7 +51,7 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
 }
 
 void ControlPanel::showEvent(QShowEvent *event) {
-  panel_widget->setCurrentIndex(0);
+
 }
 
 

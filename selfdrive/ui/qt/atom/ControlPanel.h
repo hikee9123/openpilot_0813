@@ -28,8 +28,9 @@ signals:
 protected:
   void hideEvent(QHideEvent *event) override;
   void showEvent(QShowEvent *event) override;
+  
 private:
-  QStackedWidget *panel_widget;
+
 
 
 private:
