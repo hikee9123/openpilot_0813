@@ -202,9 +202,9 @@ int main() {
 
 
           
-          if( dSpeed_ms < 10 )  dEventHideSec = 5;
-          else if( dSpeed_ms < 20 )  dEventHideSec = 4;
-          else dEventHideSec = 3;
+          if( dSpeed_ms < 10 )  dEventHideSec = 20;
+          else if( dSpeed_ms < 20 )  dEventHideSec = 10;
+          else dEventHideSec = 7;
 
           if( dEventLastSec > dEventHideSec )   opkr = 0;          
           else if( event.dArrivalTimeSec < 1.5 )  opkr = 0;
