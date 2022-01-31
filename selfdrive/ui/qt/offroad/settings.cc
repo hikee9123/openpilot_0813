@@ -389,16 +389,16 @@ SettingsWindow::SettingsWindow(QWidget *parent) : QFrame(parent) {
     {"Network", network_panel(this)},
     {"Toggles", new TogglesPanel(this)},
     {"Software", new SoftwarePanel(this)},
-    {"Developer", new CUserPanel(this)},    
+    {"Developer", new CUserPanel(this)},
   };
-  sidebar_layout->addSpacing(45);
+  // sidebar_layout->addSpacing(45);
 #ifdef ENABLE_MAPS
   auto map_panel = new MapPanel(this);
   panels.push_back({"Navigation", map_panel});
   QObject::connect(map_panel, &MapPanel::closeSettings, this, &SettingsWindow::closeSettings);
 #endif
 
-  const int padding = panels.size() > 3 ? 0 : 15;
+  const int padding = panels.size() > 3 ? 3 : 15;
 
   nav_btns = new QButtonGroup(this);
   for (auto &[name, panel] : panels) {
