@@ -29,6 +29,7 @@ private:
   QButtonGroup *nav_btns;
   QStackedWidget *panel_widget;
 
+
 private:
   void  reboot();
   void  poweroff();

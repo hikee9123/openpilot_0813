@@ -29,7 +29,7 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
   //sidebar_widget = new QWidget;
   //QVBoxLayout *sidebar_layout = new QVBoxLayout(sidebar_widget);
   //sidebar_layout->setMargin(0);
-  QHBoxLayout *box_layout = new QHBoxLayout(this); 
+  QHBoxLayout *main_layout = new QHBoxLayout(this); 
 
   panel_widget = new QStackedWidget();
   
@@ -70,7 +70,7 @@ for (auto &[name, panel] : panels) {
     nav_btns->addButton(btn);
 
 
-    box_layout->addWidget(btn, 0, Qt::AlignRight);
+    main_layout->addWidget(btn, 0, Qt::AlignRight);
 
     ScrollView *panel_frame = new ScrollView(panel, this);
     panel_widget->addWidget(panel_frame);
@@ -80,7 +80,7 @@ for (auto &[name, panel] : panels) {
       panel_widget->setCurrentWidget(w);
     });
 
-    box_layout->addWidget(panel_widget); 
+    main_layout->addWidget(panel_widget); 
 
 
   setStyleSheet(R"(
@@ -96,16 +96,16 @@ for (auto &[name, panel] : panels) {
 
   // power buttons
 
-  box_layout->setSpacing(30);
+  main_layout->setSpacing(30);
 
   QPushButton *reboot_btn = new QPushButton("Reboot");
   reboot_btn->setObjectName("reboot_btn");
-  box_layout->addWidget(reboot_btn);
+  main_layout->addWidget(reboot_btn);
   QObject::connect(reboot_btn, &QPushButton::clicked, this, &ControlPanel::reboot);
 
   QPushButton *poweroff_btn = new QPushButton("Power Off");
   poweroff_btn->setObjectName("poweroff_btn");
-  box_layout->addWidget(poweroff_btn);
+  main_layout->addWidget(poweroff_btn);
   QObject::connect(poweroff_btn, &QPushButton::clicked, this, &ControlPanel::poweroff);
 
   setStyleSheet(R"(
@@ -114,7 +114,7 @@ for (auto &[name, panel] : panels) {
     #poweroff_btn { height: 120px; border-radius: 15px; background-color: #E22C2C; }
     #poweroff_btn:pressed { background-color: #FF2424; }
   )");
-  addItem(box_layout);
+  addItem(main_layout);
 }
 
 void ControlPanel::showEvent(QShowEvent *event) {
@@ -123,7 +123,7 @@ void ControlPanel::showEvent(QShowEvent *event) {
 }
 
 
-void SettingsWindow::hideEvent(QHideEvent *event) {
+void ControlPanel::hideEvent(QHideEvent *event) {
 #ifdef QCOM
   //HardwareEon::close_activities();
 #endif
