@@ -22,7 +22,8 @@ public:
   explicit ControlPanel(QWidget* parent = nullptr);
 
 
-
-
+private:
+  void  reboot();
+  void  poweroff();
 };
 
