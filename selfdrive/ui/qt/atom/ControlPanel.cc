@@ -31,19 +31,14 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
   //sidebar_layout->setMargin(0);
  
   QHBoxLayout *main_layout = new QHBoxLayout(this); 
-  panel_widget = new QStackedWidget();
-  panel_widget->setStyleSheet(R"(
-    border-radius: 30px;
-    background-color: #292929;
-  )");
 
   // setup panels
-   QList<QPair<QString, QWidget *>> panels = {
-    {"Developer", new DeveloperPanel(this)},
-    {"Community", new CommunityPanel(this)},
+   QList<QPair<QString, func *>> panels = {
+    {"Reboot", &ControlPanel::reboot},
+    {"Power Off", &ControlPanel::poweroff},
   };
 
-  const int padding = panels.size() > 3 ? 5 : 35;
+  const int padding = 35;
 
   for (auto &[name, panel] : panels) {
     QPushButton *btn = new QPushButton(name);
@@ -54,8 +49,7 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
         font-size: 65px;
         font-weight: 500;
         height: 120px;
-        border-radius: 15px;
-        background-color: #393939;
+         background-color: #393939;
       }
       QPushButton:checked {
         color: white;
@@ -69,17 +63,11 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
 
     main_layout->addWidget(btn);//, 0, Qt::AlignRight);
 
-    ScrollView *panel_frame = new ScrollView(panel, this);
-    panel_widget->addWidget(panel_frame);
-
-    QObject::connect(btn, &QPushButton::clicked, [=, w = panel_frame]() {
+    QObject::connect(btn, &QPushButton::clicked, [=, func]() {
       btn->setChecked(true);
-      panel_widget->setCurrentWidget(w);
+     // main_layout->setCurrentWidget(w);
     });
   }
-
-  
-  main_layout->addWidget(panel_widget); 
 
 
   setStyleSheet(R"(
@@ -92,7 +80,7 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
     }
   )");    
   
-
+/*
   // power buttons
   main_layout->setSpacing(30);
 
@@ -112,7 +100,9 @@ ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
     #poweroff_btn { height: 120px; border-radius: 15px; background-color: #E22C2C; }
     #poweroff_btn:pressed { background-color: #FF2424; }
   )");
+*/  
   addItem(main_layout);
+
 }
 
 void ControlPanel::showEvent(QShowEvent *event) {
