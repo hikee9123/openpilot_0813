@@ -202,8 +202,8 @@ int main() {
           dArrivalDistanceStop = event.dArrivalDistance;
 
 
-          
-          if( dSpeed_ms < 10 )  dEventHideSec = 20;
+          if( event.safetySign == TS_BUMP_ROAD ) dEventHideSec = 10; // 과속방지턱
+          else if( dSpeed_ms < 10 )  dEventHideSec = 20;
           else if( dSpeed_ms < 20 )  dEventHideSec = 10;
           else dEventHideSec = 7;
 
