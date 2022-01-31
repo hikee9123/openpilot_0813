@@ -8,7 +8,7 @@ from common.basedir import BASEDIR
 from selfdrive.swaglog import cloudlog
 
 
-TESTED_BRANCHES = ['master-ci', 'release2-staging', 'release3-staging', 'dashcam-staging', 'release2', 'release3', 'dashcam']
+TESTED_BRANCHES = ['atom-c2', 'release2-staging', 'release3-staging', 'dashcam-staging', 'release2', 'release3', 'dashcam']
 
 training_version: bytes = b"0.2.0"
 terms_version: bytes = b"2"
