@@ -278,7 +278,7 @@ def thermald_thread(end_event, hw_queue):
           cloudlog.info("Setting up EON fan handler")
           setup_eon_fan()
           handle_fan = handle_fan_eon
-    else:
+    elif (count % int(10. / DT_TRML)) == 0:
       # atom
       is_openpilot_view_enabled = params.get_bool("IsOpenpilotViewEnabled") # IsRHD
       if is_openpilot_view_enabled:

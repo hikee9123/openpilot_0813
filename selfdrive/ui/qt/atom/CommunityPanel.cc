@@ -67,6 +67,13 @@ CommunityPanel::CommunityPanel(QWidget* parent) : ListWidget(parent)
       "../assets/offroad/icon_shell.png",
     },
 
+    {
+      "OpkrPowerShutdown",
+      "Power off and shutdown",
+      "전원 미공급후 배터리 잔량 70퍼센트 이하일경우 전원을 off합니다..",
+      "../assets/offroad/icon_shell.png",
+    },  
+
   };
 
   for (auto &[param, title, desc, icon] : toggles) {

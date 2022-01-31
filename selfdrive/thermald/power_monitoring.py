@@ -183,7 +183,7 @@ class PowerMonitoring:
 
     now = sec_since_boot()
     panda_charging = (peripheralState.usbPowerMode != log.PeripheralState.UsbPowerMode.client)
-    BATT_PERC_OFF = 40
+    BATT_PERC_OFF = self.batt_perc_off_auto_power()
 
     should_shutdown = False
     # Wait until we have shut down charging before powering down
@@ -203,3 +203,11 @@ class PowerMonitoring:
         elif msg.deviceState.batteryPercent <= to_charge and not battery_changing:
           HARDWARE.set_battery_charging(True)
       self.ts_last_charging_ctrl = ts
+
+
+  def batt_perc_off_auto_power(self):
+    batt_perc_off = 40
+    if self.params.get_bool("OpkrPowerShutdown"):
+      batt_perc_off = 70
+
+    return  batt_perc_off
