@@ -21,6 +21,8 @@ class ControlPanel : public ListWidget
 public:
   explicit ControlPanel(QWidget* parent = nullptr);
 
+private:
+  QButtonGroup *nav_btns;
 
 private:
   void  reboot();

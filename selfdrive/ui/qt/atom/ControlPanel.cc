@@ -18,14 +18,83 @@
 #include "ControlPanel.h"
 
 // 일부 코드 OPKR 참고.
-
+#include "atom/DeveloperPanel.h"
+#include "atom/CommunityPanel.h"
 
 
 ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
 {
- 
+  // setup two main layouts
+  //sidebar_widget = new QWidget;
+  //QVBoxLayout *sidebar_layout = new QVBoxLayout(sidebar_widget);
+  //sidebar_layout->setMargin(0);
+  QHBoxLayout *box_layout = new QHBoxLayout(); 
+
+  panel_widget = new QStackedWidget();
+  
+  panel_widget->setStyleSheet(R"(
+    border-radius: 30px;
+    background-color: #292929;
+  )");
+
+
+  nav_btns = new QButtonGroup(this);
+   QList<QPair<QString, QWidget *>> panels = {
+    {"Developer", new DeveloperPanel(this)},
+    {"Community", new CommunityPanel(this)},
+  };
+
+for (auto &[name, panel] : panels) {
+    QPushButton *btn = new QPushButton(name);
+    btn->setCheckable(true);
+    btn->setChecked(nav_btns->buttons().size() == 0);
+    btn->setStyleSheet(QString(R"(
+      QPushButton {
+        color: grey;
+        font-size: 65px;
+        font-weight: 500;
+        height: 120px;
+        border-radius: 15px;
+        background-color: #393939;
+      }
+      QPushButton:checked {
+        color: white;
+      }
+      QPushButton:pressed {
+        color: #ADADAD;
+        background-color: #4a4a4a; 
+      }
+    )").arg(padding));
+
+    nav_btns->addButton(btn);
+
+
+    box_layout->addWidget(btn, 0, Qt::AlignRight);
+
+    ScrollView *panel_frame = new ScrollView(panel, this);
+    panel_widget->addWidget(panel_frame);
+
+    QObject::connect(btn, &QPushButton::clicked, [=, w = panel_frame]() {
+      btn->setChecked(true);
+      panel_widget->setCurrentWidget(w);
+    });
+
+    box_layout->addWidget(panel_widget); 
+
+
+  setStyleSheet(R"(
+    * {
+      color: white;
+      font-size: 50px;
+    }
+    ControlPanel {
+      background-color: black;
+    }
+  )");    
+  }
+
   // power buttons
-  QHBoxLayout *box_layout = new QHBoxLayout();
+
   box_layout->setSpacing(30);
 
   QPushButton *reboot_btn = new QPushButton("Reboot");
