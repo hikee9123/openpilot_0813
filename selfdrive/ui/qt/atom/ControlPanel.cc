@@ -26,7 +26,7 @@
 ControlPanel::ControlPanel(QWidget* parent) : ListWidget(parent)
 {
   // power buttons
-  QHBoxLayout *main_layout = new QHBoxLayout();
+  QHBoxLayout *main_layout = new QHBoxLayout(this);
   main_layout->setSpacing(30);
 
   QPushButton *reboot_btn = new QPushButton("Reboot");
