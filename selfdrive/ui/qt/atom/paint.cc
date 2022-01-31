@@ -121,22 +121,24 @@ float OnPaint::interp( float xv, float xp[], float fp[], int N)
 	low = hi - 1;
 	if( low < 0 )
 	{
-	    low = N-1;
-	    return fp[0];
+		low = N-1;
+		return fp[0];
 	}
 
 	if (hi == N && xv > xp[low])
 	{
-	    return fp[N-1];
-	}
-	else if( hi == 0 )
-	{
-	    return fp[0];
+		return fp[N-1];
 	}
 	else
 	{
-	   dResult = (xv - xp[low]) * (fp[hi] - fp[low]) / (xp[hi] - xp[low]) + fp[low];
-
+		if( hi == 0 )
+		{
+			return fp[0];
+		}
+		else
+		{
+			dResult = (xv - xp[low]) * (fp[hi] - fp[low]) / (xp[hi] - xp[low]) + fp[low];
+		}
 	}
 	return  dResult;
 }
@@ -317,7 +319,7 @@ void OnPaint::bb_ui_draw_measures_right( QPainter &p, int bb_x, int bb_y, int bb
 
     // temp is alway in C * 1000
     val_str.sprintf("%.1f", m_param.batteryTemp );
-    uom_str.sprintf("%.0f", fan_speed * 0.001);        
+    uom_str.sprintf("%.1f", fan_speed * 0.001);        
     bb_h +=bb_ui_draw_measure(p,  val_str, uom_str, "BAT TEMP",
         bb_rx, bb_ry, bb_uom_dx,
         val_color, lab_color, uom_color,
