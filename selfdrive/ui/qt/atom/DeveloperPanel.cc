@@ -48,7 +48,7 @@ DeveloperPanel::DeveloperPanel(QWidget* parent) : QFrame(parent)
       desc += QString("업데이트가 있습니다.");
     }
     if (ConfirmationDialog::confirm(desc, this)) {
-      Params().putBool("PutPrebuiltOn", 0);
+      Params().putBool("OpkrPrebuiltOn", 0);
       std::system( "cd /data/openpilot; rm -f prebuilt" );
       std::system( gitpull );
     }
