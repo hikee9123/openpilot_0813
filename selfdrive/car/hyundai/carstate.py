@@ -46,25 +46,7 @@ class CarState(CarStateBase):
     self.engage_enable = False
     self.enagage_status = 0
     self.cruise_buttons_old = 0
-    self.time_break = 0
 
-  def engage_disable( self, ret ):
-    steeringTorque  = abs( ret.steeringTorque )
-    steeringAngleDeg = abs( ret.steeringAngleDeg )
-
-    if ret.brakePressed:
-      self.time_break = 500
-    elif self.time_break > 0:
-      self.time_break -= 1
-
-    limitAngleDeg = 90
-    if self.time_break:
-      limitAngleDeg = 60
-
-    #if not self.acc_mode and self.clu_Vanz < 30 and steeringAngleDeg > limitAngleDeg and steeringTorque > 300:
-    #   return True
-
-    return False
 
   def engage_control( self, ret, c ):
     left_lane = c.hudControl.leftLaneVisible 
@@ -79,12 +61,8 @@ class CarState(CarStateBase):
       self.enagage_status = 2
       self.engage_enable = True
 
-    engage_disable_status = self.engage_disable( ret )
     if self.cruise_buttons_old == self.cruise_buttons:
       if self.engage_enable:
-        if engage_disable_status:
-          self.engage_enable = False
-          self.time_delay_int = 100
         return self.engage_enable
       elif self.time_delay_int > 0:
         self.time_delay_int -= 1

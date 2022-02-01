@@ -31,11 +31,12 @@ class CarController():
     self.lkas11_cnt = 0
     self.scc12_cnt = 0
     self.NC = NaviControl(self.p)
-    self.steerWarning_time = 0
+
 
     
 
     # hud
+    self.hud_timer_alert = 0
     self.hud_timer_left = 0
     self.hud_timer_right = 0
     self.steer_timer_apply_torque = 1.0
@@ -49,11 +50,18 @@ class CarController():
 
     sys_warning = (visual_alert in (VisualAlert.steerRequired, VisualAlert.ldw))
 
+    if sys_warning:
+      self.hud_timer_alert = 100
+
     if left_lane:
       self.hud_timer_left = 100
 
     if right_lane:
       self.hud_timer_right = 100
+
+    if self.hud_timer_alert:
+      sys_warning = True
+      self.hud_timer_alert -= 1
 
     if self.hud_timer_left:
       self.hud_timer_left -= 1
@@ -77,23 +85,6 @@ class CarController():
     return sys_warning, sys_state
 
 
-  def lkas_active_control( self, active, CS, path_plan ):
-    steerAngleDegAbs = abs(CS.out.steeringAngleDeg)
-    #steeringTorque = abs(CS.out.steeringTorque)
-    
-    # 1. steer warning
-    if 0 and CS.out.steerWarning and CS.out.steeringPressed:
-      self.steerWarning_time = 100
-    elif self.steerWarning_time:
-      if steerAngleDegAbs > 10:
-        self.steerWarning_time = 100 
-
-    if self.steerWarning_time > 0:
-      self.steerWarning_time -= 1
-
-   
-    lkas_active = active and not self.steerWarning_time and CS.out.vEgo >= CS.CP.minSteerSpeed and CS.out.cruiseState.enabled
-    return lkas_active
   
   def smooth_steer( self, apply_torque ):
     if self.steer_timer_apply_torque >= 1:
@@ -116,7 +107,7 @@ class CarController():
     trace1.printf2( '{}'.format( str_log1 ) )
 
 
-    str_log1 = 'acc={:.2f}, RV={:.2f},  {:.2f}  '.format( actuators.accel, CS.aReqValue, self.accel )
+    str_log1 = 'enable={:.2f}, active={:.2f} '.format( c.enabled, c.active )
     trace1.printf3( '{}'.format( str_log1 ) )
   
 
@@ -231,7 +222,8 @@ class CarController():
     # disable when temp fault is active, or below LKA minimum speed
     # lkas_active = enabled and not CS.out.steerWarning and CS.out.vEgo >= CS.CP.minSteerSpeed and CS.out.cruiseState.enabled
     path_plan = self.NC.update_lateralPlan()    
-    lkas_active = self.lkas_active_control( active, CS, path_plan )
+    lkas_active = active and  CS.out.vEgo >= CS.CP.minSteerSpeed and CS.out.cruiseState.enabled
+
 
     if not lkas_active:
       apply_steer = 0
