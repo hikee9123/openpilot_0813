@@ -29,6 +29,27 @@ class LateralPlanner:
     self.lat_mpc = LateralMpc()
     self.reset_mpc(np.zeros(4))
 
+
+    # atom
+    self.time_laneline = 0
+
+  def lanelines_check(self, sm):
+    lanelines = self.use_lanelines
+
+    if lanelines:
+      right_lane_visible = sm['lateralPlan'].rProb > 0.5
+      left_lane_visible = sm['lateralPlan'].lProb > 0.5
+      if not right_lane_visible and not left_lane_visible:
+        self.time_laneline = 100
+
+      if self.time_laneline:
+        lanelines = False
+        self.time_laneline -= 1
+
+      
+
+    return lanelines
+
   def reset_mpc(self, x0=np.zeros(4)):
     self.x0 = x0
     self.lat_mpc.reset(x0=self.x0)
@@ -60,7 +81,8 @@ class LateralPlanner:
       self.LP.rll_prob *= self.DH.lane_change_ll_prob
 
     # Calculate final driving path and set MPC costs
-    if self.use_lanelines:
+    #if self.use_lanelines:
+    if self.lanelines_check(sm):
       d_path_xyz = self.LP.get_d_path(v_ego, self.t_idxs, self.path_xyz)
       self.lat_mpc.set_weights(MPC_COST_LAT.PATH, MPC_COST_LAT.HEADING, self.steer_rate_cost)
     else:
@@ -119,7 +141,7 @@ class LateralPlanner:
     lateralPlan.solverExecutionTime = self.lat_mpc.solve_time
 
     lateralPlan.desire = self.DH.desire
-    lateralPlan.useLaneLines = self.use_lanelines
+    lateralPlan.useLaneLines = not self.use_lanelines
     lateralPlan.laneChangeState = self.DH.lane_change_state
     lateralPlan.laneChangeDirection = self.DH.lane_change_direction
     lateralPlan.modelSpeed = float(self.LP.soft_model_speed)
