@@ -98,6 +98,7 @@ def is_tested_branch() -> bool:
 def is_dirty() -> bool:
   origin = get_origin()
   branch = get_branch()
+  print('origin={}  branch={}'.format( origin, branch ))
   if (origin is None) or (branch is None):
     return True
 
