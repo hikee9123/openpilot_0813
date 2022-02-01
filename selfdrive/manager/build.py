@@ -27,7 +27,7 @@ def build(spinner: Spinner, dirty: bool = False) -> None:
   env['SCONS_PROGRESS'] = "1"
   nproc = os.cpu_count()
   j_flag = "" if nproc is None else f"-j{nproc - 1}"
-
+  print( 'build = dirty={}'.format(  dirty) )
   for retry in [True, False]:
     scons = subprocess.Popen(["scons", j_flag, "--cache-populate"], cwd=BASEDIR, env=env, stderr=subprocess.PIPE)
     assert scons.stderr is not None

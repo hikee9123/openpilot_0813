@@ -30,10 +30,13 @@ def manager_init() -> None:
   # update system time from panda
   set_time(cloudlog)
 
-  # save boot log
-  subprocess.call("./bootlog", cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
 
   params = Params()
+  enableLogger = params.get_bool("UploadRaw")
+  if enableLogger:
+    # save boot log
+    subprocess.call("./bootlog", cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
+
   params.clear_all(ParamKeyType.CLEAR_ON_MANAGER_START)
 
   default_params: List[Tuple[str, Union[str, bytes]]] = [
@@ -45,7 +48,7 @@ def manager_init() -> None:
     ("OpkrAutoResume", "0"),
     ("OpkrLiveSteerRatio", "0"),
     ("OpkrTurnSteeringDisable", "0"),
-    ("PutPrebuiltOn", "0"),
+    ("OpkrPrebuiltOn", "0"),
     ("OpkrAutoScreenOff", "0"),
     ("OpkrAutoFocus", "0"),
     ("OpkrUIBrightness", "0"),
@@ -138,10 +141,7 @@ def manager_thread() -> None:
 
   ignore: List[str] = []
   enableLogger = params.get_bool("UploadRaw")
-  if enableLogger:
-    # save boot log
-    subprocess.call("./bootlog", cwd=os.path.join(BASEDIR, "selfdrive/loggerd"))
-  else:
+  if not enableLogger:
     ignore += ["loggerd","logmessaged","deleter","tombstoned","uploader","statsd"]
 
   if params.get("DongleId", encoding='utf8') in (None, UNREGISTERED_DONGLE_ID):
