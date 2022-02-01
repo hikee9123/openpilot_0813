@@ -269,7 +269,7 @@ void UIState::updateStatus() {
   } else if (sm->frame == 1) {
     emit offroadTransition(!scene.started);
   } else  {
-     scene.end_to_end = scene.lateralPlan.getUseLaneLines()
+     scene.end_to_end = scene.lateralPlan.getUseLaneLines();
   }
 }
 
