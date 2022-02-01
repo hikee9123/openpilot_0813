@@ -45,9 +45,6 @@ class LateralPlanner:
       if self.time_laneline:
         lanelines = False
         self.time_laneline -= 1
-
-      
-
     return lanelines
 
   def reset_mpc(self, x0=np.zeros(4)):
