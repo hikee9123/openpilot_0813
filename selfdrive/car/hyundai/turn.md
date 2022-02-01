@@ -12,6 +12,7 @@
       Too low: noisy actuation, responds to every bump, maybe unable to maintain lane center due to rapid actuation 
       Just right: above noisy actuation and lane centering instability 
     
+    
     1.3 lateralTuning.indi.innerLoopGain 
       Steer rate error gain 
       Too high: jerky oscillation in high curvature 
