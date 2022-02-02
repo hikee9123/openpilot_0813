@@ -44,7 +44,10 @@ class LateralPlanner:
 
       if self.time_laneline:
         self.time_laneline -= 1
-        lanelines = False        
+        lanelines = False
+        
+        
+        print(' r={}   l= {}    lanelines ={} \n '.format(self.LP.rll_prob, self.LP.lll_prob,  lanelines) )
 
     return lanelines
 
