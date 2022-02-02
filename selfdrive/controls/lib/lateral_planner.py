@@ -37,14 +37,15 @@ class LateralPlanner:
     lanelines = self.use_lanelines
 
     if lanelines:
-      right_lane_visible = sm['lateralPlan'].rProb > 0.5
-      left_lane_visible = sm['lateralPlan'].lProb > 0.5
+      right_lane_visible = float(self.LP.rll_prob) > 0.5
+      left_lane_visible = float(self.LP.lll_prob) > 0.5
       if not right_lane_visible and not left_lane_visible:
         self.time_laneline = 100
 
       if self.time_laneline:
-        lanelines = False
         self.time_laneline -= 1
+        lanelines = False        
+
     return lanelines
 
   def reset_mpc(self, x0=np.zeros(4)):
