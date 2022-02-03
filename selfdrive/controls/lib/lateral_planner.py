@@ -36,12 +36,18 @@ class LateralPlanner:
 
   def lanelines_check(self, sm):
     lanelines = self.use_lanelines
+    steeringAngleDeg = sm['carState'].steeringAngleDeg
 
     if lanelines:
       right_lane_visible = float(self.LP.rll_prob) > 0.5
       left_lane_visible = float(self.LP.lll_prob) > 0.5
-      if not right_lane_visible and not left_lane_visible:
-        self.time_laneline = 100
+
+      if self.time_laneline:
+        if not right_lane_visible or not left_lane_visible or (abs(steeringAngleDeg) > 5):
+          self.time_laneline = 500
+      else:
+        if not right_lane_visible and not left_lane_visible:
+          self.time_laneline = 500
 
       if self.time_laneline:
         self.time_laneline -= 1
