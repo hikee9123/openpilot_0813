@@ -53,7 +53,7 @@ class LateralPlanner:
     lanelines = self.use_lanelines
     return lanelines
      
-"""
+    """
     if lanelines:
       right_lane_visible = float(self.LP.rll_prob) > 0.5
       left_lane_visible = float(self.LP.lll_prob) > 0.5
@@ -71,7 +71,7 @@ class LateralPlanner:
 
         #print(' r={}   l= {}    lanelines ={} \n '.format(self.LP.rll_prob, self.LP.lll_prob,  lanelines) )
     return lanelines
-"""
+    """
 
   def reset_mpc(self, x0=np.zeros(4)):
     self.x0 = x0
