@@ -39,8 +39,11 @@ class LateralPlanner:
     lanelines = self.use_lanelines
     steeringAngleDeg = sm['carState'].steeringAngleDeg
     cruiseSwState = sm['carState'].cruiseState.cruiseSwState
+    accActive = sm['carState'].cruiseState.accActive
 
     if self.cruise_buttons == cruiseSwState:  #   GAP_DIST = 3
+      return lanelines
+    if accActive:
       return lanelines
 
     self.cruise_buttons = cruiseSwState
