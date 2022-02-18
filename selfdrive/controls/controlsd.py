@@ -4,7 +4,7 @@ import math
 from numbers import Number
 
 from cereal import car, log
-from common.numpy_fast import clip
+from common.numpy_fast import clip, interp
 from common.realtime import sec_since_boot, config_realtime_process, Priority, Ratekeeper, DT_CTRL
 from common.profiler import Profiler
 from common.params import Params, put_nonblocking
@@ -27,6 +27,10 @@ from selfdrive.controls.lib.vehicle_model import VehicleModel
 from selfdrive.locationd.calibrationd import Calibration
 from selfdrive.hardware import HARDWARE, TICI, EON
 from selfdrive.manager.process_config import managed_processes
+
+# atom
+from selfdrive.car.hyundai.interface import CarInterface
+import common.loger as  trace1
 
 SOFT_DISABLE_TIME = 3  # seconds
 LDW_MIN_SPEED = 31 * CV.MPH_TO_MS
@@ -78,7 +82,7 @@ class Controls:
       ignore = ['driverCameraState', 'managerState'] if SIMULATION else None
       self.sm = messaging.SubMaster(['deviceState', 'pandaStates', 'peripheralState', 'modelV2', 'liveCalibration',
                                      'driverMonitoringState', 'longitudinalPlan', 'lateralPlan', 'liveLocationKalman',
-                                     'managerState', 'liveParameters', 'radarState'] + self.camera_packets + joystick_packet,
+                                     'managerState', 'liveParameters', 'radarState','liveNaviData'] + self.camera_packets + joystick_packet,
                                      ignore_alive=ignore, ignore_avg_freq=['radarState', 'longitudinalPlan'])
 
     self.can_sock = can_sock
@@ -176,6 +180,24 @@ class Controls:
     # controlsd is driven by can recv, expected at 100Hz
     self.rk = Ratekeeper(100, print_delay_threshold=None)
     self.prof = Profiler(False)  # off by default
+
+    # atom
+    self.openpilot_mode = 10
+    self.OpkrLiveSteerRatio = params.get("OpkrLiveSteerRatio")
+
+  def update_modelToSteerRatio(self, learnerSteerRatio ):
+    steerRatio = learnerSteerRatio
+    if self.sm.updated['lateralPlan']:
+      modelSpeed = self.sm['lateralPlan'].modelSpeed * CV.MS_TO_KPH
+      if modelSpeed:
+        dRate = interp( modelSpeed, [200,450], [ 1, 0.9 ] )
+        steerRatio = learnerSteerRatio * dRate
+        str_log1 = '{:3.0f} lsR={:8.3f}'.format( modelSpeed, learnerSteerRatio )
+        trace1.printf1( '{}'.format( str_log1 ) )
+    steerRatio = clip( steerRatio, 13.5, 19.5 )
+
+    return steerRatio
+
 
   def update_events(self, CS):
     """Compute carEvents from carState"""
@@ -335,14 +357,14 @@ class Controls:
         self.events.add(EventName.processNotRunning)
 
     # Only allow engagement with brake pressed when stopped behind another stopped car
-    speeds = self.sm['longitudinalPlan'].speeds
-    if len(speeds) > 1:
-      v_future = speeds[-1]
-    else:
-      v_future = 100.0
-    if CS.brakePressed and v_future >= self.CP.vEgoStarting \
-      and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3:
-      self.events.add(EventName.noTarget)
+    #speeds = self.sm['longitudinalPlan'].speeds
+    #if len(speeds) > 1:
+    #  v_future = speeds[-1]
+    #else:
+    #  v_future = 100.0
+    #if CS.brakePressed and v_future >= self.CP.vEgoStarting \
+    #  and self.CP.openpilotLongitudinalControl and CS.vEgo < 0.3:
+    #  self.events.add(EventName.noTarget)
 
   def data_sample(self):
     """Receive data from sockets and update carState"""
@@ -472,6 +494,15 @@ class Controls:
     params = self.sm['liveParameters']
     x = max(params.stiffnessFactor, 0.1)
     sr = max(params.steerRatio, 0.1)
+
+    
+     # atom
+    if self.OpkrLiveSteerRatio == 2:  # 수동(고정)
+      sr = max(self.CP.steerRatio, 5.0)
+    elif self.OpkrLiveSteerRatio == 1:  # 반학습
+      steerRatio = self.update_modelToSteerRatio( params.steerRatio )
+      sr = max(steerRatio, 5.0)
+
     self.VM.update_params(x, sr)
 
     lat_plan = self.sm['lateralPlan']
@@ -553,6 +584,12 @@ class Controls:
   def publish_logs(self, CS, start_time, actuators, lac_log):
     """Send actuators and hud commands to the car, send controlsstate and MPC logging"""
 
+    global trace1
+    log_alertTextMsg1 = trace1.global_alertTextMsg1
+    log_alertTextMsg2 = trace1.global_alertTextMsg2
+    log_alertTextMsg3 = trace1.global_alertTextMsg3
+
+
     CC = car.CarControl.new_message()
     CC.enabled = self.enabled
     CC.active = self.active
@@ -573,8 +610,18 @@ class Controls:
     hudControl.lanesVisible = self.enabled
     hudControl.leadVisible = self.sm['longitudinalPlan'].hasLead
 
-    hudControl.rightLaneVisible = True
-    hudControl.leftLaneVisible = True
+    right_lane_visible = self.sm['lateralPlan'].rProb > 0.5
+    left_lane_visible = self.sm['lateralPlan'].lProb > 0.5
+    hudControl.rightLaneVisible = bool(right_lane_visible)
+    hudControl.leftLaneVisible = bool(left_lane_visible)
+
+    # atom
+    speeds = self.sm['longitudinalPlan'].speeds
+    if len(speeds) > 1:
+      v_future = speeds[0]
+    else:
+      v_future = 0
+    CC.hudControl.vFuture = v_future
 
     recent_blinker = (self.sm.frame - self.last_blinker_frame) * DT_CTRL < 5.0  # 5s blinker cooldown
     ldw_allowed = self.is_ldw_enabled and CS.vEgo > LDW_MIN_SPEED and not recent_blinker \
@@ -583,8 +630,7 @@ class Controls:
     model_v2 = self.sm['modelV2']
     desire_prediction = model_v2.meta.desirePrediction
     if len(desire_prediction) and ldw_allowed:
-      right_lane_visible = self.sm['lateralPlan'].rProb > 0.5
-      left_lane_visible = self.sm['lateralPlan'].lProb > 0.5
+
       l_lane_change_prob = desire_prediction[Desire.laneChangeLeft - 1]
       r_lane_change_prob = desire_prediction[Desire.laneChangeRight - 1]
 
@@ -613,7 +659,8 @@ class Controls:
     if not self.read_only and self.initialized:
       # send car controls over can
       self.last_actuators, can_sends = self.CI.apply(CC)
-      self.pm.send('sendcan', can_list_to_can_capnp(can_sends, msgtype='sendcan', valid=CS.canValid))
+      if self.openpilot_mode:
+         self.pm.send('sendcan', can_list_to_can_capnp(can_sends, msgtype='sendcan', valid=CS.canValid))
       CC.actuatorsOutput = self.last_actuators
 
     force_decel = (self.sm['driverMonitoringState'].awarenessStatus < 0.) or \
@@ -624,6 +671,8 @@ class Controls:
 
     steer_angle_without_offset = math.radians(CS.steeringAngleDeg - params.angleOffsetDeg)
     curvature = -self.VM.calc_curvature(steer_angle_without_offset, CS.vEgo, params.roll)
+
+    angle_steers_des = actuators.steeringAngleDeg
 
     # controlsState
     dat = messaging.new_message('controlsState')
@@ -656,6 +705,11 @@ class Controls:
     controlsState.startMonoTime = int(start_time * 1e9)
     controlsState.forceDecel = bool(force_decel)
     controlsState.canErrorCounter = self.can_rcv_error_counter
+    controlsState.output = float(lac_log.output)
+    controlsState.steeringAngleDesiredDegDEPRECATED = angle_steers_des
+    controlsState.alertTextMsg1 = str(log_alertTextMsg1)
+    controlsState.alertTextMsg2 = str(log_alertTextMsg2)
+    controlsState.alertTextMsg3 = str(log_alertTextMsg3)
 
     lat_tuning = self.CP.lateralTuning.which()
     if self.joystick_mode:
@@ -709,6 +763,13 @@ class Controls:
     CS = self.data_sample()
     self.prof.checkpoint("Sample")
 
+    # atom
+    if self.read_only:
+      self.openpilot_mode = 0
+    elif CS.cruiseState.available:
+      self.openpilot_mode = 10
+
+
     self.update_events(CS)
 
     if not self.read_only and self.initialized:
@@ -726,6 +787,13 @@ class Controls:
     self.prof.checkpoint("Sent")
 
     self.update_button_timers(CS.buttonEvents)
+
+    if not CS.cruiseState.available and self.openpilot_mode:
+      if self.openpilot_mode > 0:
+        self.openpilot_mode -= 1
+      else:
+        self.openpilot_mode = 0    
+
 
   def controlsd_thread(self):
     while True:

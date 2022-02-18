@@ -29,6 +29,53 @@ class LateralPlanner:
     self.lat_mpc = LateralMpc()
     self.reset_mpc(np.zeros(4))
 
+
+    # atom
+    self.cruise_buttons = 0
+    self.time_laneline = 0
+    self.lane_lines  = self.use_lanelines
+
+  def lanelines_check(self, sm):
+    lanelines = self.use_lanelines
+    steeringAngleDeg = sm['carState'].steeringAngleDeg
+    cruiseSwState = sm['carState'].cruiseState.cruiseSwState
+    accActive = sm['carState'].cruiseState.accActive
+
+    if self.cruise_buttons == cruiseSwState:  #   GAP_DIST = 3
+      return lanelines
+    if accActive:
+      return lanelines
+
+    self.cruise_buttons = cruiseSwState
+    if cruiseSwState == 3:
+      if self.use_lanelines:
+        self.use_lanelines = False
+      else:
+        self.use_lanelines = True
+
+    lanelines = self.use_lanelines
+    return lanelines
+     
+    """
+    if lanelines:
+      right_lane_visible = float(self.LP.rll_prob) > 0.5
+      left_lane_visible = float(self.LP.lll_prob) > 0.5
+
+      if self.time_laneline:
+        if not right_lane_visible or not left_lane_visible or (abs(steeringAngleDeg) > 5):
+          self.time_laneline = 500
+      else:
+        if not right_lane_visible and not left_lane_visible:
+          self.time_laneline = 500
+
+      if self.time_laneline:
+        self.time_laneline -= 1
+        lanelines = False
+
+        #print(' r={}   l= {}    lanelines ={} \n '.format(self.LP.rll_prob, self.LP.lll_prob,  lanelines) )
+    return lanelines
+    """
+
   def reset_mpc(self, x0=np.zeros(4)):
     self.x0 = x0
     self.lat_mpc.reset(x0=self.x0)
@@ -39,6 +86,9 @@ class LateralPlanner:
 
     # Parse model predictions
     md = sm['modelV2']
+    if sm.frame % 2 == 0:
+      self.LP.cal_model_speed( md, v_ego )
+
     self.LP.parse_model(md)
     if len(md.position.x) == TRAJECTORY_SIZE and len(md.orientation.x) == TRAJECTORY_SIZE:
       self.path_xyz = np.column_stack([md.position.x, md.position.y, md.position.z])
@@ -49,7 +99,7 @@ class LateralPlanner:
 
     # Lane change logic
     lane_change_prob = self.LP.l_lane_change_prob + self.LP.r_lane_change_prob
-    self.DH.update(sm['carState'], sm['controlsState'].active, lane_change_prob)
+    self.DH.update(sm, lane_change_prob)
 
     # Turn off lanes during lane change
     if self.DH.desire == log.LateralPlan.Desire.laneChangeRight or self.DH.desire == log.LateralPlan.Desire.laneChangeLeft:
@@ -57,7 +107,9 @@ class LateralPlanner:
       self.LP.rll_prob *= self.DH.lane_change_ll_prob
 
     # Calculate final driving path and set MPC costs
-    if self.use_lanelines:
+    #if self.use_lanelines:
+    self.lane_lines   = self.lanelines_check(sm)
+    if self.lane_lines:
       d_path_xyz = self.LP.get_d_path(v_ego, self.t_idxs, self.path_xyz)
       self.lat_mpc.set_weights(MPC_COST_LAT.PATH, MPC_COST_LAT.HEADING, self.steer_rate_cost)
     else:
@@ -116,8 +168,9 @@ class LateralPlanner:
     lateralPlan.solverExecutionTime = self.lat_mpc.solve_time
 
     lateralPlan.desire = self.DH.desire
-    lateralPlan.useLaneLines = self.use_lanelines
+    lateralPlan.useLaneLines = not self.lane_lines
     lateralPlan.laneChangeState = self.DH.lane_change_state
     lateralPlan.laneChangeDirection = self.DH.lane_change_direction
+    lateralPlan.modelSpeed = float(self.LP.soft_model_speed)
 
     pm.send('lateralPlan', plan_send)
