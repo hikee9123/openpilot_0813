@@ -32,7 +32,7 @@ class LateralPlanner:
 
     # atom
     self.cruise_buttons = 0
-    self.time_laneline = 0
+    self.time_enable = 0
     self.lane_lines  = self.use_lanelines
 
   def lanelines_check(self, sm):
@@ -40,14 +40,21 @@ class LateralPlanner:
     steeringAngleDeg = sm['carState'].steeringAngleDeg
     cruiseSwState = sm['carState'].cruiseState.cruiseSwState
     accActive = sm['carState'].cruiseState.accActive
+    enabled = sm['carState'].cruiseState.accActive
+
+    if not enabled:
+      self.time_enable = 100
+    elif self.time_enable > 0:
+      self.time_enable -= 1
 
     if self.cruise_buttons == cruiseSwState:  #   GAP_DIST = 3
       return lanelines
-    if accActive:
+
+    if accActive or self.time_enable:
       return lanelines
 
     self.cruise_buttons = cruiseSwState
-    if cruiseSwState == 3:
+    if cruiseSwState == 3: #   GAP_DIST = 3
       if self.use_lanelines:
         self.use_lanelines = False
       else:
@@ -56,25 +63,6 @@ class LateralPlanner:
     lanelines = self.use_lanelines
     return lanelines
      
-    """
-    if lanelines:
-      right_lane_visible = float(self.LP.rll_prob) > 0.5
-      left_lane_visible = float(self.LP.lll_prob) > 0.5
-
-      if self.time_laneline:
-        if not right_lane_visible or not left_lane_visible or (abs(steeringAngleDeg) > 5):
-          self.time_laneline = 500
-      else:
-        if not right_lane_visible and not left_lane_visible:
-          self.time_laneline = 500
-
-      if self.time_laneline:
-        self.time_laneline -= 1
-        lanelines = False
-
-        #print(' r={}   l= {}    lanelines ={} \n '.format(self.LP.rll_prob, self.LP.lll_prob,  lanelines) )
-    return lanelines
-    """
 
   def reset_mpc(self, x0=np.zeros(4)):
     self.x0 = x0
