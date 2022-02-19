@@ -40,7 +40,7 @@ class LateralPlanner:
     steeringAngleDeg = sm['carState'].steeringAngleDeg
     cruiseSwState = sm['carState'].cruiseState.cruiseSwState
     accActive = sm['carState'].cruiseState.accActive
-    enabled = sm['carState'].cruiseState.accActive
+    enabled = sm['carState'].cruiseState.enabled
 
     if not enabled:
       self.time_enable = 100
